@@ -31,7 +31,7 @@ db.once("open", () => {
 */
 
 mongoose.connect(
-  "mongodb://localhost:27017
+  "mongodb://localhost:27017"     
 );
 mongoose.set("useCreateIndex", true);
 const db = mongoose.connection;
@@ -66,6 +66,7 @@ app.get("/courses", homeController.showCourses);
 
 //app.get("/contact", subscribersController.getSubscriptionPage);
 //app.post("/subscribe", subscribersController.saveSubscriber);
+//test change
 
 app.use(errorController.logErrors);
 app.use(errorController.respondNoResourceFound);
