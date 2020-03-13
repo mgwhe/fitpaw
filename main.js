@@ -30,6 +30,27 @@ db.once("open", () => {
   console.log("Successfully connected to MongoDB using Mongoose!");
 });
 */
+/*
+Database Setup
+*/
+/* Connect to MongoDB engine & fitpaw_db on port 27017*/
+mongoose.connect(
+    "mongodb://fitpaw_db:localhost:27017",
+  { 
+    useNewUrlParser: true, //required
+    useUnifiedTopology: true 
+  }
+);
+mongoose.set("useCreateIndex", true);
+const db = mongoose.connection; //grab the MongoDB connection from Mongoose
+//Then check connection to MongoDB is open, after this can use database
+db.once("open", () => {
+  console.log("Successfully connected to MongoDB using Mongoose!");
+});
+
+/* 
+Web Server Set-up 
+*/
 app.set("port", process.env.PORT || 3000); //read from file or default to port 3000
 app.set("view engine", "ejs"); //use EJS view engine for viewing. could be any one of 20 different view engines
 //ones available on npmjs.com 
@@ -66,7 +87,7 @@ app.use(errorController.respondNoResourceFound);
 app.use(errorController.respondInternalError);
 
 //following code starts the up the web server and the app is now running 
-//and waiting for requests via browser
+//and waiting for HTTP requests via browser interactions (click on links, change URL, etc)
 app.listen(app.get("port"), () => {
   console.log(`Server running at http://localhost:${app.get("port")}`);
 });

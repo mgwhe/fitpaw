@@ -1,7 +1,9 @@
 "use strict";
 
+//get reference to mongoose module and store in varaiable mongoose 
 const mongoose = require("mongoose");
-//replace subscriber with pet
+
+//Define a schema which allows rules to be placed on the fields like size, type, requried, etc. 
 const pet = new mongoose.Schema({
   petName: {
     type: String,
@@ -24,8 +26,13 @@ const pet = new mongoose.Schema({
   } 
 });
 
+//Add a function getPetProfileInfo to dump out pet values  
 pet.methods.getPetProfileInfo = function() {
   return `Pet Name: ${this.petName} Pet Age: ${this.petAge} Pet Breed: ${this.petBreed} Pet Breed: ${this.petWeight}`;
 };
 
+//Take the MongoDB schema called pet defined above, 
+//make a Mongoose model (class) from the schema called PetProfile  
+//export the model so it can use it in other files by the name PetProfile. (We no longer use local pet variable)
 module.exports = mongoose.model("PetProfile", pet);
+//once above is done we can now create pet objects from PetProfile in other files

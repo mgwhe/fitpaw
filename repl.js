@@ -4,9 +4,20 @@ const mongoose = require("mongoose"),
 
 var testCourse, testSubscriber;
 
+/* 
+//connect to Azure
 mongoose.connect(
   "mongodb://dogpaw-db:Pz1aO7zh5i2zVcZ9O8VRxMjKffbcXt8cXbUzNUNYI5f3ySGNgS97BxQ0m4nOaqgNmc5HN1Fd10Z69K3pN8grDg==@dogpaw-db.documents.azure.com:10255/?ssl=true&replicaSet=globaldb",
 { useNewUrlParser: true, 
+  useUnifiedTopology: true
+}
+);
+*/
+
+mongoose.connect(
+  "mongodb://localhost:27017",
+{ 
+  useNewUrlParser: true, 
   useUnifiedTopology: true
 }
 );
