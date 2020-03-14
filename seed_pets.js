@@ -2,7 +2,8 @@
 
 const mongoose = require("mongoose"),
 //reference models so can create objects from them and store in MongoDB using Mongoose API
-PetProfile = require("./models/pet_profile");
+PetProfile = require("./models/pet_profile"),
+Breed = require("./models/breed");
 
   /*
   mongoose.connect(
@@ -14,7 +15,7 @@ PetProfile = require("./models/pet_profile");
 */
 //Connect to fitpaw_db database
 mongoose.connect(
-  "mongodb://fitpaw_db:localhost:27017",
+  "mongodb://localhost:27017/fitpaw_db",
 { 
   useNewUrlParser: true, //required 
   useUnifiedTopology: true

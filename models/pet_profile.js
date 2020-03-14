@@ -1,7 +1,8 @@
 "use strict";
 
 //get reference to mongoose module and store in varaiable mongoose 
-const mongoose = require("mongoose");
+const mongoose = require("mongoose"),
+Breed = require("./breed");
 
 //Define a schema which allows rules to be placed on the fields like size, type, requried, etc. 
 const pet = new mongoose.Schema({

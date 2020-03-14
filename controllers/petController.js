@@ -1,14 +1,14 @@
 "use strict";
 
-const Pet = require("../models/pet_profile");
+const PetProfile = require("../models/pet_profile");
 
-/*
 exports.getPetProfile = (req, res) => {
-    Pet.findOne({})
+    PetProfile.findOne({})
     .exec()
     .then(petprofile => {
+      //render petprofile.ejs view & pass in name value containing data to display
       res.render("petprofile", {
-        subscribers: subscribers //sort this
+        petprofile_variable: petprofile 
       });
     })
     .catch(error => {
@@ -19,15 +19,17 @@ exports.getPetProfile = (req, res) => {
       console.log("promise complete");
     });
 };
-*/
 
+/*
 exports.getPetProfile = (req, res) => {
     res.render("petprofile", {      //render used to render view files - name without extension 
      petprofile: pet
    } 
     );
 };
+*/
 
+/*
 exports.getSubscriptionPage = (req, res) => {
   res.render("contact");
 };
@@ -47,3 +49,4 @@ exports.saveSubscriber = (req, res) => {
       if (error) res.send(error);
     });
 };
+*/
