@@ -2,12 +2,12 @@
 
 const PetProfile = require("../models/pet_profile");
 
-/*
+
 exports.getPetProfile = (req, res) => {
-    PetProfile.findOne({})
+    PetProfile.findOne({petName:"Spot"})
     .exec()
     .then(petprofile => {
-      //render petprofile.ejs view & pass in name value containing data to display
+      //call petprofile(.ejs) view & pass in variable name:value containing data to display
       res.render("petprofile", {
         petprofile_variable: petprofile 
       });
@@ -15,13 +15,14 @@ exports.getPetProfile = (req, res) => {
     })
     .catch(error => {
       console.log(error.message);
+      //to verify this return or return []?
       return [];
     })
     .then(() => {
       console.log("promise complete");
     });
 };
-*/
+
 
 /* example
 exports.getAllSubscribers = (req, res, next) => { 
@@ -33,16 +34,16 @@ exports.getAllSubscribers = (req, res, next) => {
 };
 */
 
-//Simple version that prints to page without view
-
+//Simple version that prints to page without view - not working
+/*
 exports.getPetProfile = (req, res) => {
     PetProfile.findOne({petName:"Spot"})
     .exec()
-    .then(petprofile => {
+    .then( (petprofile) => {
       req.data = petprofile;
     });
 }
-
+*/
 /* DB test using Mongoose - works for console o/p
 exports.getPetProfile = (req, res) => {
   PetProfile.findOne({petName:"Spot"}, function(error, petprofile) {

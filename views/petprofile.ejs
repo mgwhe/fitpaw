@@ -1,14 +1,16 @@
 <div class="list-container">
-    <% petprofile_variable.forEach(p => { %>
-    <div class="subscriber">
+     <div class="subscriber">
       <p>
-        <span class="item-label">Name:</span>
-        <%=  %>
+        <span class="item-label">Pet Name:</span>
+        <%= petprofile_variable.petName %>
       </p>
       <p>
-        <span class="item-label">Email:</span>
-        <%= s.email %>
+        <span class="item-label">Pet Age:</span>
+        <%= petprofile_variable.petAge %>
+      </p>
+      <p>
+        <span class="item-label">Pet Weight (kg):</span>
+        <%= petprofile_variable.petWeight %>
       </p>
     </div>
-    <% }); %>
   </div>
