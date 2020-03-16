@@ -35,7 +35,7 @@ Database Setup
 */
 /* Connect to MongoDB engine & fitpaw_db on port 27017*/
 mongoose.connect(
-    "mongodb://fitpaw_db:localhost:27017",
+    "mongodb://localhost:27017/fitpaw_db",
   { 
     useNewUrlParser: true, //required
     useUnifiedTopology: true 
@@ -68,10 +68,19 @@ app.use(homeController.logRequestPaths);
 
 //app.get("/name", homeController.respondWithName);
 //app.get("/items/:vegetable", homeController.sendReqParam);
-
+/*
 app.get("/petprofile", petController.getPetProfile, (req, res, next) => {
   res.render("petprofile", { petprofile: req.data });
-}); //when someone types or links to http://localhost:3000/petprofile in browser then go to call getPetProfile() method which
+}); 
+*/
+//simple version 
+//not sure about next
+app.get("/petprofile", petController.getPetProfile, (req, res) => {
+  console.log(req.data);
+  res.send(req.data);
+}); 
+
+//when someone types or links to http://localhost:3000/petprofile in browser then go to call getPetProfile() method which
 //gets the pet profile and stores it in the request object req. parameter iii of above then uses this data 
 //to send back to web page  
 //for the previous - ****NOTHING*** is happening just now. its just setting this up for when the app is running. 

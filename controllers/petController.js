@@ -2,6 +2,7 @@
 
 const PetProfile = require("../models/pet_profile");
 
+/*
 exports.getPetProfile = (req, res) => {
     PetProfile.findOne({})
     .exec()
@@ -10,6 +11,7 @@ exports.getPetProfile = (req, res) => {
       res.render("petprofile", {
         petprofile_variable: petprofile 
       });
+     
     })
     .catch(error => {
       console.log(error.message);
@@ -19,14 +21,37 @@ exports.getPetProfile = (req, res) => {
       console.log("promise complete");
     });
 };
+*/
 
-/*
-exports.getPetProfile = (req, res) => {
-    res.render("petprofile", {      //render used to render view files - name without extension 
-     petprofile: pet
-   } 
-    );
+/* example
+exports.getAllSubscribers = (req, res, next) => { 
+  Subscriber.find( {}, (error, subscribers) => {
+    if (error) next( error);
+    req.data = subscribers; 
+    next(); 
+  }); 
 };
+*/
+
+//Simple version that prints to page without view
+
+exports.getPetProfile = (req, res) => {
+    PetProfile.findOne({petName:"Spot"})
+    .exec()
+    .then(petprofile => {
+      req.data = petprofile;
+    });
+}
+
+/* DB test using Mongoose - works for console o/p
+exports.getPetProfile = (req, res) => {
+  PetProfile.findOne({petName:"Spot"}, function(error, petprofile) {
+    if(error){
+      return console.log("Error finding document!");
+    }
+    console.log(petprofile);
+  });
+}
 */
 
 /*
