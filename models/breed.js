@@ -4,7 +4,9 @@ const mongoose = require("mongoose");
 
 //define a schema called breed with following fields and rules
 //mongoose enforces the rules of the schema (MongoDB does not)
-const breedSchema = new mongoose.Schema({ 
+//A Mongoose schema is a configuration object for a Mongoose model (docs)
+//**Use uppercase 1st letter for Schemas** (not according to docs)
+const BreedSchema = new mongoose.Schema({ 
   breedName: {
     type: String,
     required: true,
@@ -16,7 +18,12 @@ const breedSchema = new mongoose.Schema({
   },
 });
 
+//Add a static method to the schema to find the Breed object based on breed name 
+BreedSchema.static('findByBreed', function(breedName) {
+  return this.find({ breedName });
+});
 //make a model from the breed schema called Breed and export it so it can be used elsewhere 
 //once model is created objects can be instantiated and use to read/write to MongoDB
-//this statment does two steps in one - creates the model, exports the created model so it can be used later. 
-module.exports = mongoose.model("Breed", breedSchema); //export model 
+//this statment does two steps in one - creates (compiles) the model, then exports the created model so it can be used later. 
+module.exports = mongoose.model("Breed", BreedSchema); //Create, then export model 
+//From Mongoose docs - in the above Breed model **AUTOMATICALLY** maps to 'breeds' document collection in MongoDB 

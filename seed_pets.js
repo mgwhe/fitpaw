@@ -28,16 +28,21 @@ db.once("open", () => {
   console.log("Successfully connected to MongoDB using Mongoose!");
 });
 
-//Array of 1 for now
 var pets = [
   {
     petName: "Spot",
     petAge: 2,
     petWeight: 10
+  },
+  {
+    petName: "Tiny",
+ //   petBreed: Breed.findByBreed({breedName:"Irish Wolfhound"}),
+    petAge: 3,
+    petWeight: 20
   }
 ];
 
-  
+ /* 
 PetProfile.deleteMany()
   .exec()
   .then(() => {
@@ -48,9 +53,11 @@ var commands = [];
 
 pets.forEach(c => {
   commands.push(
+    //creates a MongoDB document using the array above 
     PetProfile.create({
       petName: c.petName,
       petAge: c.petAge,
+      petBreed: c.petBreed,
       petWeight: c.petWeight 
     })
   );
@@ -64,3 +71,4 @@ Promise.all(commands)
   .catch(error => {
     console.log(`ERROR: ${error}`);
   });
+*/
