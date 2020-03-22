@@ -30,8 +30,9 @@ db.once("open", () => {
 
 var pets = [
   {
-    petName: "Spot",
-    petAge: 2,
+    petName: "Spotty",
+    petAge: 4,
+    petTagNumber: "ABC123",
     petWeight: 10
   },
   {
@@ -42,7 +43,7 @@ var pets = [
   }
 ];
 
- /* 
+ 
 PetProfile.deleteMany()
   .exec()
   .then(() => {
@@ -57,7 +58,8 @@ pets.forEach(c => {
     PetProfile.create({
       petName: c.petName,
       petAge: c.petAge,
-      petBreed: c.petBreed,
+  //    petBreed: c.petBreed,
+      petTagNumber: c.petTagNumber,
       petWeight: c.petWeight 
     })
   );
@@ -71,4 +73,3 @@ Promise.all(commands)
   .catch(error => {
     console.log(`ERROR: ${error}`);
   });
-*/

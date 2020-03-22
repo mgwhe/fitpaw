@@ -9,7 +9,7 @@ const mongoose = require("mongoose");
 const BreedSchema = new mongoose.Schema({ 
   breedName: {
     type: String,
-    required: true,
+    required: false,
     unique: true
   },
   breedDescription: {
@@ -19,9 +19,11 @@ const BreedSchema = new mongoose.Schema({
 });
 
 //Add a static method to the schema to find the Breed object based on breed name 
+
 BreedSchema.static('findByBreed', function(breedName) {
   return this.find({ breedName });
 });
+
 //make a model from the breed schema called Breed and export it so it can be used elsewhere 
 //once model is created objects can be instantiated and use to read/write to MongoDB
 //this statment does two steps in one - creates (compiles) the model, then exports the created model so it can be used later. 

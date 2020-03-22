@@ -6,7 +6,7 @@ Breed = require("./breed");
 
 //A Mongoose schema is a configuration object for a Mongoose model (docs)
 //Define a schema which allows rules to be placed on the fields like size, type, requried, etc. 
-const PetSchema = new mongoose.Schema({
+const PetProfileSchema = new mongoose.Schema({
   petName: {
     type: String,
     required: true
@@ -18,7 +18,12 @@ const PetSchema = new mongoose.Schema({
     required: true
   },
   petBreed: { 
-    type: mongoose.Schema.Types.ObjectId, ref: "Breed" 
+    type: mongoose.Schema.Types.ObjectId, ref: "Breed",
+    unique: false 
+  },
+  petTagNumber: {
+    type: String,
+    required: false
   },
    /*
   petBreedName: {
@@ -38,12 +43,12 @@ const PetSchema = new mongoose.Schema({
 });
 
 //Add a function getPetProfileInfo to dump out pet values  
-PetSchema.methods.getPetProfileInfo = function() {
-  return `Pet Name: ${this.petName} Pet Age: ${this.petAge} Pet Breed: ${this.petBreed} Pet Breed: ${this.petWeight}`;
+PetProfileSchema.methods.getPetProfileInfo = function() {
+  return `Pet Name: ${this.petName} Pet Age: ${this.petAge} Pet Weight: ${this.petWeight}`;
 };
 
 //Take the MongoDB schema called petSchema defined above, 
 //make a Mongoose model (class) from the schema called PetProfile  
 //export the model so it can use it in other files by the name PetProfile. (No longer use local pet variable)
-module.exports = mongoose.model("PetProfile", PetSchema);
+module.exports = mongoose.model("PetProfile", PetProfileSchema);
 //once above is done we can now create pet objects from PetProfile in other files or access existing ones
