@@ -3,6 +3,15 @@
 const express = require("express"), //note express is not a variable but a function so called on next line
   app = express(), 
   
+//setup routers
+/*
+const router = new express.Router();
+router.get("/test", (req,res)=>{
+res.send("this is from other router");
+}) 
+app.use = router;
+*/
+
   errorController = require("./controllers/errorController"),
   homeController = require("./controllers/homeController"),
   petController = require("./controllers/petController"),

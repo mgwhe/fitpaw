@@ -19,7 +19,6 @@ const PetProfileSchema = new mongoose.Schema({
   },
   petBreed: { 
     type: mongoose.Schema.Types.ObjectId, ref: "Breed",
-    unique: false 
   },
   petTagNumber: {
     type: String,
@@ -40,7 +39,11 @@ const PetProfileSchema = new mongoose.Schema({
     max: [50, "Please refer your pet to A&E"],
     required: true
   } 
-});
+},
+{ //timestamp each record when created, when updated
+  timestamps: true
+}
+);
 
 //Add a function getPetProfileInfo to dump out pet values  
 PetProfileSchema.methods.getPetProfileInfo = function() {

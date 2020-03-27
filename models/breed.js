@@ -9,13 +9,26 @@ const mongoose = require("mongoose");
 const BreedSchema = new mongoose.Schema({ 
   breedName: {
     type: String,
-    required: false,
-    unique: true
+    required: true,
+    enum: [
+    'Cairn Terrier',
+    'Dachshund', 
+    'Dalmatian',
+    'English Cocker Spaniel',
+    'English Foxhound',
+    'English Setter', 
+    'Field Spaniel',
+    'Finnish Lapphund',
+    'German Shepherd Dog',
+    'Hanoverian Scenthound']
   },
   breedDescription: {
     type: String,
     required: false
   },
+},
+{ //timestamp each record when created, when updated
+  timestamps: true
 });
 
 //Add a static method to the schema to find the Breed object based on breed name 

@@ -30,14 +30,14 @@ db.once("open", () => {
 
 var pets = [
   {
-    petName: "Spotty",
+    petName: "Spot",
     petAge: 4,
     petTagNumber: "ABC123",
     petWeight: 10
   },
   {
     petName: "Tiny",
- //   petBreed: Breed.findByBreed({breedName:"Irish Wolfhound"}),
+    petBreed: new Breed({breedName:"Field Spaniel"}),
     petAge: 3,
     petWeight: 20
   }
@@ -58,7 +58,7 @@ pets.forEach(c => {
     PetProfile.create({
       petName: c.petName,
       petAge: c.petAge,
-  //    petBreed: c.petBreed,
+      petBreed: c.petBreed,
       petTagNumber: c.petTagNumber,
       petWeight: c.petWeight 
     })
