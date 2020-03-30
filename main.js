@@ -98,7 +98,7 @@ app.get("/", homeController.index); //when http://localhost:3000/ is called just
 app.get("/courses", homeController.showCourses); //when call http://localhosr:3000/courses call..
 
 //app.get("/contact", subscribersController.getSubscriptionPage);
-//app.post("/subscribe", subscribersController.saveSubscriber);
+app.post("/member_profile", memberController.saveMemberProfile);
 
 app.use(errorController.logErrors);
 app.use(errorController.respondNoResourceFound);

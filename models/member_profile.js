@@ -7,22 +7,24 @@ const validator = require ("validator"), //validate e-mails, etc.
 Breed = require("./pet_profile");
 
 const MemberProfileSchema = new mongoose.Schema({
-  memberNumber: {
+  /*memberNumber: {
     type: Number,
     unique: true,
     required: true,
-  },
+  }, */
   email:{
       type: String,
       index: true,
       required: true,
       lowercase: true,
+      trim:true,
       validate(value){
         if(!validator.isEmail(value))
         {
             throw new Error("Invalid email!");
         }
-      }  
+      },  
+    unique: true 
   },
     memberName: {
     type: String,
