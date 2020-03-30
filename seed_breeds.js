@@ -21,18 +21,18 @@ db.once("open", () => {
     console.log("Successfully connected to MongoDB using Mongoose!");
   });
 
-  /*
+  
 var breeds = [
   {
     breedName: "Field Spaniel",
     breedDescription: "Nice little dog"
   },
   {
-    breedName: "Field Spaniel",
+    breedName: "Dalmatian",
     breedDescription: "Nice dog"
   },
 ];
-*/
+
 
 Breed.deleteMany()
   .exec()
@@ -40,7 +40,7 @@ Breed.deleteMany()
     console.log("Breed data is empty!");
   });
   
-/*
+
 var commands = [];
 
 breeds.forEach(b => {
@@ -61,5 +61,5 @@ Promise.all(commands)
   .catch(error => {
     console.log(`ERROR: ${error}`);
   });
-*/
-mongoose.connection.close();
+
+//mongoose.connection.close();
