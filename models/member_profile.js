@@ -2,7 +2,7 @@
 
 //get reference to mongoose module and store in varaiable mongoose 
 const mongoose = require("mongoose"),
-const validator = require ("validator"), //validate e-mails, etc. 
+validator = require ("validator"), //validate e-mails, etc. 
 
 Breed = require("./pet_profile");
 

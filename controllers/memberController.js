@@ -19,22 +19,21 @@ exports.getAllSubscribers = (req, res) => {
       console.log("promise complete");
     });
 };
-
-exports.getSubscriptionPage = (req, res) => {
-  res.render("contact");
-};
 */
+exports.getMemberProfilePage = (req, res) => {
+  res.render("memberprofile");
+};
 
 exports.saveMemberProfile = (req, res) => {
   let newMemberProfile = new MemberProfile({
     email: req.body.email,
     memberName: req.body.name,
-    startDate: new Date(now)
+    startDate: new Date() //sets to the current date/time
   });
   newMemberProfile
     .save()
     .then(result => {
-      res.render("thank you!");
+      res.render("thanks");
     })
     .catch(error => {
       if (error) res.send(error);
