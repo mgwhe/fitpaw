@@ -1,5 +1,5 @@
 {
-  "name": "recipe_app",
+  "name": "pet_app",
   "version": "1.0.0",
   "description": "A Node.js application using Express.js",
   "main": "main.js",

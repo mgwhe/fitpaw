@@ -76,6 +76,17 @@ app.use(
 app.use(express.json()); //could split out and store in variable, then assign to app. this is one step to do both
 app.use(homeController.logRequestPaths);
 
+//Following uses a different navigation layout for the public page & register & login pages
+app.get("/", (req, res) => {
+  res.render('index', { layout: 'layout_public' });
+});
+app.get("/memberprofile", (req, res) => {
+  res.render('memberprofile', { layout: 'layout_public' });
+});
+
+app.get("/memberprofile", memberController.getMemberProfilePage);
+app.post("/memberprofile", memberController.saveMemberProfile);
+
 //app.get("/name", homeController.respondWithName);
 //app.get("/items/:vegetable", homeController.sendReqParam);
 /*

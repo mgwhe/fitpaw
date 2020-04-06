@@ -22,7 +22,7 @@ exports.showCourses = (req, res) => {
 };
 
 exports.index = (req, res) => {
-  res.render("index");
+  res.render("index"); //go run index.ejs
 };
 
 exports.logRequestPaths = (req, res, next) => {
