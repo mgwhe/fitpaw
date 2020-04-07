@@ -87,6 +87,10 @@ app.get("/memberprofile", (req, res) => {
 app.get("/memberprofile", memberController.getMemberProfilePage);
 app.post("/memberprofile", memberController.saveMemberProfile);
 
+app.get("/master", (req, res) => {
+  res.render('master');
+});
+
 //app.get("/name", homeController.respondWithName);
 //app.get("/items/:vegetable", homeController.sendReqParam);
 /*
@@ -108,9 +112,6 @@ app.get("/petprofile", petController.getPetProfile, (req, res) => {
 
 app.get("/", homeController.index); //when http://localhost:3000/ is called just call homeController.index
 app.get("/courses", homeController.showCourses); //when call http://localhosr:3000/courses call..
-
-app.get("/memberprofile", memberController.getMemberProfilePage);
-app.post("/memberprofile", memberController.saveMemberProfile);
 
 app.use(errorController.logErrors);
 app.use(errorController.respondNoResourceFound);

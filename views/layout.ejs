@@ -12,10 +12,18 @@
 	<link rel="stylesheet" href="/css/bootstrap.css">
 	-->
 
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <!-- BootStrap date picker-->
+<script type="text/javascript" src="/js/moment.js"></script>
+<!--
+<script type="text/javascript" src="/js/transition.js"></script>
+-->
+<script type="text/javascript" src="/js/collapse.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+<!-- End BootStrap date picker-->
 
   <link rel="stylesheet" href="/css/fitpaw_app.css">
 
@@ -51,11 +59,31 @@
 	  <ul class="nav navbar-nav">
 		<li class="active"><a href="/">Home</a></li>
 		<li><a href="/petprofile">Pet Profile</a></li>
-		<li><a href="#">Page 2</a></li>
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
+			<ul class="dropdown-menu" role="menu">
+			  <li><a href="#">Action</a></li>
+			  <li><a href="#">Another action</a></li>
+			  <li><a href="#">Something else here</a></li>
+			  <li class="divider"></li>
+			  <li><a href="#">Separated link</a></li>
+			  <li class="divider"></li>
+			  <li><a href="#">One more separated link</a></li>
+			</ul>
+		  </li>
 	  </ul>
 	  <ul class="nav navbar-nav navbar-right">
 			<li><a href="/"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
 	  </ul>
+	  
+	  <!--
+	  <ul class="nav nav-tabs">
+		<li class="active"><a href="#">Home</a></li>
+		<li><a href="#">Menu 1</a></li>
+		<li><a href="#">Menu 2</a></li>
+		<li><a href="#">Menu 3</a></li>
+	  </ul>
+	-->
 	</div>
   </nav>
 
