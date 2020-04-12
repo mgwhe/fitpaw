@@ -4,6 +4,7 @@ const PetProfile = require("../models/pet_profile");
 
 
 exports.getPetProfile = (req, res) => {
+  console.log("entered getPetProfile body");
     PetProfile.findOne({petName:"Spot"})
     .exec()
     .then(petprofile => {

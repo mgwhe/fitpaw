@@ -1,28 +1,18 @@
 "use strict";
 
 const express = require("express"), //note express is not a variable but a function so called on next line
-  app = express(), 
-  
-//setup routers
-/*
-const router = new express.Router();
-router.get("/test", (req,res)=>{
-res.send("this is from other router");
-}) 
-app.use = router;
-*/
-
-  errorController = require("./controllers/errorController"),
+  app = express(), //create express application and store reference in app
+   //reference routers master file index.js where router listing is located
+  router = require("./routes/index"),
   homeController = require("./controllers/homeController"),
-  petController = require("./controllers/petController"),
-  memberController = require("./controllers/memberController"),
-  
+
+   
   layouts = require("express-ejs-layouts"), //load express EJS layouts and assign to a variable 
   // layouts which is then used later in this file
   
-  mongoose = require("mongoose"),
+  mongoose = require("mongoose");
   
-  petProfile = require("./models/pet_profile");
+  //petProfile = require("./models/pet_profile");
 
 mongoose.Promise = global.Promise;
 
@@ -73,52 +63,13 @@ app.use(
     extended: false
   })
 );
-app.use(express.json()); //could split out and store in variable, then assign to app. this is one step to do both
+app.use(express.json()); //parse incoming json data only
 app.use(homeController.logRequestPaths);
 
-//Following uses a different navigation layout for the public page & register & login pages
-app.get("/", (req, res) => {
-  res.render('index', { layout: 'layout_public' });
-});
-app.get("/memberprofile", (req, res) => {
-  res.render('memberprofile', { layout: 'layout_public' });
-});
+app.use("/",router);
 
-app.get("/memberprofile", memberController.getMemberProfilePage);
-app.post("/memberprofile", memberController.saveMemberProfile);
-
-app.get("/master", (req, res) => {
-  res.render('master');
-});
-
-//app.get("/name", homeController.respondWithName);
-//app.get("/items/:vegetable", homeController.sendReqParam);
-/*
-app.get("/petprofile", petController.getPetProfile, (req, res, next) => {
-  res.render("petprofile", { petprofile: req.data });
-}); 
-*/
-//simple version 
-//not sure about next
-app.get("/petprofile", petController.getPetProfile, (req, res) => {
-  console.log(req.data);
-  res.send(req.data);
-}); 
-
-//when someone types or links to http://localhost:3000/petprofile in browser then go to call getPetProfile() method which
-//gets the pet profile and stores it in the request object req. parameter iii of above then uses this data 
-//to send back to web page  
-//for the previous - ****NOTHING*** is happening just now. its just setting this up for when the app is running. 
-
-app.get("/", homeController.index); //when http://localhost:3000/ is called just call homeController.index
-app.get("/courses", homeController.showCourses); //when call http://localhosr:3000/courses call..
-
-app.use(errorController.logErrors);
-app.use(errorController.respondNoResourceFound);
-app.use(errorController.respondInternalError);
-
-//following code starts the up the web server and the app is now running 
-//and waiting for HTTP requests via browser interactions (click on links, change URL, etc)
+//following code starts the up Node web server  
+//and waits for HTTP requests via browser interactions (click on links, change URL, etc)
 app.listen(app.get("port"), () => {
   console.log(`Server running at http://localhost:${app.get("port")}`);
 });
