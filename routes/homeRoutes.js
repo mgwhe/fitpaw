@@ -3,6 +3,7 @@
 const router = require("express").Router(),
   homeController = require("../controllers/homeController");
 
+  //All routes below are **relative** to path in index.js 
   //Set public layout navigation for public page with register & login options
 router.get("/", (req, res) => {
     res.render('index', { layout: 'layout_public' });

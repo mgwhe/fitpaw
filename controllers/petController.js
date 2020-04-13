@@ -4,15 +4,23 @@ const PetProfile = require("../models/pet_profile");
 
 
 exports.getPetProfile = (req, res) => {
-  console.log("entered getPetProfile body");
-    PetProfile.findOne({petName:"Spot"})
+  //Call Mongoose findOne method on PetProfile model
+    PetProfile.findOne({petName:"Spot"}) //pass in JSON {} for search using name: value
     .exec()
-    .then(petprofile => {
+    .then(petprofile => { //Pass results of search in res object which gets sent back to browser. 
       //call petprofile(.ejs) view & pass in variable name:value containing data to display
-      res.render("petprofile", {
-        petprofile_variable: petprofile 
-      });
-     
+      
+        if(req.query.format==="json") //http://localhost:3000/petprofile?format=json
+        {
+          res.locals.petprofile = petprofile; //adds a new variable to locals which can then be accessed by view. Assign 
+          res.json(res.locals.petprofile);
+        }
+        else //http://localhost:3000/petprofile
+        {
+          res.render("petprofile", {
+            petprofile_variable: petprofile 
+          });
+        }     
     })
     .catch(error => {
       console.log(error.message);

@@ -54,4 +54,4 @@ PetProfileSchema.methods.getPetProfileInfo = function() {
 //make a Mongoose model (class) from the schema called PetProfile  
 //export the model so it can use it in other files by the name PetProfile. (No longer use local pet variable)
 module.exports = mongoose.model("PetProfile", PetProfileSchema);
-//once above is done we can now create pet objects from PetProfile in other files or access existing ones
+//once above is done I can now create pet objects from PetProfile in other files or access existing ones

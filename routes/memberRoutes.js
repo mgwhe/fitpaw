@@ -3,6 +3,7 @@
 const router = require("express").Router(),
   memberController = require("../controllers/memberController");
 
+    //All routes below are **relative** to path in index.js 
 //Set use of public layout page for registration 
 router.get("/", (req, res) => {
     res.render('memberprofile', { layout: 'layout_public' });
