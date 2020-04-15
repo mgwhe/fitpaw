@@ -4,8 +4,7 @@
 const mongoose = require("mongoose"),
 validator = require ("validator"), //validate e-mails, etc. 
 
-const FoodDiaryEntrySchema = new mongoose.Schema({ 
-    //to do - join document to parent account
+FoodDiaryItemSchema = new mongoose.Schema({ 
     foodName: {
     type: String,
     required: true,
@@ -20,20 +19,10 @@ const FoodDiaryEntrySchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true 
-  },
-  foodEntryDate: {
-    type: Date,
-    required: true
-   }
+  }
 },
 { //timestamp each record when created & updated
   timestamps: true
 });
 
-/*
-//Add a function getMemberProfileInfo to dump out values  
-MemberProfileSchema.methods.getFoodDetails = function() {
-  return `Member Number: ${this.memberNumber} Member email: ${this.email} Member Name: ${this.memberName} Start Date ${this.startDate}`;
-};
-*/
-module.exports = mongoose.model("FoodDiaryEntry", FoodDiaryEntrySchema);
+module.exports = mongoose.model("FoodDiaryItem", FoodDiaryItemSchema);

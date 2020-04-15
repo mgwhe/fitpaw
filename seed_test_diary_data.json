@@ -1,0 +1,23 @@
+{
+"foodDiary":
+	{
+	"foodDiaryItems": [
+            { "foodName": "Sausage", "foodQuantity": "2", "foodUnits": "Pieces"},
+            { "foodName": "Mince", "foodQuantity": ".3", "foodUnits": "Kg" },
+            { "foodName": "Sweets", "foodQuantity": "4", "foodUnits": "Pieces"},
+            { "foodName": "Dog Biscuits", "foodQuantity": "4", "foodUnits": "Pieces"}
+    ],
+    "foodDiaryDate": "2020-04-15"
+    },
+ },
+ "foodDiary":
+	{
+	"foodDiaryItems": [
+            { "foodName": "Crisps", "foodQuantity": "2", "foodUnits": "Bag"},
+            { "foodName": "Mince", "foodQuantity": ".3", "foodUnits": "Kg" },
+            { "foodName": "Sweets", "foodQuantity": "4", "foodUnits": "Pieces"},
+            { "foodName": "Chewing Gum", "foodQuantity": "1", "foodUnits": "Stick"}
+    ],
+    "foodDiaryDate": "2020-04-14"
+    }
+ }

@@ -6,15 +6,13 @@ const express = require("express"), //note express is not a variable but a funct
   router = require("./routes/index"),
   homeController = require("./controllers/homeController"),
 
-   
   layouts = require("express-ejs-layouts"), //load express EJS layouts and assign to a variable 
   // layouts which is then used later in this file
   
-  mongoose = require("mongoose");
-  
-  //petProfile = require("./models/pet_profile");
-
-mongoose.Promise = global.Promise;
+  mongoose = require("mongoose"),
+  methodOverride = require("method-override");
+ 
+  mongoose.Promise = global.Promise;
 
 /* MongoDB stuff
 mongoose.connect(
@@ -61,6 +59,11 @@ app.use(layouts); //layouts variable created earlier. here we tell app to use it
 app.use(
   express.urlencoded({
     extended: false
+  })
+);
+app.use(
+  methodOverride("_method", {
+    methods: ["POST", "GET"]
   })
 );
 app.use(express.json()); //parse incoming json data only
