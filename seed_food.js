@@ -27,13 +27,13 @@ db.once("open", () => {
   console.log("Successfully connected to MongoDB using Mongoose!");
 });
 
-
+/*
 FoodDiary.deleteMany() //check assumption that child foot items are also deleted!!!!
   .exec()
   .then(() => {
     console.log("FoodDiary data is empty!");
   });
-
+*/
   const foods = {
       foodDiaryItems:[
             {foodName: "Sausage", foodQuantity: "2", foodUnits: "Pieces"},
@@ -49,23 +49,47 @@ FoodDiary.deleteMany() //check assumption that child foot items are also deleted
 //console.log(doc)
 var tmp_diary;
 
+/*
 FoodDiary.deleteMany()
   .exec()
   .then(() => {
     console.log("FoodDiary is now empty!");
   })
+  .then(function(){
+    FoodDiaryItem.deleteMany()
+    .exec()
+    .then(() => {
+      console.log("FoodDiaryItems is now empty!");
+    });
+  })
 .then(()=>{
-    return FoodDiary.create({foodDiaryDate:'2020-04-19'});
+  
+    return FoodDiary.create({foodDiaryDate:'2020-04-17'});
 })
+*/
+FoodDiary.create({foodDiaryDate:'2020-04-16'})
 .then(food_diary => {
-    tmp_diary = food_diary;
+    tmp_diary = food_diary; //Grab ref to FoodDiary in global tmp variable so can use in next then block.  
     return FoodDiaryItem.create(
-        {foodName: "Sausage", foodQuantity: "2", foodUnits: "Pieces"}
+        {foodName: "Dog Food", foodQuantity: "2", foodUnits: "Pieces"}
         );
     })
 .then(diary_item=>{
     tmp_diary.foodDiaryItems.push(diary_item);
     tmp_diary.save();
+})
+.then(()=> {
+  return FoodDiaryItem.create(
+      {foodName: "Ice Cream", foodQuantity: ".5", foodUnits: "Kg"}
+      );
+  })
+.then(diary_item=>{
+  tmp_diary.foodDiaryItems.push(diary_item);
+  tmp_diary.save();
+})
+.then(()=>{
+   // mongoose.connection.close();
+   console.log("end");
 });
 
 //mongoose.connection.close();

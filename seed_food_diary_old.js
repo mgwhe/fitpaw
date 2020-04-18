@@ -27,7 +27,7 @@ db.once("open", () => {
   console.log("Successfully connected to MongoDB using Mongoose!");
 });
 
-
+/*
 //    foodEntryDate: "2020-02-23T16:26:43.511Z" 
 var seed_food_diary_items = [
   {
@@ -52,14 +52,26 @@ var seed_food_diary_items = [
     foodUnits: "Pieces"
   }
 ];
-
+*/
 
 FoodDiary.deleteMany() //check assumption that child foot items are also deleted!!!!
   .exec()
   .then(() => {
     console.log("FoodDiary data is empty!");
+  })
+  .then(()=>{
+    FoodDiaryItem.deleteMany() //check assumption that child foot items are also deleted!!!!
+      .exec()
+      .then(() => {
+        console.log("FoodDiaryItems data is empty!");
   });
+})
+.catch(error => {
+  console.log(`ERROR: ${error}`);
+});
 
+
+/*
 var food_diary_items = [];
 
 console.log("About to populate food items..");
@@ -74,31 +86,41 @@ seed_food_diary_items.forEach(f => {
     })
   );
 });
+*/
+FoodDiaryItem.create(
+  [ 	
+    { foodName: "Rashers", "foodQuantity": "2", "foodUnits": "Pieces"},
+    { foodName: "Mince", "foodQuantity": ".3", "foodUnits": "Kg" },
+    { foodName: "Sweets", "foodQuantity": "4", "foodUnits": "Pieces"},
+    { foodName: "Dog Biscuits", "foodQuantity": "4", "foodUnits": "Pieces"}
+  ]
+)
+.then((item)=>{
+  item.save();
+})
+.catch(error => {
+  console.log(`ERROR: ${error}`);
+});
+/*
+.then((diary_items)=>{
+  
+  var diary = FoodDiary.create({foodDiaryDate:"2020-04-18"});
 
-console.log("Here is a log of the food created items..");
-Promise.all(food_diary_items)
-  .then(r => {
-   console.log(JSON.stringify(r));
-  })
-  .then(
-    FoodDiary.create({
-      foodDiaryItems: 	[
-        { "foodName": "Sausage", "foodQuantity": "2", "foodUnits": "Pieces"},
-        { "foodName": "Mince", "foodQuantity": ".3", "foodUnits": "Kg" },
-        { "foodName": "Sweets", "foodQuantity": "4", "foodUnits": "Pieces"},
-        { "foodName": "Dog Biscuits", "foodQuantity": "4", "foodUnits": "Pieces"}
-        ],
-      foodDiaryDate:'2020-04-19'
-    })
-    .catch(error => {
+  diary.foodDiaryItems.(diary_items);
+  diary.save();
+
+}) 
+//FoodDiary.create({foodDiaryDate:"2020-04-18"})
+.then((r)=>
+      {
+
+        console.log(JSON.stringify(r));
+      }) //then
+.catch(error => {
       console.log(`ERROR: ${error}`);
-    })
-  )
-  .catch(error => {
-    console.log(`ERROR: ${error}`);
-  });
-
-  //create FoodDiary and attach array of documents
+});
+  */
+ 
 
 
 
