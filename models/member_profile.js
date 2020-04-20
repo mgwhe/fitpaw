@@ -38,7 +38,7 @@ const MemberProfileSchema = new mongoose.Schema({
   },
   petProfile:{
     type: mongoose.Schema.Types.ObjectId, ref: "PetProfile"
-  } 
+  }
 },
 { //timestamp each record when created & updated
   timestamps: true

@@ -8,12 +8,14 @@ const router = require("express").Router(),
 homeRoutes = require("./homeRoutes"), 
 errorRoutes = require("./errorRoutes"),
 memberRoutes = require("./memberRoutes"),
-petRoutes = require("./petRoutes"); 
+petRoutes = require("./petRoutes"),
+masterRoutes = require("./masterRoutes"); 
 
 //Map each path to a route file for sub-mappings 
 router.use("/",homeRoutes);
 router.use("/petprofile",petRoutes);
 router.use("/memberprofile",memberRoutes);
 router.use("/", errorRoutes);
+router.use("/master",masterRoutes);
 
 module.exports =router;

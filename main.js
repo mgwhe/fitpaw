@@ -32,8 +32,9 @@ db.once("open", () => {
 Database Setup
 */
 /* Connect to MongoDB engine & fitpaw_db on port 27017*/
-mongoose.connect(
-    "mongodb://localhost:27017/fitpaw_db",
+
+//process.env.MONGODB_URI used by Heroku string used for local database
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/fitpaw_db",
   { 
     useNewUrlParser: true, //required
     useUnifiedTopology: true 
@@ -49,7 +50,6 @@ db.once("open", () => {
 /* 
 Web Server Set-up 
 */
-app.set("port", process.env.PORT || 3000); //read from file or default to port 3000
 app.set("view engine", "ejs"); //use EJS view engine for viewing. could be any one of 20 different view engines
 //ones available on npmjs.com 
 
@@ -71,8 +71,11 @@ app.use(homeController.logRequestPaths);
 
 app.use("/",router);
 
-//following code starts the up Node web server  
+  //following code starts the up Node web server  
 //and waits for HTTP requests via browser interactions (click on links, change URL, etc)
+
+app.set("port", process.env.PORT || 3000); //read from file or default to port 3000
 app.listen(app.get("port"), () => {
   console.log(`Server running at http://localhost:${app.get("port")}`);
 });
+

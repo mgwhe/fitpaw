@@ -2,11 +2,26 @@
 
 //get reference to mongoose module and store in varaiable mongoose 
 const mongoose = require("mongoose"),
-Breed = require("./breed");
+Breed = require("./breed"),
+FoodDiary = require("./food_diary");
 
 //A Mongoose schema is a configuration object for a Mongoose model (docs)
 //Define a schema which allows rules to be placed on the fields like size, type, requried, etc. 
 const PetProfileSchema = new mongoose.Schema({
+  petOwnerEmail:{
+    type: String,
+    index: true,
+    required: true,
+    lowercase: true,
+    trim:true,
+    validate(value){
+      if(!validator.isEmail(value))
+      {
+          throw new Error("Invalid email!");
+      }
+    },  
+    unique: true 
+  },
   petName: {
     type: String,
     required: true
@@ -14,7 +29,7 @@ const PetProfileSchema = new mongoose.Schema({
   petAge: {
     type: Number,
     min: [0, "Please use a positive number of years"],
-    max: [40, "Please contact the Guinness Book of Records"],
+    max: [40, "Please verify your pet's age!"],
     required: true
   },
   petBreed: { 
@@ -24,15 +39,9 @@ const PetProfileSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-   /*
-  petBreedName: {
-    type: String,
-    unique: true,
-    required: true
-  }, 
-  */
- //Use to store _id of breed
- //_id: Schema.Types.ObjectId,
+  foodDiary:{
+    type: mongoose.Schema.Types.ObjectId, ref: "FoodDiary"
+  },
   petWeight:{
     type: Number,
     min: [1, "Weight must be more than 1Kg"],

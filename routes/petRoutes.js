@@ -11,10 +11,14 @@ petController = require("../controllers/petController");
 //gets the pet profile and stores it in the request object req. 3rd parameter calls a function uses this data 
 //to send back to web page
 
+/*
 router.get("/", petController.getPetProfile, (req, res) => {
   console.log(req.data);
     res.send(req.data);
   }); 
+*/
 
+  router.get("/", petController.getPetProfile);
+   
 
 module.exports = router; //Make router object set above avaialble outside this file
