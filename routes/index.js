@@ -9,13 +9,16 @@ homeRoutes = require("./homeRoutes"),
 errorRoutes = require("./errorRoutes"),
 memberRoutes = require("./memberRoutes"),
 petRoutes = require("./petRoutes"),
-masterRoutes = require("./masterRoutes"); 
+masterRoutes = require("./masterRoutes"),
+userRoutes =require("./userRoutes"); 
 
 //Map each path to a route file for sub-mappings 
+router.use("/user",userRoutes);
 router.use("/",homeRoutes);
 router.use("/petprofile",petRoutes);
 router.use("/memberprofile",memberRoutes);
 router.use("/", errorRoutes);
 router.use("/master",masterRoutes);
+
 
 module.exports =router;
