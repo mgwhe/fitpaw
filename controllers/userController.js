@@ -121,7 +121,7 @@ module.exports = {
   authenticate: passport.authenticate("local", {
     failureRedirect: "/user/login",
     failureFlash: "Failed to login.",
-    successRedirect: "/",
+    successRedirect: "/master",
     successFlash: "You are now logged in!"
   }),
   validate: (req, res, next) => {
@@ -132,15 +132,6 @@ module.exports = {
       })
       .trim();
     req.check("email", "Email is invalid").isEmail();
-    req
-      .check("zipCode", "Zip code is invalid")
-      .notEmpty()
-      .isInt()
-      .isLength({
-        min: 5,
-        max: 5
-      })
-      .equals(req.body.zipCode);
     req.check("password", "Password cannot be empty").notEmpty();
 
     req.getValidationResult().then(error => {
