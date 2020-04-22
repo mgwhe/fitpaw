@@ -46,7 +46,7 @@ function openRegisterModal(){
 
 function loginAjax(){
     
-    $.post( "/user/login", function( data ) {
+    $.post( "/api/login", function( data ) {
             if(data == 1){
                 window.location.replace("/master");            
             } else {

@@ -11,9 +11,11 @@ memberRoutes = require("./memberRoutes"),
 petRoutes = require("./petRoutes"),
 masterRoutes = require("./masterRoutes"),
 userRoutes =require("./userRoutes"); 
+apiRoutes = require("./apiRoutes");
 
 //Map each path to a route file for sub-mappings 
 router.use("/user",userRoutes);
+router.use("/api", apiRoutes);
 router.use("/",homeRoutes);
 router.use("/petprofile",petRoutes);
 router.use("/memberprofile",memberRoutes);

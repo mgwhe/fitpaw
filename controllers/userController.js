@@ -151,5 +151,11 @@ module.exports = {
     req.flash("success", "You have been logged out!");
     res.locals.redirect = "/";
     next();
+  },
+  //remove session false but does can there be a session if in a modal????
+  authenticateWithAPI: passport.authenticate('basic', { session: false }),
+  //see http://www.passportjs.org/docs/basic-digest/ change to match model
+  function(req, res) {
+    res.json(req.user);
   }
 };
