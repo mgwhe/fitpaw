@@ -1,7 +1,7 @@
 "use strict";
 
 const router = require("express").Router(),
-  userController = require("../controllers/userController");
+userController = require("../controllers/userController");
 
 router.get("/", userController.index, userController.indexView);
 router.get("/new", userController.new);

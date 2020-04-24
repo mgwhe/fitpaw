@@ -2,7 +2,6 @@
 
 const PetProfile = require("../models/pet_profile");
 
-
 exports.getPetProfile = (req, res) => {
   //Call Mongoose findOne method on PetProfile model
     PetProfile.findOne({petName:"Spot"}) //pass in JSON {} for search using name: value
@@ -32,6 +31,162 @@ exports.getPetProfile = (req, res) => {
     });
 };
 
+module.exports = {
+
+  new: (req, res) => {
+    res.render("petprofile/new");
+  },
+
+  create: (req, res, next) => {
+    let petProfileParams = {
+      petOwnerEmail: req.body.petOwnerEmail,
+      petName: req.body.petName,
+      petAge: req.body.petAge,
+      petBreed: req.body.petBreed,
+      petTagNumber:req.body.petTagNumber,
+      petWeight:req.body.petWeight
+    };
+    PetProfile.create(petProfileParams)
+      .then(petprofile => {
+        res.locals.redirect = ""; //redirect to view of profile
+        res.locals.petProfile = petProfile;
+        next();
+      })
+      .catch(error => {
+        console.log(`Error saving pet profile: ${error.message}`);
+        next(error);
+      });
+  },
+
+  show: (req, res, next) => {
+    let courseId = req.params.id;
+    Course.findById(courseId)
+      .then(course => {
+        res.locals.course = course;
+        next();
+      })
+      .catch(error => {
+        console.log(`Error fetching course by ID: ${error.message}`);
+        next(error);
+      });
+  },
+
+  showView: (req, res) => {
+    res.render("courses/show");
+  },
+
+  edit: (req, res, next) => {
+    let courseId = req.params.id;
+    Course.findById(courseId)
+      .then(course => {
+        res.render("courses/edit", {
+          course: course
+        });
+      })
+      .catch(error => {
+        console.log(`Error fetching course by ID: ${error.message}`);
+        next(error);
+      });
+  },
+
+  update: (req, res, next) => {
+    let courseId = req.params.id,
+      courseParams = {
+        title: req.body.title,
+        description: req.body.description,
+        items: [req.body.items.split(",")],
+        zipCode: req.body.zipCode
+      };
+
+    Course.findByIdAndUpdate(courseId, {
+      $set: courseParams
+    })
+      .then(course => {
+        res.locals.redirect = `/courses/${courseId}`;
+        res.locals.course = course;
+        next();
+      })
+      .catch(error => {
+        console.log(`Error updating course by ID: ${error.message}`);
+        next(error);
+      });
+  },
+
+  delete: (req, res, next) => {
+    let courseId = req.params.id;
+    Course.findByIdAndRemove(courseId)
+      .then(() => {
+        res.locals.redirect = "/courses";
+        next();
+      })
+      .catch(error => {
+        console.log(`Error deleting course by ID: ${error.message}`);
+        next();
+      });
+  },
+
+  redirectView: (req, res, next) => {
+    let redirectPath = res.locals.redirect;
+    if (redirectPath !== undefined) res.redirect(redirectPath);
+    else next();
+  },
+  respondJSON: (req, res) => {
+    res.json({
+      status: httpStatus.OK,
+      data: res.locals
+    });
+  },
+  errorJSON: (error, req, res, next) => {
+    let errorObject;
+    if (error) {
+      errorObject = {
+        status: httpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message
+      };
+    } else {
+      errorObject = {
+        status: httpStatus.INTERNAL_SERVER_ERROR,
+        message: "Unknown Error."
+      };
+    }
+    res.json(errorObject);
+  },
+  join: (req, res, next) => {
+    let courseId = req.params.id,
+      currentUser = req.user;
+    if (currentUser) {
+      User.findByIdAndUpdate(currentUser, {
+        $addToSet: {
+          courses: courseId
+        }
+      })
+        .then(() => {
+          res.locals.success = true;
+          next();
+        })
+        .catch(error => {
+          next(error);
+        });
+    } else {
+      next(new Error("User must log in."));
+    }
+  },
+  filterUserCourses: (req, res, next) => {
+    let currentUser = res.locals.currentUser;
+    if (currentUser) {
+      let mappedCourses = res.locals.courses.map(course => {
+        let userJoined = currentUser.courses.some(userCourse => {
+          return userCourse.equals(course._id);
+        });
+        return Object.assign(course.toObject(), { joined: userJoined });
+      });
+      res.locals.courses = mappedCourses;
+      next();
+    } else {
+      next();
+    }
+  }
+};
 
 /* example
 exports.getAllSubscribers = (req, res, next) => { 
@@ -43,16 +198,7 @@ exports.getAllSubscribers = (req, res, next) => {
 };
 */
 
-//Simple version that prints to page without view - not working
-/*
-exports.getPetProfile = (req, res) => {
-    PetProfile.findOne({petName:"Spot"})
-    .exec()
-    .then( (petprofile) => {
-      req.data = petprofile;
-    });
-}
-*/
+
 /* DB test using Mongoose - works for console o/p
 exports.getPetProfile = (req, res) => {
   PetProfile.findOne({petName:"Spot"}, function(error, petprofile) {

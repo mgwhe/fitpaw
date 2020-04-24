@@ -22,9 +22,9 @@ const mongoose = require("mongoose"),
         lowercase: true,
         unique: true
       },
-      subscribedAccount: {
+      petProfile: {
         type: Schema.Types.ObjectId,
-        ref: "Subscriber"
+        ref: "PetProfile"
       }
     },
     {
@@ -49,6 +49,26 @@ userSchema.pre("save", function(next) {
       })
       .catch(error => {
         console.log(`Error in connecting subscriber:${error.message}`);
+        next(error);
+      });
+  } else {
+    next();
+  }
+});
+*/
+/* CANT DO COS MANY MANDATORY FIELD REQUIRED FOR PET PROFILE
+//Add an empty pet profile when creating a new user
+userSchema.pre("save", function(next) {
+  let user = this;
+  if (user.petProfile === undefined) {
+    PetProfile.create({
+      petOwnerEmail: user.email 
+    })
+      .then(() => {
+        next();
+      })
+      .catch(error => {
+        console.log(`Error in connecting pet profile:${error.message}`);
         next(error);
       });
   } else {

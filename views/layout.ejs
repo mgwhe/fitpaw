@@ -51,25 +51,27 @@
 			  <li><a href="#">One more separated link</a></li>
 			</ul>
 		  </li>
+		  
+	</li>
 	  </ul>
 	  <ul class="nav navbar-nav navbar-right">
-			<li><a href="/"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
-			<li class="login-status">
-					<% if (loggedIn) { %>
-					<div class="bubble logged-in">
-						Logged in as <a href="<%=`/user/${currentUser._id}`%>">
-							<%= currentUser.fullName %></a>
-					</div>
-					<div class="log-out">
-						<a href="/user/logout">Log out</a>
-					</div>
-					<%} else {%>
-					<div class="bubble log-in">
-						<a href="/user/login">Log In</a>
-					</div>
-					<% } %>
+			<% if (loggedIn) { %>
+			<li>
+				<a href="<%=`/user/${currentUser._id}`%>">
+					Logged in as  <%= currentUser.fullName %></a>
 			</li>
-	  </ul>
+			<li>
+				<a href="/user/logout"><span class="glyphicon glyphicon-log-out"></span>Log out</a>
+			</li>
+			<%} else {%>
+			<li>
+				<a href="/user/login"><span class="glyphicon glyphicon-log-in"></span> Log In</a>
+			</li>
+			<% } %>
+		  <!--
+			<li><a href="/"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
+		  -->
+		</ul>
 	  
 	</div>
   </nav>

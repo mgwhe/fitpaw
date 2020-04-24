@@ -10,7 +10,7 @@ errorRoutes = require("./errorRoutes"),
 memberRoutes = require("./memberRoutes"),
 petRoutes = require("./petRoutes"),
 masterRoutes = require("./masterRoutes"),
-userRoutes =require("./userRoutes"); 
+userRoutes =require("./userRoutes"),
 apiRoutes = require("./apiRoutes");
 
 //Map each path to a route file for sub-mappings 

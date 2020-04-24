@@ -118,12 +118,14 @@ module.exports = {
   login: (req, res) => {
     res.render("user/login");
   },
+  
   authenticate: passport.authenticate("local", {
     failureRedirect: "/user/login",
     failureFlash: "Failed to login.",
     successRedirect: "/master",
     successFlash: "You are now logged in!"
   }),
+
   validate: (req, res, next) => {
     req
       .sanitizeBody("email")
@@ -152,10 +154,21 @@ module.exports = {
     res.locals.redirect = "/";
     next();
   },
+  /*
+  authenticateWithAPI: passport.authenticate("local", {
+    failureRedirect: "/user/login",
+    successRedirect: "/master"
+  }) */
+  
   //remove session false but does can there be a session if in a modal????
-  authenticateWithAPI: passport.authenticate('basic', { session: false }),
+  authenticateWithAPI: passport.authenticate('local', { session: false },
   //see http://www.passportjs.org/docs/basic-digest/ change to match model
   function(req, res) {
-    res.json(req.user);
-  }
-};
+    res.json(
+      {
+        data: req.user //added assignment to a varaible data so can be tested
+      });
+      
+      //res.send("<script>window.close()</script>"); //close the dialog! 
+      }
+    )};

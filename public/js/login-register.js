@@ -45,14 +45,40 @@ function openRegisterModal(){
 }
 
 function loginAjax(){
-    
-    $.post( "/api/login", function( data ) {
+    /*
+    $.post( "/api/login?", data => {
+        console.log("here is data response");
+        console.log(data);
+
             if(data == 1){
                 window.location.replace("/master");            
             } else {
                  shakeModal(); 
             }
         });
+        */
+       $.ajax( 
+           {
+            type: "POST",
+            url:   "/api/login",
+            data: "email=a.a%40a.a&password=a"
+            }
+   //    data => {
+     //   console.log("here is data response");
+       // console.log(data);
+/*
+            if(data == 1){
+                window.location.replace("../master");            
+            } else {
+                 shakeModal(); 
+            }
+            */
+       /*    const url = '/private';
+            window.opener.open(url, '_self');
+            window.opener.focus();
+            window.close();*/
+         );
+
    
 
 /*   Simulate error message from the server   */
