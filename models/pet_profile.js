@@ -8,21 +8,16 @@ FoodDiary = require("./food_diary");
 //A Mongoose schema is a configuration object for a Mongoose model (docs)
 //Define a schema which allows rules to be placed on the fields like size, type, requried, etc. 
 const PetProfileSchema = new mongoose.Schema({
+  //May use petOwnerEmail for reverse lookup - knowing pet- find who the owner is
   petOwnerEmail:{
     type: String,
     index: true,
     required: true,
     lowercase: true,
     trim:true,
-    validate(value){
-      if(!validator.isEmail(value))
-      {
-          throw new Error("Invalid email!");
-      }
-    },  
     unique: true 
   },
-  petName: {
+   petName: {
     type: String,
     required: true
   },
@@ -53,6 +48,30 @@ const PetProfileSchema = new mongoose.Schema({
   timestamps: true
 }
 );
+
+//mongoose middleware supports pre and post save events through adding a handler
+//ref https://mongoosejs.com/docs/middleware.html#post
+//use this to assocaite the new profile with the user.petProfile property
+PetProfileSchema.post("save", function(next) {
+  let petProfile = this;
+  next();
+  /*petProfile.
+  if (user.subscribedAccount === undefined) {
+    Subscriber.findOne({
+      email: user.email
+    })
+      .then(subscriber => {
+        user.subscribedAccount = subscriber;
+        next();
+      })
+      .catch(error => {
+        console.log(`Error in connecting subscriber:${error.message}`);
+        next(error);
+      });
+  } else {
+    next();
+  } */
+});
 
 //Add a function getPetProfileInfo to dump out pet values  
 PetProfileSchema.methods.getPetProfileInfo = function() {

@@ -16,9 +16,9 @@ apiRoutes = require("./apiRoutes");
 //Map each path to a route file for sub-mappings 
 router.use("/user",userRoutes);
 router.use("/api", apiRoutes);
-router.use("/",homeRoutes);
 router.use("/petprofile",petRoutes);
 router.use("/memberprofile",memberRoutes);
+router.use("/",homeRoutes);
 router.use("/", errorRoutes);
 router.use("/master",masterRoutes);
 

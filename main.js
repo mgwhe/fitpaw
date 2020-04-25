@@ -98,6 +98,8 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 app.use(connectFlash());
 
+//This allows local vairables appearing in every view to know who the user is & if they are authenticated
+//Of less impportance is the flash facility from passport to create messages  
 app.use((req, res, next) => {
   res.locals.loggedIn = req.isAuthenticated();
   res.locals.currentUser = req.user;

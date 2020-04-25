@@ -18,15 +18,22 @@ router.get("/", petController.getPetProfile, (req, res) => {
   }); 
 */
 
-router.get("", petController.index, petController.indexView);
-router.get("/new", petController.new);
-router.post("/create", petController.create, petController.redirectView);
-router.get("/:id/edit", petController.edit);
-router.put("/:id/update", petController.update, petController.redirectView);
-router.get("/:id", petController.show, petController.showView);
-router.delete("/:id/delete", petController.delete, petController.redirectView);
+//router.get("", petController.index, petController.indexView);
 
-router.get("/", petController.getPetProfile);
+//used to call the new pet profile form
+router.get("/new", petController.new);
+//used to submit new pet details on form
+router.post("/create", petController.create, petController.redirectView);
+
+//router.get("/:id/edit", petController.edit);
+//router.put("/:id/update", petController.update, petController.redirectView);
+
+router.get("/:id", petController.show, petController.showView);
+
+//router.delete("/:id/delete", petController.delete, petController.redirectView);
+
+//old version
+//router.get("/", petController.getPetProfile);
 
 
 module.exports = router; //Make router object set above avaialble outside this file

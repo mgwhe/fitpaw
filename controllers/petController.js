@@ -1,6 +1,8 @@
 "use strict";
 
-const PetProfile = require("../models/pet_profile");
+const PetProfile = require("../models/pet_profile"),
+User = require("../models/user");
+
 
 exports.getPetProfile = (req, res) => {
   //Call Mongoose findOne method on PetProfile model
@@ -38,43 +40,52 @@ module.exports = {
   },
 
   create: (req, res, next) => {
-    let petProfileParams = {
-      petOwnerEmail: req.body.petOwnerEmail,
-      petName: req.body.petName,
-      petAge: req.body.petAge,
-      petBreed: req.body.petBreed,
-      petTagNumber:req.body.petTagNumber,
-      petWeight:req.body.petWeight
-    };
-    PetProfile.create(petProfileParams)
-      .then(petprofile => {
-        res.locals.redirect = ""; //redirect to view of profile
-        res.locals.petProfile = petProfile;
-        next();
-      })
-      .catch(error => {
-        console.log(`Error saving pet profile: ${error.message}`);
-        next(error);
-      });
+    let memberObjectId = req.body.memberObjectId;
+    //check for req.user - may not depend on it being sent!!!
+    //look up user to can extract email and store it. need to revise if needed as org planned
+    User.findById(memberObjectId)
+    .then(foundUser=>{
+          let petProfileParams = {
+            petOwnerEmail: foundUser.email,
+            petName: req.body.petName,
+            petAge: req.body.petAge,
+            petBreed: req.body.petBreed,
+            petTagNumber:req.body.petTagNumber,
+            petWeight:req.body.petWeight
+          };
+
+          PetProfile.create(petProfileParams)
+            .then(petprofile => {
+              res.locals.redirect = "/petprofile/show"; 
+              res.locals.petprofile_variable = petprofile;    
+            })
+            .catch(error => {
+              console.log(`Error in saving pet profile:${error.message}`);
+              next(error);
+            })
+      }); //then
+      //Note post save event is fired to associate user and profile - see petprofile schema
+      
+      next();
   },
 
   show: (req, res, next) => {
-    let courseId = req.params.id;
-    Course.findById(courseId)
-      .then(course => {
-        res.locals.course = course;
+    let petProfileId = req.params.id;
+    PetProfile.findById(petProfileId)
+      .then(foundPetprofile => {
+        res.locals.petprofile_variable = foundPetprofile;
         next();
       })
       .catch(error => {
-        console.log(`Error fetching course by ID: ${error.message}`);
+        console.log(`Error fetching Pet Profile by owner email: ${error.message}`);
         next(error);
       });
   },
 
   showView: (req, res) => {
-    res.render("courses/show");
+    res.render("petprofile/show");
   },
-
+/*
   edit: (req, res, next) => {
     let courseId = req.params.id;
     Course.findById(courseId)
@@ -124,12 +135,13 @@ module.exports = {
         next();
       });
   },
-
+*/
   redirectView: (req, res, next) => {
     let redirectPath = res.locals.redirect;
     if (redirectPath !== undefined) res.redirect(redirectPath);
     else next();
   },
+  /*
   respondJSON: (req, res) => {
     res.json({
       status: httpStatus.OK,
@@ -151,7 +163,8 @@ module.exports = {
     }
     res.json(errorObject);
   },
-  join: (req, res, next) => {
+  */
+ /* join: (req, res, next) => {
     let courseId = req.params.id,
       currentUser = req.user;
     if (currentUser) {
@@ -170,7 +183,9 @@ module.exports = {
     } else {
       next(new Error("User must log in."));
     }
-  },
+  }
+  */
+  /*
   filterUserCourses: (req, res, next) => {
     let currentUser = res.locals.currentUser;
     if (currentUser) {
@@ -186,6 +201,7 @@ module.exports = {
       next();
     }
   }
+  */
 };
 
 /* example

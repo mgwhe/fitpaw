@@ -36,6 +36,8 @@ const MemberProfileSchema = new mongoose.Schema({
     required: true,
     min: Date.now()
   },
+  //Do I add pet profile to a member, or add a member to a pet profile??  Leave for now
+  //acta an anchor point
   petProfile:{
     type: mongoose.Schema.Types.ObjectId, ref: "PetProfile"
   }

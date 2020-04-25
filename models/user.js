@@ -76,6 +76,7 @@ userSchema.pre("save", function(next) {
   }
 });
 */
+
 //use this passportLocalMongoose to register users
 userSchema.plugin(passportLocalMongoose, {
   usernameField: "email"

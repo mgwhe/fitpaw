@@ -1,0 +1,25 @@
+<div class="data-form">
+    <form class="form-signin" action="/petprofile/create" method="POST">
+      <h2 class="form-signin-heading">Create a Pet Profile:</h2>
+      
+      <label for="inputPetName">Pet Name</label>
+      <input type="text" name="petName" id="inputPetName" class="form-control" placeholder="Pet Name" autofocus requried>
+      
+      <label for="inputPetAge">Pet Age</label>
+      <input type="text" name="petAge" id="inputPetAge" class="form-control" placeholder="Pet Age" required>
+      <!--
+      <label for="listPetBreed">Pet Breed</label>
+      <input type="text" name="petBreed" id="inputItems" class="form-control" placeholder="Items" required>
+      -->
+      <label for="inputPetTagNumber">Pet Tag Number</label>
+      <input type="text" name="petTagNumber" id="inputPetTagNumber" pattern="\d*" class="form-control" placeholder="Pet Tag Number" required>
+      
+      <label for="inputPetWeight">Pet Weight (kg)</label>
+      <input type="text" name="petWeight" id="inputWeight" pattern="\d*" class="form-control" placeholder="Pet Weight">
+
+      <input type="hidden" id="memberObjectId" name="memberObjectId" value="<%=`${currentUser._id}`%>">
+
+      <br/><button class="btn btn-lg btn-primary btn-block" type="submit">Create</button>
+    </form>
+  </div>
+
