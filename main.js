@@ -50,6 +50,8 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/fitpaw_db
   }
 );
 mongoose.set("useCreateIndex", true);
+mongoose.set('useFindAndModify', false); //needed to supress deprecation warning 
+
 const db = mongoose.connection; //grab the MongoDB connection from Mongoose
 //Then check connection to MongoDB is open, after this can use database
 db.once("open", () => {

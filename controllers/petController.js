@@ -53,19 +53,28 @@ module.exports = {
             petTagNumber:req.body.petTagNumber,
             petWeight:req.body.petWeight
           };
-
           PetProfile.create(petProfileParams)
-            .then(petprofile => {
-              res.locals.redirect = "/petprofile/show"; 
-              res.locals.petprofile_variable = petprofile;    
-            })
+        //    .then((newPetProfile)=>{
+        //      foundUser.petProfile.id = newPetProfile.id;
+        //        next(newPetProfile);
+        //    })  
+            .then(newPetProfile => {
+              //https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
+              User.findByIdAndUpdate(memberObjectId, {$set:{petProfile:newPetProfile}})
+                  .then()
+                  {
+                      //foundUser.petProfile = newPetProfile; 
+                      res.locals.redirect = "/petprofile/show"; 
+                      res.locals.petprofile_variable = newPetProfile; 
+                      next();  
+                  }   
+            }) //end founduser
             .catch(error => {
-              console.log(`Error in saving pet profile:${error.message}`);
+              console.log("Error in saving pet profile:${error.message}");
               next(error);
             })
-      }); //then
-      //Note post save event is fired to associate user and profile - see petprofile schema
-      
+      }); //User.findById then
+            
       next();
   },
 
@@ -77,13 +86,13 @@ module.exports = {
         next();
       })
       .catch(error => {
-        console.log(`Error fetching Pet Profile by owner email: ${error.message}`);
+        console.log("Error fetching Pet Profile by owner email: ${error.message}");
         next(error);
       });
   },
 
   showView: (req, res) => {
-    res.render("petprofile/show");
+    res.render("/petprofile/show");
   },
 /*
   edit: (req, res, next) => {
@@ -95,7 +104,7 @@ module.exports = {
         });
       })
       .catch(error => {
-        console.log(`Error fetching course by ID: ${error.message}`);
+        console.log("Error fetching course by ID: ${error.message});
         next(error);
       });
   },

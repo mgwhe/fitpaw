@@ -52,8 +52,10 @@ const PetProfileSchema = new mongoose.Schema({
 //mongoose middleware supports pre and post save events through adding a handler
 //ref https://mongoosejs.com/docs/middleware.html#post
 //use this to assocaite the new profile with the user.petProfile property
-PetProfileSchema.post("save", function(next) {
+
+PetProfileSchema.pre("save", function(next) {
   let petProfile = this;
+ 
   next();
   /*petProfile.
   if (user.subscribedAccount === undefined) {
@@ -72,6 +74,7 @@ PetProfileSchema.post("save", function(next) {
     next();
   } */
 });
+
 
 //Add a function getPetProfileInfo to dump out pet values  
 PetProfileSchema.methods.getPetProfileInfo = function() {
