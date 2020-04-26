@@ -29,7 +29,7 @@ module.exports = {
       res.render("user/index"); 
   },
   new: (req, res) => {
-    res.render("user/new");
+    res.render("user/new",{ layout: 'layout_public' });
   },
   create: (req, res, next) => {
     if (req.skip) next();
@@ -37,11 +37,11 @@ module.exports = {
     User.register(newUser, req.body.password, (error, user) => {
       if (user) {
         //may make this a popup
-        req.flash("success", `${user.fullName}'s account created successfully! Please login`);
+        req.flash("success", "${user.fullName}'s account created successfully! Please login");
         res.locals.redirect = "/";
         next();
       } else {
-        req.flash("error", `Failed to create user account because: ${error.message}.`);
+        req.flash("error", "Failed to create user account because: ${error.message}.");
         res.locals.redirect = "/user/new";
         next();
       }
@@ -95,12 +95,12 @@ module.exports = {
       $set: userParams
     })
       .then(user => {
-        res.locals.redirect = `/user/${userId}`;
+        res.locals.redirect = "/user/${userId}";
         res.locals.user = user;
         next();
       })
       .catch(error => {
-        console.log(`Error updating user by ID: ${error.message}`);
+        console.log("Error updating user by ID: ${error.message}");
         next(error);
       });
   },
@@ -117,7 +117,7 @@ module.exports = {
       });
   },
   login: (req, res) => {
-    res.render("user/login");
+    res.render("user/login",{ layout: 'layout_public' });
   },
   
   authenticate: passport.authenticate("local", {

@@ -54,17 +54,12 @@ module.exports = {
             petWeight:req.body.petWeight
           };
           PetProfile.create(petProfileParams)
-        //    .then((newPetProfile)=>{
-        //      foundUser.petProfile.id = newPetProfile.id;
-        //        next(newPetProfile);
-        //    })  
             .then(newPetProfile => {
               //https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
               User.findByIdAndUpdate(memberObjectId, {$set:{petProfile:newPetProfile}})
                   .then()
                   {
-                      //foundUser.petProfile = newPetProfile; 
-                      res.locals.redirect = "/petprofile/show"; 
+                      res.locals.redirect = "/master"; 
                       res.locals.petprofile_variable = newPetProfile; 
                       next();  
                   }   
@@ -86,13 +81,13 @@ module.exports = {
         next();
       })
       .catch(error => {
-        console.log("Error fetching Pet Profile by owner email: ${error.message}");
+        console.log("Error fetching Pet Profile by id: ${error.message}");
         next(error);
       });
   },
 
   showView: (req, res) => {
-    res.render("/petprofile/show");
+    res.render("petprofile/show");
   },
 /*
   edit: (req, res, next) => {

@@ -18,9 +18,8 @@ router.use("/user",userRoutes);
 router.use("/api", apiRoutes);
 router.use("/petprofile",petRoutes);
 router.use("/memberprofile",memberRoutes);
+router.use("/master",masterRoutes);
 router.use("/",homeRoutes);
 router.use("/", errorRoutes);
-router.use("/master",masterRoutes);
-
 
 module.exports =router;

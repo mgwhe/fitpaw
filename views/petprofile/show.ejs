@@ -2,24 +2,23 @@
 <h1 class="center">Pet Profile for
     <%= petprofile_variable.petName %>
   </h1>
-  
   <table class="table">
     <tr>
       <th>Owner Email</th>
       <td>
-        <%= petprofile_variable %>
+        <%= petprofile_variable.petOwnerEmail%>
       </td>
     </tr>
     <tr>
       <th>Age</th>
       <td>
-        <%= petprofile_variable%>
+        <%= petprofile_variable.petAge%>
       </td>
     </tr>
     <tr>
       <th>Weight</th>
       <td>
-        <%= petprofile_variable%>
+        <%= petprofile_variable.petWeight%>
       </td>
     </tr>
     <tr>
@@ -30,7 +29,7 @@
     </tr>
   </table>
   
-   <div>
+  <div>
     <a class="button" href="<%=`/petprofile/${petprofile._id}/edit`%>">
       Edit Pet Profile Details
     </a>

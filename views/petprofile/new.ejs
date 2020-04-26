@@ -1,3 +1,7 @@
+<div class="col-sm-6">
+  <img src="../images/graph.png" alt="">
+</div>
+<div class="col-sm-6">
 <div class="data-form">
     <form class="form-signin" action="/petprofile/create" method="POST">
       <h2 class="form-signin-heading">Create a Pet Profile:</h2>
@@ -7,10 +11,22 @@
       
       <label for="inputPetAge">Pet Age</label>
       <input type="text" name="petAge" id="inputPetAge" class="form-control" placeholder="Pet Age" required>
-      <!--
+
       <label for="listPetBreed">Pet Breed</label>
-      <input type="text" name="petBreed" id="inputItems" class="form-control" placeholder="Items" required>
-      -->
+      <select class="form-control" id="listPetBreed" required>
+        <option>Dachshund</option>
+        <option>Cairn Terrier</option>
+        <option>Dachshund</option>
+        <option>Dalmatian</option>
+        <option>English Cocker Spaniel</option>
+        <option>English Foxhound</option>
+        <option>English Setter</option>
+        <option>Field Spaniel</option>
+        <option>Finnish Lapphund</option>
+        <option>German Shepherd Dog</option>
+        <option>Hanoverian Scenthound</option> 
+      </select>
+
       <label for="inputPetTagNumber">Pet Tag Number</label>
       <input type="text" name="petTagNumber" id="inputPetTagNumber" pattern="\d*" class="form-control" placeholder="Pet Tag Number" required>
       
@@ -21,5 +37,6 @@
 
       <br/><button class="btn btn-lg btn-primary btn-block" type="submit">Create</button>
     </form>
+  </div>
   </div>
 
