@@ -56,9 +56,9 @@ module.exports = {
           PetProfile.create(petProfileParams)
             .then(newPetProfile => {
               //https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
-              User.findByIdAndUpdate(memberObjectId, {$set:{petProfile:newPetProfile}})
+             User.findByIdAndUpdate(memberObjectId, {$set:{petProfile:newPetProfile}})
                   .then()
-                  {
+                  { 
                       res.locals.redirect = "/master"; 
                       res.locals.petprofile_variable = newPetProfile; 
                       next();  
@@ -66,14 +66,6 @@ module.exports = {
             }) 
             .catch(error => {
               console.log("Error in saving pet profile:${error.message}");
-              next(error);
-            })
-            FoodDiary.create()
-            .then((newDiary) => {
-              User.findByIdAndUpdate(memberObjectId, {$set:{foodDiary:newDiary}});
-            }) 
-            .catch(error => {
-              console.log("Error in creating food diary object:${error.message}");
               next(error);
             })
       }); //User.findById then

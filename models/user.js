@@ -42,20 +42,18 @@ userSchema.virtual("fullName").get(function() {
 });
 
 /*
-userSchema.pre("save", function(next) {
+userSchema.post("save", function(next) {
   let user = this;
-  if (user.subscribedAccount === undefined) {
-    Subscriber.findOne({
-      email: user.email
-    })
-      .then(subscriber => {
-        user.subscribedAccount = subscriber;
-        next();
-      })
-      .catch(error => {
-        console.log(`Error in connecting subscriber:${error.message}`);
-        next(error);
-      });
+  if (user.foodDiary === undefined) {
+    FoodDiary.create()
+            .then((newDiary) => {
+              user.foodDiary = newDiary;
+              next();
+            }) 
+            .catch(error => {
+              console.log("Error in creating food diary object:${error.message}");
+              next(error);
+            })
   } else {
     next();
   }
