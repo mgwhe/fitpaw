@@ -25,7 +25,12 @@ const mongoose = require("mongoose"),
       petProfile: {
         type: Schema.Types.ObjectId,
         ref: "PetProfile"
+      },
+      foodDiary: {
+        type: Schema.Types.ObjectId,
+        ref: "FoodDiary"
       }
+
     },
     {
       timestamps: true

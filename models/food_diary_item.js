@@ -4,7 +4,7 @@
 const mongoose = require("mongoose"),
 validator = require ("validator"), //validate e-mails, etc. 
 
-FoodDiaryItemSchema = new mongoose.Schema({ 
+FoodItemSchema = new mongoose.Schema({ 
     foodName: {
     type: String,
     required: true,
@@ -25,4 +25,4 @@ FoodDiaryItemSchema = new mongoose.Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model("FoodDiaryItem", FoodDiaryItemSchema);
+module.exports = mongoose.model("FoodItem", FoodItemSchema);

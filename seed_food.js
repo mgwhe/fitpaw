@@ -1,8 +1,10 @@
+/* this is pre-re-design of food diary into diary->diary days->diary items */
+
 "use strict";
 
 const mongoose = require("mongoose"),
 FoodDiaryItem = require("./models/food_diary_item"),
-FoodDiary = require("./models/food_diary");
+FoodDiary = require("./models/food_diary_day");
 
   /*
   mongoose.connect(

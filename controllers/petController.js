@@ -1,8 +1,8 @@
 "use strict";
 
 const PetProfile = require("../models/pet_profile"),
-User = require("../models/user");
-
+User = require("../models/user"),
+FoodDiary = require("../models/food_diary");
 
 exports.getPetProfile = (req, res) => {
   //Call Mongoose findOne method on PetProfile model
@@ -63,9 +63,17 @@ module.exports = {
                       res.locals.petprofile_variable = newPetProfile; 
                       next();  
                   }   
-            }) //end founduser
+            }) 
             .catch(error => {
               console.log("Error in saving pet profile:${error.message}");
+              next(error);
+            })
+            FoodDiary.create()
+            .then((newDiary) => {
+              User.findByIdAndUpdate(memberObjectId, {$set:{foodDiary:newDiary}});
+            }) 
+            .catch(error => {
+              console.log("Error in creating food diary object:${error.message}");
               next(error);
             })
       }); //User.findById then
