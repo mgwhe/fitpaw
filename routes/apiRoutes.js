@@ -26,5 +26,9 @@ router.post('/login', function(req, res, next) {
 
     })(req, res, next);
   });
+
+
+
+module.exports = router;
    
 module.exports = router; //Make router object set above avaialble outside this file

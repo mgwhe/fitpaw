@@ -1,9 +1,8 @@
 "use strict";
 
 //get reference to mongoose module and store in varaiable mongoose 
-const mongoose = require("mongoose"),
-Breed = require("./breed"),
-FoodDiary = require("./food_diary_day");
+const mongoose = require("mongoose");
+
 
 //A Mongoose schema is a configuration object for a Mongoose model (docs)
 //Define a schema which allows rules to be placed on the fields like size, type, requried, etc. 

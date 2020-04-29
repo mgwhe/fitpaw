@@ -3,12 +3,12 @@
 //get reference to mongoose module and store in varaiable mongoose 
 const mongoose = require("mongoose"),
 validator = require ("validator"), //validate e-mails, etc. 
-FoodDiaryItem = require("./food_diary_item");
+FoodItem = require("./food_diary_item");
 
 //to do add a pre-save hook for the email so linked to the user profile 22.2
 const FoodDiaryDaySchema = new mongoose.Schema({ 
     foodDiaryItems: [{ 
-     type: mongoose.Schema.Types.ObjectId, ref: "FoodDiaryItem", required: true
+     type: mongoose.Schema.Types.ObjectId, ref: "FoodItem"
       }],
     foodDiaryDayDate: {
         type: Date,

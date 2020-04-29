@@ -3,8 +3,8 @@
 "use strict";
 
 const mongoose = require("mongoose"),
-FoodDiaryItem = require("./models/food_diary_item"),
-FoodDiary = require("./models/food_diary_day");
+FoodItem = require("./models/food_diary_item"),
+FoodDiaryDay = require("./models/food_diary_day");
 
   /*
   mongoose.connect(
@@ -30,71 +30,63 @@ db.once("open", () => {
 });
 
 /*
-FoodDiary.deleteMany() //check assumption that child foot items are also deleted!!!!
-  .exec()
-  .then(() => {
-    console.log("FoodDiary data is empty!");
-  });
-*/
-  const foods = {
-      foodDiaryItems:[
+  const foods = { //do you need foods?
+      foodItems:[
             {foodName: "Sausage", foodQuantity: "2", foodUnits: "Pieces"},
             {foodName: "Mince", foodQuantity: ".3", foodUnits: "Kg" },
             { foodName: "Sweets", foodQuantity: "4", foodUnits: "Pieces"},
             { foodName: "Dog Biscuits", foodQuantity: "4", foodUnits: "Pieces"}
       ],
-      
   };
-
-//const diary = new FoodDiary(foods);
-//const doc = diary.save();
-//console.log(doc)
-var tmp_diary;
-
-/*
-FoodDiary.deleteMany()
-  .exec()
-  .then(() => {
-    console.log("FoodDiary is now empty!");
-  })
-  .then(function(){
-    FoodDiaryItem.deleteMany()
-    .exec()
-    .then(() => {
-      console.log("FoodDiaryItems is now empty!");
-    });
-  })
-.then(()=>{
-  
-    return FoodDiary.create({foodDiaryDate:'2020-04-17'});
-})
 */
-FoodDiary.create({foodDiaryDate:'2020-04-16'})
-.then(food_diary => {
-    tmp_diary = food_diary; //Grab ref to FoodDiary in global tmp variable so can use in next then block.  
-    return FoodDiaryItem.create(
-        {foodName: "Dog Food", foodQuantity: "2", foodUnits: "Pieces"}
+
+  var tmp_diary_day;
+  var tmp_diary_days;
+ // FoodDiaryDay.create([{foodDiaryDayDate:'2020-04-29'},{foodDiaryDayDate:'2020-04-28'}]);
+  FoodDiaryDay.insertMany([{foodDiaryDayDate:'2020-04-27'},{foodDiaryDayDate:'2020-04-26'}])
+  .then(diaryDocs=>{
+    tmp_diary_days = diaryDocs;
+  })
+  FoodDiaryDay.create({foodDiaryDayDate:'2020-04-16'})
+  .then(food_diary_day => {
+      tmp_diary_day = food_diary_day; //Grab ref to FoodDiary in global tmp variable so can use in next then block.  
+      return FoodItem.insertMany([
+        {foodName: 'Sausage', foodQuantity: '2', foodUnits: 'Pieces'},
+        {foodName: 'Mince', foodQuantity: '3', foodUnits: 'Kg' },
+        { foodName: 'Sweets', foodQuantity: '4', foodUnits: 'Pieces'},
+        { foodName: 'Dog Biscuits', foodQuantity: '4', foodUnits: 'Pieces'},
+        {foodName: 'Dog Food', foodQuantity: '2', foodUnits: 'Pieces'}
+      ]);
+    })
+  .then(docFoodItems =>{
+    //tmp_diary_day.foodDiaryItems.push(diary_item);
+     // tmp_diary_day.save();
+     FoodDiaryDay.inspect(FoodDiaryDay);
+     console.log();
+
+     tmp_diary_days.forEach(docDay => {
+        docFoodItems.forEach(docItem => {
+              docDay.foodDiaryItems.push(docItem);     
+          });
+      });
+  })
+  
+  /*
+  .then(()=> { //add another
+    return FoodItem.create(
+        {foodName: 'Ice Cream', foodQuantity: '.5', foodUnits: 'Kg'}
         );
     })
-.then(diary_item=>{
-    tmp_diary.foodDiaryItems.push(diary_item);
-    tmp_diary.save();
-})
-.then(()=> {
-  return FoodDiaryItem.create(
-      {foodName: "Ice Cream", foodQuantity: ".5", foodUnits: "Kg"}
-      );
+  .then(diary_item=>{
+    tmp_diary_day.foodDiaryItems.push(diary_item);
+    tmp_diary_day.save();
+  }) */
+  .then(()=>{
+    console.log("end");
   })
-.then(diary_item=>{
-  tmp_diary.foodDiaryItems.push(diary_item);
-  tmp_diary.save();
-})
-.then(()=>{
-   // mongoose.connection.close();
-   console.log("end");
-});
-
-//mongoose.connection.close();
-
-//const diaryEntry1 = new FoodDiary({foodDiaryDate:'2020-04-19'});
+  .catch(error => {
+    console.log(`IW Error: ${error.message}`);
+    mongoose.connection.close();
+  });
+  
 

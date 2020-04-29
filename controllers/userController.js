@@ -35,19 +35,17 @@ module.exports = {
   create: (req, res, next) => {
     if (req.skip) next();
     let newUser = new User(getUserParams(req.body));
-
-    /*
+    
     FoodDiary.create()
     .then((newDiary) => {
       newUser.foodDiary = newDiary;
-      console.log("new diary: ${newUser.foodDiary}");
       next();
     }) 
     .catch(error => {
       console.log("Error in creating food diary object:${error.message}");
       next(error);
     })
-*/
+
     User.register(newUser, req.body.password, (error, user) => {
       if (user) {
         //may make this a popup
