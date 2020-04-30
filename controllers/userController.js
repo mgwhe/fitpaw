@@ -1,7 +1,6 @@
 "use strict";
 
 const User = require("../models/user"),
-FoodDiary = require("../models/food_diary"),
   passport = require("passport"),
   getUserParams = body => {
     return {
@@ -36,16 +35,6 @@ module.exports = {
     if (req.skip) next();
     let newUser = new User(getUserParams(req.body));
     
-    FoodDiary.create()
-    .then((newDiary) => {
-      newUser.foodDiary = newDiary;
-      next();
-    }) 
-    .catch(error => {
-      console.log("Error in creating food diary object:${error.message}");
-      next(error);
-    })
-
     User.register(newUser, req.body.password, (error, user) => {
       if (user) {
         //may make this a popup

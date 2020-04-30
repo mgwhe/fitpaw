@@ -1,8 +1,8 @@
 "use strict";
 
 const PetProfile = require("../models/pet_profile"),
-User = require("../models/user"),
-FoodDiary = require("../models/food_diary");
+User = require("../models/user");
+
 
 exports.getPetProfile = (req, res) => {
   //Call Mongoose findOne method on PetProfile model

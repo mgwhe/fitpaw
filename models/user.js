@@ -26,11 +26,6 @@ const mongoose = require("mongoose"),
         type: Schema.Types.ObjectId,
         ref: "PetProfile"
       },
-      foodDiary: {
-        type: Schema.Types.ObjectId,
-        ref: "FoodDiary"
-      }
-
     },
     {
       timestamps: true

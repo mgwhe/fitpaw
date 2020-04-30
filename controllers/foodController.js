@@ -1,48 +1,28 @@
 "use strict";
 
 const User = require("../models/user"),
-FoodDiary = require("../models/food_diary");
-
+FoodDiaryDay = require("../models/food_diary_day");
 
 module.exports = {
 
-    filterFoodDays: (req, res, next) => {
-    let currentUser = res.locals.currentUser;
-    if (currentUser) {
-       
-         currentUser.foodDiary.findOne({}).where("foodDiaryDayDate").equals(date)
-        
-        //course.toObject() converts to JSON
-        return foodDiaryDay.toObject();
+    filterFoodDiaryDay: (req, res, next) => {
+        let currentUser = res.locals.currentUser;
+        var date = "";
 
-        res.locals.courses = foodDiaryDay;
-      next();
-    } else {
-      next();
+        if (currentUser) {
+            // FoodDiaryDay.find({}).where("foodDiaryDayDate").equals(date)
+            // lookup food for user for user
+            FoodDiaryDay.findOne({foodDiaryDayDate:'2020-04-20', userRef:currentUser._id})
+            .then(diaryDay=>{
+                if(diaryDay!==undefined){
+                  res.locals.foodItems = diaryDay.foodItems; //do I need to call populate????
+                }   
+                next();
+              });
+        } //if 
+    },
+    
+    showFoodDiaryDayView: (req, res) => {
+      res.render("food/show");
     }
-  },
-
-    /*
-
-    showFoodDay: (req, res, next) => {
-        let Id = req.params.id;
-        FoodDiary.findById(courseId)
-          .then(course => {
-            res.locals.course = course;
-            next();
-          })
-          .catch(error => {
-            console.log(`Error fetching course by ID: ${error.message}`);
-            next(error);
-          });
-      },
-      */
-    
-    showFoodDayView: (req, res) => {
-        res.render("courses/show");
-      },
-    
-
- 
-  
 }

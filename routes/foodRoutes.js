@@ -2,14 +2,13 @@
 "use strict";
 
 const router = require("express").Router(),  
-
 foodController = require("../controllers/foodController"); 
 
 //Keep routes with params lower in sequence or risk falsely triggering later routes as a
 //constant to the :id instead of it being unique
 //I think /xyz will trigger /:id using a value of xyz !! 
-router.get("/:id", foodController.showFoodDay, foodController.showFoodDayView);
-
+router.get("/:id", foodController.filterFoodDiaryDay, foodController.showFoodDiaryDayView);
+    
 /*
 router.post(
     "/create",
@@ -30,4 +29,4 @@ router.get(
 );
 */
 
-router.use(foodController.errorJSON);
+module.exports = router;
