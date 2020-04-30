@@ -8,8 +8,9 @@ FoodDiaryItem = require("./food_diary_day");
 //to do add a pre-save hook for the email so linked to the user profile 22.2
 const FoodDiarySchema = new mongoose.Schema({ 
     foodDiaryDays: [{ 
-     type: mongoose.Schema.Types.ObjectId, ref: "FoodDiaryDay", required: true
-      }]
+     type: mongoose.Schema.Types.ObjectId, ref: "FoodDiaryDay"
+      }],
+      diaryType: {type: String}
 },
 { //timestamp each record when created & updated
   timestamps: true
