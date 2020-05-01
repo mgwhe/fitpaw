@@ -7,20 +7,25 @@ module.exports = {
 
     filterFoodDiaryDay: (req, res, next) => {
         let currentUser = res.locals.currentUser;
-        var date = "";
-
+       
+       // const query = req.query;
+        let thisDate = req.params.thisDate;
 
         if (currentUser) {
             // FoodDiaryDay.find({}).where("foodDiaryDayDate").equals(date)
             // lookup food for user for user
-            FoodDiaryDay.findOne({foodDiaryDayDate:'2020-05-01', userRef:currentUser._id}).populate("foodDiaryItems")
-            .then(diaryDay=>{
+      //      FoodDiaryDay.findOne({foodDiaryDayDate:'2020-05-01', userRef:currentUser._id}).populate("foodDiaryItems")
+      FoodDiaryDay.findOne({foodDiaryDayDate:thisDate, userRef:currentUser._id}).populate("foodDiaryItems")
+      .then(diaryDay=>{
                 if(diaryDay!==undefined){
                   res.locals.foodItems = diaryDay.foodDiaryItems; //do I need to call populate????
                 }   
                 next();
+              }) //.then
+              .catch(error => {
+                console.log(`IW Error: ${error.message}`);
               });
-        } //if 
+        } //if
     },
     
     showFoodDiaryDayView: (req, res) => {
