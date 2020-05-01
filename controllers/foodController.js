@@ -9,13 +9,14 @@ module.exports = {
         let currentUser = res.locals.currentUser;
         var date = "";
 
+
         if (currentUser) {
             // FoodDiaryDay.find({}).where("foodDiaryDayDate").equals(date)
             // lookup food for user for user
-            FoodDiaryDay.findOne({foodDiaryDayDate:'2020-04-20', userRef:currentUser._id})
+            FoodDiaryDay.findOne({foodDiaryDayDate:'2020-05-01', userRef:currentUser._id}).populate("foodDiaryItems")
             .then(diaryDay=>{
                 if(diaryDay!==undefined){
-                  res.locals.foodItems = diaryDay.foodItems; //do I need to call populate????
+                  res.locals.foodItems = diaryDay.foodDiaryItems; //do I need to call populate????
                 }   
                 next();
               });
