@@ -1,6 +1,7 @@
 "use strict";
 
 const User = require("../models/user"),
+httpStatus = require("http-status-codes"),  
 FoodDiaryDay = require("../models/food_diary_day");
 
 module.exports = {
@@ -17,8 +18,10 @@ module.exports = {
       //      FoodDiaryDay.findOne({foodDiaryDayDate:'2020-05-01', userRef:currentUser._id}).populate("foodDiaryItems")
       FoodDiaryDay.findOne({foodDiaryDayDate:thisDate, userRef:currentUser._id}).populate("foodDiaryItems")
       .then(diaryDay=>{
-                if(diaryDay!==undefined){
-                  res.locals.foodItems = diaryDay.foodDiaryItems; //do I need to call populate????
+                if(diaryDay!==undefined && diaryDay!==null){
+                  if(diaryDay.foodDiaryItems!==undefined){
+                    res.locals.foodItems = diaryDay.foodDiaryItems; 
+                  }
                 }   
                 next();
               }) //.then
@@ -30,5 +33,12 @@ module.exports = {
     
     showFoodDiaryDayView: (req, res) => {
       res.render("food/show");
-    }
+    },
+
+    respondJSON: (req, res) => {
+      res.json({
+        status: httpStatus.OK,
+        data: res.locals
+      });
+    },
 }

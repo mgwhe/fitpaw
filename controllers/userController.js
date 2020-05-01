@@ -125,7 +125,7 @@ module.exports = {
   authenticate: passport.authenticate("local", {
     failureRedirect: "/user/login",
     failureFlash: "Failed to login.",
-    successRedirect: "/master",
+    successRedirect: "/food/2020-05-01",
     successFlash: "You are now logged in!"
   }),
 

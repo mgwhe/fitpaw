@@ -1,9 +1,10 @@
 "use strict";
 
 const router = require("express").Router(), 
-httpStatus = require("http-status-codes"), //remove if authn not done here 
+httpStatus = require("http-status-codes"),  
 passport = require("passport"),//remove if authn not done here 
-userController = require("../controllers/userController"); 
+userController = require("../controllers/userController"), 
+foodController = require("../controllers/foodController");
 
 //router.post("/login", userController.authenticateWithAPI);
 
@@ -26,9 +27,9 @@ router.post('/login', function(req, res, next) {
 
     })(req, res, next);
   });
+  
 
+router.get("/food/:thisDate", foodController.filterFoodDiaryDay, foodController.respondJSON);
 
-
-module.exports = router;
    
 module.exports = router; //Make router object set above avaialble outside this file

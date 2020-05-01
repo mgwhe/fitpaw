@@ -22,14 +22,14 @@ db.once("open", () => {
     
 var tmp_diary_day;
 
-FoodDiaryDay.create({userRef:'5eabd95a216c0a38bce63884',foodDiaryDayDate:'2020-04-30'})
+FoodDiaryDay.create({userRef:'5eabd95a216c0a38bce63884',foodDiaryDayDate:'2020-04-01'})
 .then(diaryDay=>{
 
     tmp_diary_day = diaryDay;
 
     return FoodItem.insertMany([
-        {foodName: 'Tayto', foodQuantity: '1', foodUnits: 'Packet'},
-        {foodName: 'Egg', foodQuantity: '3', foodUnits: 'Pieces' },
+        {foodName: 'Pringles', foodQuantity: '1', foodUnits: 'Packet'},
+        {foodName: 'Milk', foodQuantity: '.5', foodUnits: 'Litre' },
         {foodName: 'Sweets', foodQuantity: '4', foodUnits: 'Pieces'},
         {foodName: 'Dog Biscuits', foodQuantity: '4', foodUnits: 'Pieces'},
         {foodName: 'Dog Food', foodQuantity: '2', foodUnits: 'Pieces'}
