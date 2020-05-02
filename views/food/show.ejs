@@ -17,19 +17,29 @@
             $('#datetimepicker').on('dp.change', function(e){ 
               console.log(e.date); 
               //var tblBody = document.getElementById("diary_entries");
-  
-              $.get("/api/food/2020-04-01", (results ={}) =>{
-
-               let data = results.data;
-               if (!data || !data.foodItems) return;
-
-               var table = document.getElementById("myTable");
-            //   table.remove();
-
-          //      let data = Object.keys(mountains[0]);
-          //      generateTable(table, data.foodItems); // generate the table first
-                //generateTableHead(table, data); // then the head
- 
+            
+             var strDate = (e.date).toISOString().substring(0,10); //get year yyyy-mm-dd
+             alert(strDate);
+              var stringEndpoint = "/api/food/"+strDate;
+         //     $.get("/api/food/2020-04-01", (results ={}) =>{
+              $.get(stringEndpoint, (results ={}) =>{
+               
+                //clear down table rows
+                var table = document.getElementById("myTable");
+                var rowCount = CountRows(); //dont want to delete headers
+                for(i=0;i<rowCount;i++){
+                      table.deleteRow(-1);
+                }
+               
+                let data = results.data;
+               if (!data || !data.foodItems){                
+                  return;
+                }
+               
+            //      let data = Object.keys(mountains[0]);
+           //     generateTable(table, data.foodItems); // generate the table first
+           //     generateTableHead(table, data.foodItems); // then the head
+                                
                 
                   data.foodItems.forEach(foodItem => {
                     //alert("Data: " + foodItem.foodName + "\nStatus: " + data.status);
@@ -73,22 +83,33 @@
               let text = document.createTextNode(key);
               th.appendChild(text);
               row.appendChild(th);
-            }
-        }
+            } //for
+        } //for
 
         function generateTable(table, data) {
           for (let element of data) {
             let row = table.insertRow();
             for (key in element) {
-              if(key!==0 && key!==4 && key!==5) //skip id, date, date
-              {
                 let cell = row.insertCell();
                 let text = document.createTextNode(element[key]);
                 cell.appendChild(text);
-              }
+            } //for
+          } //for
+        } //function
+
+         function CountRows() {
+            var totalRowCount = 0;
+            var rowCount = 0;
+            var table = document.getElementById("myTable");
+            var rows = table.getElementsByTagName("tr")
+            for (var i = 0; i < rows.length; i++) {
+                totalRowCount++;
+                if (rows[i].getElementsByTagName("td").length > 0) {
+                    rowCount++;
+                }
             }
-          }
-}
+            return rowCount;
+        }
     </script>
 </div>
 </div>
