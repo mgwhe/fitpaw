@@ -27,6 +27,15 @@
 
   <link rel="stylesheet" href="/css/fitpaw_app.css">
 
+  <script>
+	function OpenFoodAddDialog() {
+		 $("#myModal").dialog({
+			 autoOpen: false, modal: true, title: 'Modal', width: 'auto', height: 'auto'
+			 , buttons: { "Cancel": function () { $(this).dialog("close"); } },
+		 }).dialog('open');
+		 return false;
+	 }
+</script>
 </head>
 
 <body>
@@ -41,15 +50,29 @@
 		<li class="dropdown">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Pet Profile <span class="caret"></span></a>
 			<ul class="dropdown-menu" role="menu">
-				<li><a href="./petprofile/new">Create</a></li>
-			  <li><a href="#">Something else here yeah</a></li>
-			  <li class="divider"></li>
-			  <li><a href="#">Separated link</a></li>
-			  <li class="divider"></li>
-			  <li><a href="#">One more separated link</a></li>
+				<li><a href="/petprofile/new">Create</a></li>
+				<li><a href="#">Something else here yeah</a></li>
+				<li class="divider"></li>
+				<li><a href="#">Separated link</a></li>
+				<li class="divider"></li>
+				<li><a href="#">One more separated link</a></li>
 			</ul>
-		  </li>	
-	</li>
+		</li>
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Other Activities <span class="caret"></span></a>
+			<ul class="dropdown-menu" role="menu">
+				<li><a href="/food/2020-05-01">View</a></li>
+				<li><a href="#myModal" data-target="#myModal" data-toggle="modal" class="modal fade" id="idModal">Add </a></li>
+			</ul>
+		</li>
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Activities <span class="caret"></span></a>
+			<ul class="dropdown-menu" role="menu">
+				<li><a href="/food/2020-05-01">View</a></li>
+			<!--	<li><a href="#myModal" data-target="#myModal" data-toggle="modal" class="modal fade" id="idModal">Add </a></li>	-->
+			<li><button id ="modal-button" type ="button" data-toggle ="modal" data-target ="#myModal">Add </button></li> 
+			</ul>
+		</li>
 	  </ul>
 	  <ul class="nav navbar-nav navbar-right">
 			<% if (loggedIn) { %>
@@ -93,6 +116,8 @@
 			to fill views with HTML -->
 	
 	</div>
+
+	<%- include partials/modal_food_add %>
 
 </body>
 
