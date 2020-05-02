@@ -4,7 +4,8 @@ const router = require("express").Router(),
 httpStatus = require("http-status-codes"),  
 passport = require("passport"),//remove if authn not done here 
 userController = require("../controllers/userController"), 
-foodController = require("../controllers/foodController");
+foodController = require("../controllers/foodController"),
+trackController = require("../controllers/trackController");
 
 //router.post("/login", userController.authenticateWithAPI);
 
@@ -31,5 +32,6 @@ router.post('/login', function(req, res, next) {
 
 router.get("/food/:thisDate", foodController.filterFoodDiaryDay, foodController.respondJSON);
 
+router.get("/track/:thisDate", trackController.processTrack, trackController.respondJSON);
    
 module.exports = router; //Make router object set above avaialble outside this file
