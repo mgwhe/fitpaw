@@ -6,6 +6,21 @@ path = require('path');
 
 module.exports = {
 
+    captureActivity: (req, res, next) => {
+        let currentUser = res.locals.currentUser;
+       
+       // const query = req.query;
+        let location = req.params.location;
+
+        if (currentUser) {
+            //store co-ordinate
+
+            //return co-ordinate to map
+            res.locals.location = location;
+            next();
+        } //if
+    },
+
     processTrack: (req, res, next) => {
         let currentUser = res.locals.currentUser;
        
