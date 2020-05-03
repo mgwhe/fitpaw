@@ -1,7 +1,8 @@
 "use strict";
 
 const User = require("../models/user"),
-httpStatus = require("http-status-codes");
+httpStatus = require("http-status-codes"),
+path = require('path');
 
 module.exports = {
 
@@ -20,6 +21,12 @@ module.exports = {
     
     showTrackView: (req, res) => {
         res.render("track/show");
+
+      },
+
+      returnStaticMap:(req, res) => {
+        //res.render("track/show");
+        res.sendFile(path.join(__dirname, '../public','routeMap.html'));
       },
 
     respondJSON: (req, res) => {

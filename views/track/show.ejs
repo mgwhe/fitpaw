@@ -1,41 +1,53 @@
 <div class="col-sm-6"> 
-    <iframe id="mapiFrame">
-        <iframe src="./test.html"></iframe> 
-    </iframe>
+    <script>
+        var x = document.getElementById("demo");
+    
+        var timerRef = setInterval(() => {
+            getLocation();
+        }, 2000); //2 seconds
+    
+        function stopTracking(){
+            clearInterval(timerRef);
+        }    
+        function getLocation() {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+          } else { 
+            x.innerHTML = "Geolocation is not supported by this browser.";
+          }
+        }
+        
+        function showPosition(position) {
+           x.innerHTML = "Date: "+ Date() + "<br>Latitude: " + position.coords.latitude +
+          "<br>Longitude: " + position.coords.longitude;
+          //add API to log position!
+        }
+        
+        function doMapLoad(){
+
+            alert("about to call");
+
+            $.get("/track/routeMap", function(data) {
+                //pour in HTML data
+                alert(data);
+              $("#mapFrame").html(data);
+            });
+        }
+        
+        </script>
+    
+    
+    <iframe id="mapFrame" onload="doMapLoad()"></iframe>
  </div>
  <div class="col-sm-6"> 
-    <p>Click the button to get your coordinates.</p>
+    <p>Click the button to get your coordinates!!</p>
 
     <button onclick="getLocation()">Start</button>
     <button onclick="stopTracking()">Stop</button>
     
     <p id="demo"></p>
-    
-    <script>
-    var x = document.getElementById("demo");
+</div>
 
-    var timerRef = setInterval(() => {
-        getLocation();
-    }, 2000); //2 seconds
-
-    function stopTracking(){
-        clearInterval(timerRef);
-    }    
-    function getLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-      } else { 
-        x.innerHTML = "Geolocation is not supported by this browser.";
-      }
-    }
-    
-    function showPosition(position) {
-       x.innerHTML = "Date: "+ Date() + "<br>Latitude: " + position.coords.latitude +
-      "<br>Longitude: " + position.coords.longitude;
-      //add API to log position!
-    }
-
- 
-    </script>
    
- </div>
+   
+ 
