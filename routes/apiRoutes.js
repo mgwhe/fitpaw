@@ -32,6 +32,6 @@ router.post('/login', function(req, res, next) {
 
 router.get("/food/:thisDate", foodController.filterFoodDiaryDay, foodController.respondJSON);
 //need to change to put
-router.get("/track/:activity", trackController.captureActivity, trackController.respondJSON);
+//router.get("/track/:activity", trackController.saveTrack, trackController.respondJSON);
    
 module.exports = router; //Make router object set above avaialble outside this file

@@ -20,7 +20,8 @@ const BreedSchema = new mongoose.Schema({
     'Field Spaniel',
     'Finnish Lapphund',
     'German Shepherd Dog',
-    'Hanoverian Scenthound']
+    'Hanoverian Scenthound'
+  ]
   },
   breedDescription: {
     type: String,
