@@ -12,23 +12,33 @@
         }
         </script>
     
-    <div class="col-sm-6"> 
-   <!-- <iframe id="mapFrame" onload="doMapLoad()"></iframe>-->
- </div>
- <div class="col-sm-6"> 
+<div class="col-sm-6"> 
+        <img src="../images/dog_activity.jpg" id="activityImage"alt="">
+</div>
+<div class="col-sm-6"> 
     <p>Click the button to get your coordinates!!</p>
 
-    <button id="StartButton" onclick="startTracking()">Start</button>
-    <button id="StopButton" onclick="stopTracking()">Stop</button>
-    <button id ="modal-button" type ="button" data-toggle ="modal" data-target ="#mapModal">View </button>
+    <button id="StartButton" class="btn btn-danger" onclick="startTracking()">Record</button>
+    <button id="StopButton" class="btn btn-primary" onclick="stopTracking()">Stop</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#activityModal">
+        Save
+      </button>
     <p id="demo"></p>
+    <h3 id="timeLapsed"></h3>
+    <h3 id="currentDistance"></h3>
+    
+
    
+
 </div>
+
 <script>
     
     var distanceTotal =0;
     var startTime, endTime;
     var duarationInSecs=0;
+    var firstFlag = true;
+    
 
     function coordinate(x, y) {
         this.x = x;
@@ -39,14 +49,19 @@
     var locs = new Array();
 
     var x = document.getElementById("demo");
-    
+    var t = document.getElementById("timeLapsed");
+    var d = document.getElementById("currentDistance");
+     
     function startTracking(){
         //dont wait for timer - start instantly
         getLocation();
-         
+
         timerRef = setInterval(() => {
-        getLocation();
+            getLocation();
         }, 4000); //milliseconds
+
+        distanceTotal=0;
+        duarationInSecs=0;
 
         startTime = Date.now();
     }
@@ -87,9 +102,33 @@
       }
     }
     
+    function formatCurrentDuration(currentDuration){
+
+        var hours = Math.floor((currentDuration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((currentDuration % (1000 * 60 * 60)) / (1000 * 60));
+        // Display the result in the element with id="demo"
+        return ("Duration: "+hours + "h " + minutes + "m ");
+    }
+
     function processPosition(position) {
+        var tmpTotalDistance = calculateTotalDistance();
+        
         x.innerHTML = "Date: "+ Date() + "<br>Latitude: " + position.coords.latitude +
         "<br>Longitude: " + position.coords.longitude;
+        
+        if(firstFlag===true)
+        {
+            //change image to map
+            document.getElementById("activityImage").src = "https://maps.googleapis.com/maps/api/staticmap?center="+position.coords.latitude+","+position.coords.longitude+"&zoom=18&size=600x400&maptype=roadmap&markers=color:green%7Clabel:G%7C"+position.coords.latitude+","+position.coords.longitude+
+            "&key=AIzaSyADSnKLykFmVSsKnMu37claLaAfogoBOOw";
+
+            firstFlag=false;
+        }
+        const millis = Date.now() - startTime;
+        
+        t.innerHTML = formatCurrentDuration(millis);
+        d.innerHTML = "Distance: " +calculateTotalDistance();
+
         locs.push(new coordinate(position.coords.latitude,position.coords.longitude));
           
     } //processPosition
@@ -129,7 +168,11 @@
     function deg2rad(deg) {
     return deg * (Math.PI/180)
     }
+
 </script>
 
-<%- include ../partials/modal_map %>
-   
+<%- include ../partials/modal_upload_activity %>
+
+
+
+
