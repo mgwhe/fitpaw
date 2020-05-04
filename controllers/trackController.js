@@ -15,9 +15,17 @@ module.exports = {
 
         if (currentUser) {
             
-            //featch graph data..
+            //featch graph data.. 
+            //dump lot for now..
+            ActivityTrack.find({})
+            .then(activities=>{
+                res.locals.activities = activities;
+                next();
+            })
+            .catch(error => {
+                console.log(`IW Error: ${error.message}`);
+            });
 
-            next();
         } //if
     },
 
@@ -27,18 +35,35 @@ module.exports = {
         const query = req.query;
 
         if (currentUser) {
-            //extract activity data
+            //extract activity data & validate
+            var d = parseInt(query.distance);
+            var t = parseInt(query.time);
 
-            //store trasck data
-        /*    ActivityTrack.create({userRef:'5eabd95a216c0a38bce63884',foodDiaryDayDate:'2020-04-01'})
-            .then(diaryDay=>{
-            });
-            */
+            if(Number.isNaN(d)===false && Number.isNaN(t)===false)
+            {
+                var today = new Date();
+                var tmpDateString = today.toISOString().split('T')[0];
 
-            res.locals.query = "here";
+                //store trask data
+                ActivityTrack.create({
+                    activityTrackDistanceMetres:d,
+                    activityTrackTimeSeconds:t,
+                    userRef:currentUser.id,
+                    activityTrackDate:tmpDateString
+                })
+                .then(()=>{
+                        next(); 
+                })
+                .catch(error => {
+                        console.log(`IW Error: ${error.message}`);
+                });
+            }
+            else
+            {   
+                console.log("Distance "+d+" is NOT a number"); 
+                console.log("OR Time "+t+" is NOT a number"); 
+            }         
 
-
-            next();
         } //if
     },
 

@@ -6,15 +6,15 @@ validator = require ("validator"), //validate e-mails, etc.
 User = require("./user");
 
 const ActivityTrackSchema = new mongoose.Schema({ 
-    ActivityTrackDistanceMetres: {
+    activityTrackDistanceMetres: {
         type:Number, 
         required: true
     },
-    ActivityTrackTimeSeconds:{
+    activityTrackTimeSeconds:{
         type:Number,
         required:true
     },
-    ActivityTrackDate: {
+    activityTrackDate: {
         type: Date,
         required: true
     },
