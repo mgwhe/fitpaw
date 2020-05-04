@@ -126,7 +126,7 @@ module.exports = {
     failureRedirect: "/user/login",
     failureFlash: "Failed to login.",
     //successRedirect: "/food/2020-05-01",
-    successRedirect: "/track/show",
+    successRedirect: "/track/add",
     successFlash: "You are now logged in!"
   }),
 

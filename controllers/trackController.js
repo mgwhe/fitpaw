@@ -34,8 +34,8 @@ module.exports = {
         } //if
     },
     
-    showTrackView: (req, res) => {
-        res.render("track/show");
+    addTrackView: (req, res) => {
+        res.render("track/add");
 
       },
 

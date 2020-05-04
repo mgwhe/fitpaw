@@ -16,18 +16,28 @@
         <img src="../images/dog_activity.jpg" id="activityImage"alt="">
 </div>
 <div class="col-sm-6"> 
-    <p>Click the button to get your coordinates!!</p>
+    <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">Track Exercise Activity</h3>
+          <p class="card-text">
+              <ul>
+              <li>Click Start at the beginning of your dog exercise</li>
+                <li>Stop when finished</li> 
+                    <li>Save to upload to your activity history</li>
+            </ul>
+            </p>
+            
+            <button id="StartButton" class="btn btn-danger" onclick="startTracking()">Capture</button>
+            <button id="StopButton" class="btn btn-primary" onclick="stopTracking()">Stop</button>
+            <a href="/track/add" class="btn btn-primary">Cancel</a>
+            <a href="#" class="btn btn-primary">Save</a>
 
-    <button id="StartButton" class="btn btn-danger" onclick="startTracking()">Record</button>
-    <button id="StopButton" class="btn btn-primary" onclick="stopTracking()">Stop</button>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#activityModal">
-        Save
-      </button>
-    <p id="demo"></p>
-    <h3 id="timeLapsed"></h3>
-    <h3 id="currentDistance"></h3>
+            <p id="demo"></p>
+            <h4 id="timeLapsed"></h4>
+            <h4 id="currentDistance"></h4>
     
-
+    </div>
+    </div>
    
 
 </div>
@@ -53,6 +63,12 @@
     var d = document.getElementById("currentDistance");
      
     function startTracking(){
+              
+        //reset array of locs
+        while (locs.length>0) { 
+            locs.pop(); 
+        }
+        
         //dont wait for timer - start instantly
         getLocation();
 
