@@ -1,20 +1,21 @@
 <div class="col-sm-6">
 
     <h2>Activity Summary</h2>
+    
     <table class="table">
       <thead>
         <tr>
           <th>Date</th>
           <th>Distance</th>
           <th>Time</th>
-          <th>Average Speed</th>
+          <th>Intensity Level</th>
         </tr>
       </thead>
       <tbody>
         <% activities.forEach(activity => { %>
         <tr>
           <td>       
-              <%= activity.activityTrackDate %>
+              <%= activity.activityTrackDate.toDateString() %>
           </td>
           <td>
             <%= activity.activityTrackDistanceMetres %>
@@ -23,7 +24,7 @@
             <%= activity.activityTrackTimeSeconds %>
           </td>
           <td>
-            <%= activity.activityTrackTimeSeconds %>
+            <%= activity.activityTrackDate.toString().split(' ')[0]; %>
           </td>
           <td>
             <a href="<%=`/track/${activity._id}/edit`%>">
@@ -39,21 +40,25 @@
     </table>
 </div>
 <div class="col-sm-6">
-    <canvas id="myChart" width="400" height="400"></canvas>
-    <script>
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var myChart = new Chart(ctx, {
+    <canvas id="activityChart" width="400" height="400"></canvas>
+
+<script>
+
+var chartData = 
+    {
         type: 'bar',
         data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            labels: [] //code in above floating week
+            ,
             datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
+                label: 'Weekly Activity',
+                data: [], //load data via Ajax call below
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
                     'rgba(255, 206, 86, 0.2)',
                     'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
                     'rgba(153, 102, 255, 0.2)',
                     'rgba(255, 159, 64, 0.2)'
                 ],
@@ -62,6 +67,7 @@
                     'rgba(54, 162, 235, 1)',
                     'rgba(255, 206, 86, 1)',
                     'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
                     'rgba(153, 102, 255, 1)',
                     'rgba(255, 159, 64, 1)'
                 ],
@@ -77,7 +83,62 @@
                 }]
             }
         }
+    }
+
+    var ctx = document.getElementById('activityChart').getContext('2d');
+    
+    var daysLabelsArray = [];
+    daysLabelsArray = getDaysOfWeekLabels();
+    daysLabelsArray.forEach(dayLabel =>{
+        chartData.data.labels.push(dayLabel);
     });
+
+    LoadActivityData();
+    
+    var myChart = new Chart(ctx,chartData);
+
+    function getDaysOfWeekLabels(){
+        var dayOfWeekLabels = [];
+
+        var tmpDate = new Date();
+        
+        var i;
+
+        tmpDate.setDate(tmpDate.getDate()-7); //start a week ago
+
+        for(i=0;i<7;i++)
+        { 
+            var tmpDayString = tmpDate.toString().split(' ')[0]; 
+            dayOfWeekLabels.push(tmpDayString);
+            tmpDate.setDate(tmpDate.getDate() + 1); //advance to next
+        }
+        
+        return dayOfWeekLabels;
+    }
+
+        function LoadActivityData(){
+               //need to make a second call to get data in JSON format so can programme in to chart object
+                $.get("/api/track", (results ={}) =>{
+
+                    let data = results.data;
+                    if (!data || !data.activities){  
+                        //need smooth exit for graph              
+                        return;
+                    }
+                    data.activities.forEach(activity =>{
+                        alert(activity.activityTrackDistanceMetres);
+
+                        if(isNaN(activity.activityTrackDistanceMetres)) //check undefined, null,etc and put 0
+                        {
+                            chartData.data.datasets[0].data.push(0);
+                        }
+                        else
+                        {
+                            chartData.data.datasets[0].data.push(activity.activityTrackDistanceMetres);
+                        }
+                    }); //forEach
+                }); //get
+        }
     </script>
 </div>
 

@@ -15,11 +15,11 @@ module.exports = {
 
         if (currentUser) {
             
-            //featch graph data.. 
-            //dump lot for now..
-            ActivityTrack.find({}).where('userRef').equals(currentUser.id)
+            //featch graph data - date ordered
+            ActivityTrack.find({}).where('userRef').equals(currentUser.id).sort({activityTrackDate: 'ascending'})
             .then(activities=>{
                 res.locals.activities = activities;
+     
                 next();
             })
             .catch(error => {
@@ -86,6 +86,7 @@ module.exports = {
       },
 
     indexView: (req, res) => {
+              
         res.render("track/index");
       },
 
@@ -96,3 +97,26 @@ module.exports = {
       });
     },
 }
+
+/* move to client side 
+function getDaysOfWeekLabels(){
+    var tmpDate = new Date();
+    var daysOfWeekLabels ="[";
+    var i;
+
+    tmpDate.setDate(tmpDate.getDate()-7); //start a week ago
+
+    for(i=0;i<7;i++)
+    { 
+    var tmpDayString = tmpDate.toString().split(' ')[0];         
+    tmpDate.setDate(tmpDate.getDate() + 1);
+    //   daysOfWeekLabels = daysOfWeekLabels + tmpDayString + ",";
+    daysOfWeekLabels =daysOfWeekLabels.concat("\'",tmpDayString,"\',");
+    }
+    //remove last comma
+    daysOfWeekLabels = daysOfWeekLabels.substring(0, daysOfWeekLabels.length - 1);
+    daysOfWeekLabels = daysOfWeekLabels + "]";
+
+    return daysOfWeekLabels;
+}
+*/
