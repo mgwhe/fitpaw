@@ -39,7 +39,7 @@ module.exports = {
       if (user) {
         //may make this a popup
         req.flash("success", "${user.fullName}'s account created successfully! Please login");
-        res.locals.redirect = "/";
+        res.locals.redirect = "/"; /*to do: change to thanks page */
         next();
       } else {
         req.flash("error", "Failed to create user account because: ${error.message}.");
@@ -48,6 +48,7 @@ module.exports = {
       }
       
     });
+  
   },
   redirectView: (req, res, next) => {
     let redirectPath = res.locals.redirect;

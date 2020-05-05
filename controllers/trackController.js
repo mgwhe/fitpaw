@@ -17,7 +17,7 @@ module.exports = {
             
             //featch graph data.. 
             //dump lot for now..
-            ActivityTrack.find({})
+            ActivityTrack.find({}).where('userRef').equals(currentUser.id)
             .then(activities=>{
                 res.locals.activities = activities;
                 next();
