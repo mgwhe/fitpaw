@@ -22,6 +22,9 @@ module.exports = {
                   if(diaryDay.foodDiaryItems!==undefined){
                     res.locals.foodItems = diaryDay.foodDiaryItems; 
                   }
+                  else{
+                    res.locals.foodItems = new Array(); 
+                  }
                 }   
                 next();
               }) //.then

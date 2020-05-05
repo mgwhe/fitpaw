@@ -10,13 +10,16 @@ module.exports = {
     index: (req, res, next) => {
         let currentUser = res.locals.currentUser;
        
-       // const query = req.query;
-        let location = req.params.location;
-
         if (currentUser) {
             
-            //featch graph data - date ordered
-            ActivityTrack.find({}).where('userRef').equals(currentUser.id).sort({activityTrackDate: 'ascending'})
+            //featch graph data for past 7 days - date ordered
+            var start = new Date();
+            var end = new Date();
+            start.setDate(end.getDate()-6); // a week ago
+
+            ActivityTrack.find( {"activityTrackDate": {"$gte": start, "$lt": end}})
+            .where('userRef').equals(currentUser.id) //filter for this user
+            .sort({activityTrackDate: 'ascending'}) 
             .then(activities=>{
                 res.locals.activities = activities;
      

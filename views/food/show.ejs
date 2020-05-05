@@ -136,7 +136,10 @@
           </tr>
         </thead>
         <tbody>
-          <% if(foodItems) { %>
+         
+          <% if(typeof(foodItems)=="undefined")
+          {}
+          else { %>
             <% foodItems.forEach(foodItem => { %>
             <tr>
               <td>

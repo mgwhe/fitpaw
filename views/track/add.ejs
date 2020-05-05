@@ -27,12 +27,10 @@
             </ul>
             </p>
             
-            <button id="StartButton" class="btn btn-danger" onclick="startTracking()">Capture</button>
-            <button id="StopButton" class="btn btn-primary" onclick="stopTracking()">Stop</button>
-            <a href="/track/add" class="btn btn-primary">Cancel</a>
-            <a href="/track/save/" class="btn btn-primary">Save</a>
-            
-            <a class="btn btn-primary" href="/track/save" onclick="return confirm('Are you sure you want to save?')">Save</a>
+            <button id="start-button" class="btn btn-danger" onclick="startTracking()">Capture</button>
+            <button id="stop-button" class="btn btn-primary" onclick="stopTracking()">Stop</button>
+            <a href="/track/add" id="cancel-link" class="btn btn-primary">Cancel</a> 
+            <a class="btn btn-primary" href="/track/save" id="save-link" onclick="return confirm('Are you sure you want to save?')">Save</a>
 
             <p id="message"></p>
             <h4 id="timeLapsed"></h4>

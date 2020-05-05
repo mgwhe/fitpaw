@@ -88,46 +88,23 @@ var chartData =
     var ctx = document.getElementById('activityChart').getContext('2d');
     
     var daysLabelsArray = [];
-    daysLabelsArray = getDaysOfWeekLabels();
-    daysLabelsArray.forEach(dayLabel =>{
-        chartData.data.labels.push(dayLabel);
-    });
-
-    LoadActivityData();
     
-    var myChart = new Chart(ctx,chartData);
 
-    function getDaysOfWeekLabels(){
-        var dayOfWeekLabels = [];
+    var myChart;
 
-        var tmpDate = new Date();
-        
-        var i;
+    DrawGraph();
+     
 
-        tmpDate.setDate(tmpDate.getDate()-7); //start a week ago
-
-        for(i=0;i<7;i++)
-        { 
-            var tmpDayString = tmpDate.toString().split(' ')[0]; 
-            dayOfWeekLabels.push(tmpDayString);
-            tmpDate.setDate(tmpDate.getDate() + 1); //advance to next
-        }
-        
-        return dayOfWeekLabels;
-    }
-
-        function LoadActivityData(){
+        function DrawGraph(){
                //need to make a second call to get data in JSON format so can programme in to chart object
                 $.get("/api/track", (results ={}) =>{
-
-                    let data = results.data;
-                    if (!data || !data.activities){  
+                    let d = results.data;
+                    if (!d || !d.activities){  
                         //need smooth exit for graph              
                         return;
                     }
-                    data.activities.forEach(activity =>{
-                        alert(activity.activityTrackDistanceMetres);
-
+                    d.activities.forEach(activity =>{
+                     
                         if(isNaN(activity.activityTrackDistanceMetres)) //check undefined, null,etc and put 0
                         {
                             chartData.data.datasets[0].data.push(0);
@@ -137,7 +114,38 @@ var chartData =
                             chartData.data.datasets[0].data.push(activity.activityTrackDistanceMetres);
                         }
                     }); //forEach
+
+                    loadLabels();
+
+                    myChart = new Chart(ctx,chartData);  
                 }); //get
+                
+        }
+
+        function getDaysOfWeekLabels(){
+            var dayOfWeekLabels = [];
+
+            var tmpDate = new Date();
+            
+            var i;
+
+            tmpDate.setDate(tmpDate.getDate()-7); //start a week ago
+
+            for(i=0;i<7;i++)
+            { 
+                var tmpDayString = tmpDate.toString().split(' ')[0]; 
+                dayOfWeekLabels.push(tmpDayString);
+                tmpDate.setDate(tmpDate.getDate() + 1); //advance to next
+            }
+            
+            return dayOfWeekLabels;
+        }
+        function loadLabels()
+        {
+            daysLabelsArray = getDaysOfWeekLabels();
+            daysLabelsArray.forEach(dayLabel =>{
+            chartData.data.labels.push(dayLabel);
+    });
         }
     </script>
 </div>
