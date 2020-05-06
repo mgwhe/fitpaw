@@ -16,10 +16,19 @@ module.exports = {
 
     filterFoodDiaryDay: (req, res, next) => {
         let currentUser = res.locals.currentUser;
-       
-       // const query = req.query;
-        let thisDate = req.params.thisDate;
+        var thisDate;
 
+       //if called without date food/ use today's date by default
+       if(req.params.thisDate == null)
+       {
+          console.log("/food/ type call"); //use today's date as default
+          thisDate = new Date().toISOString().substring(0,10);
+       }
+       else{
+          console.log("/food/yyyy-mm-dd type call");
+          thisDate = req.params.thisDate;
+       }
+        
         if (currentUser) {
             // FoodDiaryDay.find({}).where("foodDiaryDayDate").equals(date)
             // lookup food for user for user
@@ -56,6 +65,8 @@ module.exports = {
         
           console.log(stuff);
           console.log("after");
+
+          foodDate = (new Date(foodDate)).toISOString().substring(0,10); //trim off time or search wont work!!
           //validate data
          
           //check if diary Day exists
