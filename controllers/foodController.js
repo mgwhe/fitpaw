@@ -38,6 +38,16 @@ module.exports = {
       res.render("food/show");
     },
 
+    createFood: (req, res, next) => {
+     console.log("create food");
+   //  let thisDate = req.params.thisDate;
+     next();
+    },
+    
+    redirectView: (req, res) => {
+      res.render("food/add");
+    },
+
     respondJSON: (req, res) => {
       res.json({
         status: httpStatus.OK,
