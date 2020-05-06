@@ -38,8 +38,23 @@ module.exports = {
       res.render("food/show");
     },
 
-    createFood: (req, res, next) => {
-     console.log("create food");
+    create: (req, res, next) => {
+      let currentUser = res.locals.currentUser;
+       
+      if (currentUser) {
+        console.log("hit the create point");
+        //validate data
+        //check if fooddiary exists
+        //check if food day exists
+     
+      //add to fooddiary
+        next();
+      }
+   
+     },
+
+    add: (req, res, next) => {
+     console.log("route to form for adding food to diary");
    //  let thisDate = req.params.thisDate;
      next();
     },

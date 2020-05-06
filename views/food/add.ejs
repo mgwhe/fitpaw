@@ -4,7 +4,7 @@
 
 <div class="col-sm-6">
     <div class="data-form">
-        <form class="form-signin" action="/food/add" method="POST">
+        <form class="form-signin" action="/food/create" method="POST">
         <h2 class="form-signin-heading">Add a Meal to Pet's Food Diary</h2>
         
         <label for="inputFoodName">Foot Name</label>
@@ -14,7 +14,7 @@
         <input type="text" name="foodQuantity" id="inputFoodQuantity" class="form-control" placeholder="Food Quantity" required>
         <label for="inputFoodQuantity">Set Diary Date</label>
         <div class="form-group">
-            <div class='input-group date' id='datetimepicker1'>
+            <div class='input-group date' id='datetimepicker'>
                 <input type='text' class="form-control" />
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
@@ -23,8 +23,13 @@
         </div>
         <script type="text/javascript">
             $(function () {
-                $('#datetimepicker1').datetimepicker();
+                $('#datetimepicker').datetimepicker();
             });
+
+            $('#datetimepicker').on('dp.change', function(e){ 
+                var strDate = (e.date).toISOString().substring(0,10); //get year yyyy-mm-dd
+                document.getElementById("diaryDate").value =strDate; //set date
+            })
         </script>
         <label for="listFoodUnits">Food Units</label>
         <select class="form-control" id="listFoodUnits" required>
@@ -38,6 +43,7 @@
         </select>
       
         <input type="hidden" id="memberObjectId" name="memberObjectId" value="<%=`${currentUser._id}`%>">
+        <input type="hidden" id="diaryDate" name="diaryDate" value="">
 
         <br/><button class="btn btn-lg btn-primary btn-block" type="submit">Add</button>
         </form>
