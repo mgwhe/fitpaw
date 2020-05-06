@@ -2,7 +2,15 @@
 
 const User = require("../models/user"),
 httpStatus = require("http-status-codes"),  
-FoodDiaryDay = require("../models/food_diary_day");
+FoodDiaryDay = require("../models/food_diary_day"),
+FoodItem = require("../models/food_diary_item"),
+getFoodItemParams = body => {
+  return {
+    foodName: body.foodName,
+    foodQuantity: body.foodQuantity,
+    foodUnits: body.foodUnits
+  };
+};
 
 module.exports = {
 
@@ -40,16 +48,37 @@ module.exports = {
 
     create: (req, res, next) => {
       let currentUser = res.locals.currentUser;
-       
+      let foodParams =  getFoodItemParams(req.body);
+      let foodDate = req.body.foodDate;
+
       if (currentUser) {
-        console.log("hit the create point");
-        //validate data
-        //check if fooddiary exists
-        //check if food day exists
-     
-      //add to fooddiary
-        next();
-      }
+          var stuff = getFoodItemParams(req.body);
+        
+          console.log(stuff);
+          console.log("after");
+          //validate data
+         
+          //check if diary Day exists
+          FoodDiaryDay.findOne( {"foodDiaryDayDate": req.body.foodDate})
+          .where('userRef').equals(currentUser.id) 
+          .then(foodDiaryDay=>{
+            if(foodDiaryDay == null){
+              console.log("about to create FoodDiaryDay");
+              foodDiaryDay= new FoodDiaryDay({userRef:currentUser.id,foodDiaryDayDate:foodDate});
+              foodDiaryDay.save();
+            }
+
+            let newFoodItem = new FoodItem(foodParams);
+            newFoodItem.save();
+            foodDiaryDay.foodDiaryItems.push(newFoodItem._id);    
+          })
+          .catch(error => {
+            console.log(`Error: ${error.message}`);
+            next(error);
+          });
+
+          next();
+      } //if user
    
      },
 

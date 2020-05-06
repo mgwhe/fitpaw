@@ -7,15 +7,15 @@
         <form class="form-signin" action="/food/create" method="POST">
         <h2 class="form-signin-heading">Add a Meal to Pet's Food Diary</h2>
         
-        <label for="inputFoodName">Foot Name</label>
-        <input type="text" name="petName" id="inputFoodName" class="form-control" placeholder="Food Name" autofocus requried>
+        <label for="inputFoodName">Food Name</label>
+        <input type="text" name="foodName" id="inputFoodName" class="form-control" placeholder="Food Name" autofocus requried>
         
         <label for="inputFoodQuantity">Food Quantity</label>
         <input type="text" name="foodQuantity" id="inputFoodQuantity" class="form-control" placeholder="Food Quantity" required>
-        <label for="inputFoodQuantity">Set Diary Date</label>
+        <label for="inputFoodDate">Set Diary Date</label>
         <div class="form-group">
             <div class='input-group date' id='datetimepicker'>
-                <input type='text' class="form-control" />
+                <input type='text' class="form-control" name="foodDate" id="inputFoodDate"/>
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                 </span>
@@ -28,11 +28,11 @@
 
             $('#datetimepicker').on('dp.change', function(e){ 
                 var strDate = (e.date).toISOString().substring(0,10); //get year yyyy-mm-dd
-                document.getElementById("diaryDate").value =strDate; //set date
+                document.getElementById("foodDiaryDate").value =strDate; //set date
             })
         </script>
         <label for="listFoodUnits">Food Units</label>
-        <select class="form-control" id="listFoodUnits" required>
+        <select class="form-control" id="listFoodUnits" name="foodUnits" required>
             <option>Oz.</option>
             <option>Slice</option>
             <option>Packet</option>
@@ -43,7 +43,7 @@
         </select>
       
         <input type="hidden" id="memberObjectId" name="memberObjectId" value="<%=`${currentUser._id}`%>">
-        <input type="hidden" id="diaryDate" name="diaryDate" value="">
+        <input type="hidden" id="foodDiaryDate" name="diaryDate" value="">
 
         <br/><button class="btn btn-lg btn-primary btn-block" type="submit">Add</button>
         </form>

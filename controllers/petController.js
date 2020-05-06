@@ -65,9 +65,9 @@ module.exports = {
                   }   
             }) 
             .catch(error => {
-              console.log("Error in saving pet profile:${error.message}");
+              console.log(`Error: ${error.message}`);
               next(error);
-            })
+            });
       }); //User.findById then
             
       next();
