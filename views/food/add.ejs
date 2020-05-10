@@ -12,9 +12,12 @@
         <label for="inputFoodName">Food Name</label>
         <input type="text" name="foodName" id="inputFoodName" class="form-control" placeholder="Food Name" autofocus required>
  
-        <label for="inputFoodNameAuto">Food Name Test</label>
-        <input type="text" name="foodNameAuto" id="inputFoodNameAuto" class="form-control" placeholder="Food Name Auto"  requried>
-     
+        <div class="autocomplete" style="width:300px;">
+            <label for="inputFoodNameAuto">Food Name Test</label>
+            <input type="text" name="foodNameAuto" id="inputFoodNameAuto" class="form-control" placeholder="Food Name Auto"  requried>
+        </div>
+       
+
         <label for="inputFoodQuantity">Food Quantity</label>
         <input type="text" name="foodQuantity" id="inputFoodQuantity" class="form-control" placeholder="Food Quantity" required>
         <label for="inputFoodDate">Set Diary Date</label>
@@ -54,6 +57,7 @@
         </form>
     </div>
   </div>
+ 
   <script>
     //all code for autocomplete behaviour
 
@@ -164,4 +168,3 @@
         });
     }
     </script> 
-
