@@ -99,6 +99,19 @@ module.exports = {
      next();
     },
     
+    nutritionDBLookup:(req,res,next)=>{
+      let currentUser = res.locals.currentUser;
+      
+      if (currentUser) {
+        if(req.params.foodName != null)
+        {
+            //make remote call to nutrition database
+
+        }
+      }
+      next();
+    },
+
     redirectView: (req, res) => {
       res.render("food/add");
     },

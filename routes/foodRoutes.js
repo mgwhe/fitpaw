@@ -13,6 +13,7 @@ router.post("/create", foodController.create, foodController.redirectView);
 router.get("/:thisDate", foodController.filterFoodDiaryDay, foodController.showFoodDiaryDayView);
 router.put("/:thisDate", foodController.filterFoodDiaryDay, foodController.showFoodDiaryDayView);
 
+
 /*
 router.post(
     "/create",
