@@ -78,7 +78,10 @@
             if (!val) { return false;} 
             if (val.length <3 ) { return false;} //IW: think this is where to change so only updates if >3 letters
             //IW: make API call for list of matching foods
-            arr = getFoods();
+            arr = getFoods(val);
+            
+            console.log("after call to getFoods");
+            console.log(arr);
             
             currentFocus = -1;
             /*create a DIV element that will contain the items (values):*/
@@ -171,4 +174,49 @@
             closeAllLists(e.target);
         });
     }
+
+    function getFoods(foodName){
+        const stringEndpoint = "/api/food/lookup/"+foodName;
+
+        console.log("in getFoods - before API call");
+/*
+        $.get(stringEndpoint, (results ={}) =>{
+            
+            console.log("in getFoods - after API call");
+            let data = results.data;
+            if (!data || !data.foodNames){                
+                return;
+            }
+            
+            console.log("in getFoods - exiting API call");
+            return data.foodNames;
+
+        });
+*/
+        var displayData = [];
+
+         $.ajax({
+            url: stringEndpoint,
+            type: 'GET',
+            async:false,
+            success: function(results){
+            
+                console.log("in getFoods - after API call");
+                let data = results.data;
+                if (!data || !data.foodNames){     
+                    console.log("bailing out");           
+                    return;
+                }
+                
+                console.log("in getFoods - exiting API call");
+                console.log(data.foodNames);
+
+                displayData = data.foodNames; 
+                return data.foodNames; //technically dont need
+            } //function()
+        });
+
+        return displayData;
+    } //getFoods
+
     </script> 

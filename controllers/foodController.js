@@ -4,7 +4,8 @@ const User = require("../models/user"),
 httpStatus = require("http-status-codes"),  
 FoodDiaryDay = require("../models/food_diary_day"),
 FoodItem = require("../models/food_diary_item"),
-getFoodItemParams = body => {
+//request = require("request"), //http request calls to external web services
+getFoodItemParams = body => { //ES6 syntax using arrow function
   return {
     foodName: body.foodName,
     foodQuantity: body.foodQuantity,
@@ -66,7 +67,7 @@ module.exports = {
           console.log(stuff);
           console.log("after");
 
-          foodDate = (new Date(foodDate)).toISOString().substring(0,10); //trim off time or search wont work!!
+          foodDate = (new Date(foodDate)).toISOString().substring(0,10); //trim off time or date search wont match!!
           //validate data
          
           //check if diary Day exists
@@ -102,12 +103,28 @@ module.exports = {
     nutritionDBLookup:(req,res,next)=>{
       let currentUser = res.locals.currentUser;
       
+      const url = 'https://trackapi.nutritionix.com/v2/search/instant?query=' + req.params.foodName 
+
       if (currentUser) {
         if(req.params.foodName != null)
         {
             //make remote call to nutrition database
+            //request({url})
+            console.log("About to make call (not really): "+url);
 
         }
+        else{
+          console.log("Food name is null!!");
+        }
+        //set response before sending back to user..
+        res.locals.foodNames = new Array(); 
+        //we have food list! simulate for now
+        res.locals.foodNames.push('abcd');
+        res.locals.foodNames.push('abcde');
+        res.locals.foodNames.push('abcdef');
+        res.locals.foodNames.push('abcdef123');
+        res.locals.foodNames.push('abcdefghij!');
+
       }
       next();
     },
@@ -121,5 +138,6 @@ module.exports = {
         status: httpStatus.OK,
         data: res.locals
       });
+      console.log("repondJSON completed");
     },
 }
