@@ -78,11 +78,12 @@
             if (!val) { return false;} 
             if (val.length <3 ) { return false;} //IW: think this is where to change so only updates if >3 letters
             //IW: make API call for list of matching foods
+            var foodList = [];
             arr = getFoods(val);
             
             console.log("after call to getFoods");
-            console.log(arr);
-            
+            console.log(foodList);
+
             currentFocus = -1;
             /*create a DIV element that will contain the items (values):*/
             a = document.createElement("DIV");
@@ -201,22 +202,31 @@
             async:false,
             success: function(results){
             
-                console.log("in getFoods - after API call");
+                console.log("in getFoods - after API call ..dumping results ..");
+               
+                console.log("in getFoods - exiting API call @:" + new Date());
+            //    console.log(results);
+                console.log(results.data.foodNames);
                 let data = results.data;
                 if (!data || !data.foodNames){     
                     console.log("bailing out");           
                     return;
                 }
-                
-                console.log("in getFoods - exiting API call");
-                console.log(data.foodNames);
 
                 displayData = data.foodNames; 
                 return data.foodNames; //technically dont need
             } //function()
         });
 
-        return displayData;
+        const foodNamesObj = JSON.parse(displayData);
+        var filteredNames = [];
+        
+        foodNamesObj.common.forEach(food =>{
+                console.log(food.food_name);
+                filteredNames.push(food.food_name);
+            }); 
+
+        return filteredNames;
     } //getFoods
 
     </script> 

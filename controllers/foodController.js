@@ -4,7 +4,7 @@ const User = require("../models/user"),
 httpStatus = require("http-status-codes"),  
 FoodDiaryDay = require("../models/food_diary_day"),
 FoodItem = require("../models/food_diary_item"),
-//request = require("request"), //http request calls to external web services
+axios = require('axios'),
 getFoodItemParams = body => { //ES6 syntax using arrow function
   return {
     foodName: body.foodName,
@@ -12,6 +12,9 @@ getFoodItemParams = body => { //ES6 syntax using arrow function
     foodUnits: body.foodUnits
   };
 };
+
+const NUTRITIONIX_API_ENDPOINT = 'https://trackapi.nutritionix.com/v2/search/instant?query=';
+var foodList;
 
 module.exports = {
 
@@ -103,30 +106,32 @@ module.exports = {
     nutritionDBLookup:(req,res,next)=>{
       let currentUser = res.locals.currentUser;
       
-      const url = 'https://trackapi.nutritionix.com/v2/search/instant?query=' + req.params.foodName 
-
       if (currentUser) {
         if(req.params.foodName != null)
         {
             //make remote call to nutrition database
-            //request({url})
-            console.log("About to make call (not really): "+url);
-
-        }
+            const url =  NUTRITIONIX_API_ENDPOINT + req.params.foodName; 
+            
+            axios.get(url, {
+              headers: {'x-app-key':'527d7ac47737983a2197102edde9b34a',
+                        'x-app-id':'179643b1'
+                  } //Add API keys for account
+              })
+              .then(response=>{
+                res.locals.foodNames = JSON.stringify(response.data);
+                next();
+              })
+              .catch(error=>{
+                console.log(error);
+              });
+           
+        } //if(req.params.foodName != null)
         else{
           console.log("Food name is null!!");
         }
-        //set response before sending back to user..
-        res.locals.foodNames = new Array(); 
-        //we have food list! simulate for now
-        res.locals.foodNames.push('abcd');
-        res.locals.foodNames.push('abcde');
-        res.locals.foodNames.push('abcdef');
-        res.locals.foodNames.push('abcdef123');
-        res.locals.foodNames.push('abcdefghij!');
-
-      }
-      next();
+        
+      } //if(currentuser)
+      
     },
 
     redirectView: (req, res) => {
@@ -138,6 +143,8 @@ module.exports = {
         status: httpStatus.OK,
         data: res.locals
       });
-      console.log("repondJSON completed");
     },
-}
+
+    
+} //module.exports
+
