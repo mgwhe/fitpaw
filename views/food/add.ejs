@@ -9,18 +9,28 @@
         <form class="form-signin" action="/food/create" method="POST" autocomplete="off">
         <h2 class="form-signin-heading">Add a Meal to your Pet's Food Diary</h2>
         
-        <label for="inputFoodName">Food Name</label>
-        <input type="text" name="foodName" id="inputFoodName" class="form-control" placeholder="Food Name" autofocus required>
- 
+     
+        <div class="row">
+            <div class="col-xs-6 previous">
+                <label for="inputFoodQuantity">Quantity</label>
+                <input type="text" name="foodQuantity" id="inputFoodQuantity" class="form-control" placeholder="Food Quantity" required>            
+            </div>
+            <div class="col-xs-6 next">
+                <label for="listFoodUnits">Food Units</label>
+                <select class="form-control" id="listFoodUnits" name="foodUnits" required>
+                </select>
+            </div>
+        </div>
+
         <div class="autocomplete" style="width:300px;">
-            <label for="inputFoodNameAuto">Food Name Test</label>
-            <input type="text" name="foodNameAuto" id="inputFoodNameAuto" class="form-control" placeholder="Food Name Auto"  requried>
+            <label for="inputFoodNameAuto">Food Name</label>
+            <input type="text" name="foodNameAuto" id="inputFoodNameAuto" class="form-control" placeholder="Food Name"  requried>
         </div>
        
+       
+           
 
-        <label for="inputFoodQuantity">Food Quantity</label>
-        <input type="text" name="foodQuantity" id="inputFoodQuantity" class="form-control" placeholder="Food Quantity" required>
-        <label for="inputFoodDate">Set Diary Date</label>
+         <label for="inputFoodDate">Set Diary Date</label>
         <div class="form-group">
             <div class='input-group date' id='datetimepicker'>
                 <input type='text' class="form-control" name="foodDate" id="inputFoodDate"/>
@@ -39,16 +49,7 @@
                 document.getElementById("foodDiaryDate").value =strDate; //set date
             })
         </script>
-        <label for="listFoodUnits">Food Units</label>
-        <select class="form-control" id="listFoodUnits" name="foodUnits" required>
-            <option>Oz.</option>
-            <option>Slice</option>
-            <option>Packet</option>
-            <option>Tin</option>
-            <option>Scoop</option>
-            <option>Piece</option>
-            <option>Cup</option>
-        </select>
+        
       
         <input type="hidden" id="memberObjectId" name="memberObjectId" value="<%=`${currentUser._id}`%>">
         <input type="hidden" id="foodDiaryDate" name="diaryDate" value="">
@@ -59,34 +60,8 @@
   </div>
  
   <script>
-    
 
-    /* 
-    This class code was added as I have two separate food search approaches and want to use the 
-    same code below for auotcomplete (sourced from W3Schools.com) to work with each: 
-    
-    Search type 1 is against an external nutrition database - Nutritionix.com, made via a server API call
-    Search type 2 is against a locally MongoDB stored list of dog foods 
-
-    The code embeds the food lookup in its code and it is very tricky to seperate so rather than duplicate the code, 
-    I introduced a class to plug in the two different search types using a class constructor based on this example:
-    https://stackoverflow.com/questions/54384894/es6-pass-function-as-parameter-example
-    
-    */
-
-    class SearchCodeToRun{
-        constructor(funcToRun){
-            this.searchFunction = funcToRun;
-        }
-        findFoods(searchFood){
-            return this.searchFunction(searchFood);
-        }
-    }
-    //plug-in getFoods
-    const s1 = new SearchCodeToRun(getFoods);
-    
-    
-    //all code for autocomplete behaviour (based on list of countries example from W3C Schools))
+    //code for autocomplete behaviour (based on list of countries example from W3C Schools))
     autocomplete(document.getElementById("inputFoodNameAuto"));
 
   
@@ -97,6 +72,7 @@
 
         var displayData = [];
 
+        //to do test what element is calling 
          $.ajax({
             url: stringEndpoint,
             type: 'GET',
@@ -105,8 +81,6 @@
             
                 console.log("in getFoods - after API call ..dumping results ..");
                
-                console.log("in getFoods - exiting API call @:" + new Date());
-            //    console.log(results);
                 console.log(results.data.foodNames);
                 let data = results.data;
                 if (!data || !data.foodNames){     
@@ -119,17 +93,28 @@
             } //function()
         });
 
+   //     console.log(displayData);
         const foodNamesObj = JSON.parse(displayData); //Convert JSON back to an object as didn't work otherwise
-        var filteredNames = [];
+        var filteredFoods = [];
+
+        console.log(foodNamesObj.common[0]);
+
+        var foodDetails = new Object();
 
         //Extract common food names only from nested array of foods details 
         foodNamesObj.common.forEach(food =>{
-                console.log(food.food_name);
-                var str = capital_letter(food.food_name); 
-                filteredNames.push(str);
-            }); 
+            
+            console.log(food.food_name);
+            foodDetails.foodName = capital_letter(food.food_name); 
+            foodDetails.foodUnits = food.serving_unit;
+            foodDetails.foodQuantity = food.serving_qty;
+
+            filteredFoods.push(foodDetails);
+
+            foodDetails = {};
+        }); 
         
-        return filteredNames;
+        return filteredFoods;
     } //getFoods
 
     //https://www.w3resource.com/javascript-exercises/javascript-basic-exercise-50.php#:~:text=ES6%20Version%3A&text=toUpperCase()%20%2B%20str%5Bi%5D.,word%20of%20a%20given%20string.

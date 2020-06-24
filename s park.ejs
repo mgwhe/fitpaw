@@ -1,0 +1,52 @@
+<div class="col-sm-6">
+    
+    <div class="data-form">
+        <!--autocomplete MUSt be off for custom autocomplete to work-->
+        <form class="form-signin" action="/food/create" method="POST" autocomplete="off">
+        <h2 class="form-signin-heading">Add a Meal to your Pet's Food Diary</h2>
+        
+        <div class="autocomplete" style="width:300px;">
+            <label for="inputFoodNameAuto">Food Name</label>
+            <input type="text" name="foodNameAuto" id="inputFoodNameAuto" class="form-control" placeholder="Food Name Auto"  requried>
+        </div>
+       
+
+        <label for="inputFoodQuantity">Food Quantity</label>
+        <input type="text" name="foodQuantity" id="inputFoodQuantity" class="form-control" placeholder="Food Quantity" required>
+        <label for="inputFoodDate">Set Diary Date</label>
+        <div class="form-group">
+            <div class='input-group date' id='datetimepicker'>
+                <input type='text' class="form-control" name="foodDate" id="inputFoodDate"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(function () {
+                $('#datetimepicker').datetimepicker();
+            });
+
+            $('#datetimepicker').on('dp.change', function(e){ 
+                var strDate = (e.date).toISOString().substring(0,10); //get year yyyy-mm-dd
+                document.getElementById("foodDiaryDate").value =strDate; //set date
+            })
+        </script>
+        <label for="listFoodUnits">Food Units</label>
+        <select class="form-control" id="listFoodUnits" name="foodUnits" required>
+            <option>Oz.</option>
+            <option>Slice</option>
+            <option>Packet</option>
+            <option>Tin</option>
+            <option>Scoop</option>
+            <option>Piece</option>
+            <option>Cup</option>
+        </select>
+      
+        <input type="hidden" id="memberObjectId" name="memberObjectId" value="<%=`${currentUser._id}`%>">
+        <input type="hidden" id="foodDiaryDate" name="diaryDate" value="">
+
+        <br/><button class="btn btn-lg btn-primary btn-block" type="submit">Add</button>
+        </form>
+    </div>
+  </div>

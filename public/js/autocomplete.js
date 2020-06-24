@@ -9,7 +9,7 @@
   3. changed so can use an object s1 that can point to two different searches - search external nutrition database, or
   search complementary local food database 
    */
-function autocomplete(inp) {
+function autocomplete(inp, obj) {
     /*the autocomplete function takes two arguments,
     the text field element and an array of possible autocompleted values:*/
     var currentFocus;
@@ -21,9 +21,11 @@ function autocomplete(inp) {
         if (!val) { return false;} 
         if (val.length <3 ) { return false;} //IW: think this is where to change so only updates if >3 letters
         //IW: make API call for list of matching foods
-        let arr = [];
-        arr = s1.findFoods(val);
+        let foods = [];
+        foods = getFoods(val);
        
+        var arr = foods.map(food=>food.foodName);
+
         console.log("after call to getFoods");
         console.log(arr);
 
@@ -49,6 +51,32 @@ function autocomplete(inp) {
                 b.addEventListener("click", function(e) {
                     /*insert the value for the autocomplete text field:*/
                     inp.value = this.getElementsByTagName("input")[0].value;
+                    //IW added: update list of units for that food
+                    let unitOption = document.createElement("option");
+                    unitOption.value =1; //set the index value to 1. need to update in future if more than one
+                                       
+                    //IW: added. Find the food selected in the input control by looking up the array of foods objects created earlier
+                    //store the units in the units list options. Unsure if foods can have multiple units so sticking with
+                    //this for now
+
+                    //clean down previous list entries in selection
+                    var i, L =  document.getElementById('listFoodUnits').options.length - 1;
+                    for(i = L; i >= 0; i--) {
+                        document.getElementById('listFoodUnits').remove(i);
+                    } 
+                    //clear down quantity
+                    document.getElementById('inputFoodQuantity').value ="";
+
+                    //lookup foodName so can then get the qty and default amount
+                    let foodDetailsMatch = foods.find(food => food.foodName === inp.value); //https://stackoverflow.com/questions/12462318/find-a-value-in-an-array-of-objects-in-javascript
+                    //update quantity field
+                    unitOption.text = foodDetailsMatch.foodUnits;
+                    //add new item to the list box
+                    document.getElementById('listFoodUnits').add(unitOption,null); //add to select a new option with units
+                    //add food quantity to input box. user can edit as needs be
+                    document.getElementById('inputFoodQuantity').value = foodDetailsMatch.foodQuantity;
+                    //IW end
+
                     /*close the list of autocompleted values,
                     (or any other open lists of autocompleted values:*/
                     closeAllLists();
@@ -79,7 +107,10 @@ inp.addEventListener("keydown", function(e) {
         e.preventDefault();
         if (currentFocus > -1) {
         /*and simulate a click on the "active" item:*/
-        if (x) x[currentFocus].click();
+            if (x){ 
+                x[currentFocus].click();
+               
+        }
         }
     }
 });
@@ -111,6 +142,7 @@ function closeAllLists(elmnt) {
         x[i].parentNode.removeChild(x[i]);
         } //if
     } //for
+    
 }
 
 /*execute a function when someone clicks in the document:*/
