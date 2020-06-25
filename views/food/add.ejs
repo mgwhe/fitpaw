@@ -6,10 +6,14 @@
     
     <div class="data-form">
         <!--autocomplete MUSt be off for custom autocomplete to work-->
-        <form class="form-signin" action="/food/create" method="POST" autocomplete="off">
-        <h2 class="form-signin-heading">Add a Meal to your Pet's Food Diary</h2>
+        <form class="form-signin" id="idFoodAdd" autocomplete="off">
+        <h2 class="form-signin-heading">Pet Diet Log</h2>
         
-     
+        <div class="autocomplete" style="width:300px;">
+            <label for="inputFoodName">Food Name</label>
+            <input type="text" name="foodName" id="inputFoodName" class="form-control" placeholder="Food Name"  autofocus requried>
+        </div>
+
         <div class="row">
             <div class="col-xs-6 previous">
                 <label for="inputFoodQuantity">Quantity</label>
@@ -21,14 +25,7 @@
                 </select>
             </div>
         </div>
-
-        <div class="autocomplete" style="width:300px;">
-            <label for="inputFoodNameAuto">Food Name</label>
-            <input type="text" name="foodNameAuto" id="inputFoodNameAuto" class="form-control" placeholder="Food Name"  requried>
-        </div>
-       
-       
-           
+   
 
          <label for="inputFoodDate">Set Diary Date</label>
         <div class="form-group">
@@ -54,7 +51,7 @@
         <input type="hidden" id="memberObjectId" name="memberObjectId" value="<%=`${currentUser._id}`%>">
         <input type="hidden" id="foodDiaryDate" name="diaryDate" value="">
 
-        <br/><button class="btn btn-lg btn-primary btn-block" type="submit">Add</button>
+        <br/><button class="btn btn-lg btn-primary btn-block" type="submit">Add to Meal Basket</button>
         </form>
     </div>
   </div>
@@ -62,7 +59,7 @@
   <script>
 
     //code for autocomplete behaviour (based on list of countries example from W3C Schools))
-    autocomplete(document.getElementById("inputFoodNameAuto"));
+    autocomplete(document.getElementById("inputFoodName"));
 
   
     function getFoods(foodName){
@@ -126,5 +123,77 @@
             str[i] = str[i][0].toUpperCase() + str[i].substr(1);
         }
         return str.join(" ");
-}
-    </script> 
+
+    }
+
+    // Disable normal form submit up to the node server. This will allow the food not to be added to the diary in mongo
+    // but instead added to a food basket and display it to the user, allowing the user to add/remove foods for the pets meal
+    // based on code from: https://developer.mozilla.org/en-US/docs/Learn/Forms/Sending_forms_through_JavaScript
+    //
+    // When form is first loaded, disable normal behaviour and add in a special listener that will call getFoodNutrients
+    window.addEventListener( 'load', function () {
+        const form = document.getElementById( "idFoodAdd" );
+
+        form.addEventListener( 'submit', function ( event ) {
+                    event.preventDefault(); //stop the form from doing its normal post to server
+                    getFoodNutrients();
+                }
+        );
+    })
+
+    function getFoodNutrients(){
+
+        //lookup the food from the input box, code done for this before in autocomplete
+        const foodNameNutrient = document.getElementById('inputFoodName').value;
+
+        const stringEndpoint = "/api/food_nutrients/lookup/"+foodNameNutrient;
+
+        console.log("in getFoodNutrients - before API call");
+
+        var displayData = [];
+
+         $.ajax({
+            url: stringEndpoint,
+            type: 'GET',
+            async:true, 
+            success: function(results){
+            
+                console.log("in getFoodNutrient - after API call ..dumping results ..");
+               
+                console.log(results.data.foodNameNutrients);
+                let data = results.data;
+                if (!data || !data.foodNameNutrients){     
+                    console.log("bailing out");           
+                    return;
+                }
+
+                displayData = data.foodNameNutrients; 
+                return data.foodNameNutrients; //technically dont need
+               
+            } //function()
+        });
+
+        const foodNameNutrientObj = JSON.parse(displayData); 
+
+        console.log(foodNameNutrientObj);
+      /*  var filteredFoods = [];
+
+        console.log(foodNamesObj.common[0]);
+
+        var foodDetails = new Object();
+
+        //Extract common food names only from nested array of foods details 
+        foodNamesObj.common.forEach(food =>{
+            
+            console.log(food.food_name);
+            foodDetails.foodName = capital_letter(food.food_name); 
+            foodDetails.foodUnits = food.serving_unit;
+            foodDetails.foodQuantity = food.serving_qty;
+
+            filteredFoods.push(foodDetails);
+
+            foodDetails = {};
+            
+        });*/
+    }
+</script> 

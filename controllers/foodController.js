@@ -13,8 +13,9 @@ getFoodItemParams = body => { //ES6 syntax using arrow function
   };
 };
 
-const NUTRITIONIX_API_ENDPOINT = 'https://trackapi.nutritionix.com/v2/search/instant?query=';
-var foodList;
+const NUTRITIONIX_API_ENDPOINT_FOOD_QUERY = 'https://trackapi.nutritionix.com/v2/search/instant?query=';
+const NUTRITIONIX_API_ENDPOINT_FOOD_NUTRIENTS = 'https://trackapi.nutritionix.com/v2/natural/nutrients';
+
 
 module.exports = {
 
@@ -103,14 +104,14 @@ module.exports = {
      next();
     },
     
-    nutritionDBLookup:(req,res,next)=>{
+    nutritionDBLookupFoods:(req,res,next)=>{
       let currentUser = res.locals.currentUser;
       
       if (currentUser) {
         if(req.params.foodName != null)
         {
             //make remote call to nutrition database
-            const url =  NUTRITIONIX_API_ENDPOINT + req.params.foodName; 
+            const url =  NUTRITIONIX_API_ENDPOINT_FOOD_QUERY + req.params.foodName; 
             
             axios.get(url, {
               headers: {'x-app-key':'527d7ac47737983a2197102edde9b34a',
@@ -119,6 +120,39 @@ module.exports = {
               })
               .then(response=>{
                 res.locals.foodNames = JSON.stringify(response.data);
+                next();
+              })
+              .catch(error=>{
+                console.log(error);
+              });
+           
+        } //if(req.params.foodName != null)
+        else{
+          console.log("Food name is null!!");
+        }
+        
+      } //if(currentuser)
+      
+    },
+
+    nutritionDBLookupNutrients:(req,res,next)=>{
+      let currentUser = res.locals.currentUser;
+      
+      if (currentUser) {
+        if(req.params.foodName != null)
+        {
+            //make remote call to nutrition database
+            const url =  NUTRITIONIX_API_ENDPOINT_FOOD_NUTRIENTS; 
+            const data = {query:req.params.foodName};
+
+            axios.post(url, data, {
+              headers: {'x-app-key':'527d7ac47737983a2197102edde9b34a',
+                        'x-app-id':'179643b1'
+                  }, //Add API keys for account
+              }
+              )
+              .then(response=>{
+                res.locals.foodNameNutrients = JSON.stringify(response.data);
                 next();
               })
               .catch(error=>{

@@ -30,7 +30,8 @@ router.post('/login', function(req, res, next) {
   });
   
 
-router.get("/food/lookup/:foodName", foodController.nutritionDBLookup,foodController.respondJSON); //foodName - refer to in code
+router.get("/food/lookup/:foodName", foodController.nutritionDBLookupFoods,foodController.respondJSON); //foodName - refer to in code
+router.get("/food_nutrients/lookup/:foodName", foodController.nutritionDBLookupNutrients,foodController.respondJSON); //foodName - refer to in code
 router.get("/food/:thisDate", foodController.filterFoodDiaryDay, foodController.respondJSON);
 
 //need to change to put
