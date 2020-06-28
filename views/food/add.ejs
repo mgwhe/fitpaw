@@ -1,59 +1,108 @@
-<div class="col-sm-6">
-  <img src="../../images/food.jpg"  alt="">
+<div class="col-md-5">
+  <img src="../../images/food.jpg" class="img-responsive hidden-xs" alt="">
 </div>
 
-<div class="col-sm-6">
-    
-    <div class="data-form">
+<div class="col-md-7">
+    <div class="row">
         <!--autocomplete MUSt be off for custom autocomplete to work-->
-        <form class="form-signin" id="idFoodAdd" autocomplete="off">
-        <h2 class="form-signin-heading">Pet Diet Log</h2>
-        
-        <div class="autocomplete" style="width:300px;">
-            <label for="inputFoodName">Food Name</label>
-            <input type="text" name="foodName" id="inputFoodName" class="form-control" placeholder="Food Name"  autofocus requried>
-        </div>
+        <form class="data-form" id="idFoodAdd" autocomplete="off">
+           <!-- <h2 class="form-signin-heading">Pet Diet Log</h2>-->
+           <h2 class="h2">Pet Diet Log</h2>
+            <div class="col-xs-6">
+                <label for="inputFoodName">Food Name</label>
+                <input type="text" name="foodName" id="inputFoodName" class="form-control" placeholder="Food Name"  autofocus requried>
+            </div>
 
-        <div class="row">
-            <div class="col-xs-6 previous">
+            <div class="col-xs-3">
                 <label for="inputFoodQuantity">Quantity</label>
                 <input type="text" name="foodQuantity" id="inputFoodQuantity" class="form-control" placeholder="Food Quantity" required>            
             </div>
-            <div class="col-xs-6 next">
-                <label for="listFoodUnits">Food Units</label>
+            <div class="col-xs-3">
+                <label for="listFoodUnits">Units</label>
                 <select class="form-control" id="listFoodUnits" name="foodUnits" required>
                 </select>
             </div>
-        </div>
-   
+            
+            <script type="text/javascript">
+                $(function () {
+                    $('#datetimepicker').datetimepicker({showTodayButton: true});
+                });
 
-         <label for="inputFoodDate">Set Diary Date</label>
-        <div class="form-group">
-            <div class='input-group date' id='datetimepicker'>
-                <input type='text' class="form-control" name="foodDate" id="inputFoodDate"/>
-                <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-calendar"></span>
-                </span>
-            </div>
-        </div>
-        <script type="text/javascript">
-            $(function () {
-                $('#datetimepicker').datetimepicker();
-            });
+                $('#datetimepicker').on('dp.change', function(e){ 
+                    var strDate = (e.date).toISOString().substring(0,10); //get year yyyy-mm-dd
+                    document.getElementById("foodDiaryDate").value =strDate; //set date
+                })
+            </script>
+            
+            <input type="hidden" id="memberObjectId" name="memberObjectId" value="<%=`${currentUser._id}`%>">
+            <input type="hidden" id="foodDiaryDate" name="diaryDate" value="">
 
-            $('#datetimepicker').on('dp.change', function(e){ 
-                var strDate = (e.date).toISOString().substring(0,10); //get year yyyy-mm-dd
-                document.getElementById("foodDiaryDate").value =strDate; //set date
-            })
-        </script>
-        
-      
-        <input type="hidden" id="memberObjectId" name="memberObjectId" value="<%=`${currentUser._id}`%>">
-        <input type="hidden" id="foodDiaryDate" name="diaryDate" value="">
-
-        <br/><button class="btn btn-lg btn-primary btn-block" type="submit">Add to Meal Basket</button>
+            <br/><button class="btn btn-md btn-primary btn-block" type="submit">Add</button>
         </form>
     </div>
+    <!--here-->
+
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <table class="table table-striped ">
+            <thead>
+                <tr>
+                  <th class="info">
+                    <h5 class="text-center">Food</h5>
+                  </th>
+                  <th class="info">
+                    <h5 class="text-center">Unit</h5>
+                  </th>
+                  <th class="info">
+                    <h5 class="text-center">Qty</h5>
+                  </th>
+                  <th class="info">
+                    <h5 class="text-center">Remove</h5>
+                  </th>
+                </tr>
+              </thead>
+            <tbody>
+              <tr>
+                <td>Chocolate</td>
+                <td>2</td>
+                <td>Bars</td>
+                <td>
+                    <a href="#">
+                    <span class="glyphicon glyphicon-remove"></span>    
+                    </a>
+                </td>
+              </tr>
+              <tr>
+                <td class="col-md-12 col-xs-offset-1 col-xs-11">            
+                    <a href="#" class="btn btn-info btn-block">  
+                        <span class="glyphicon glyphicon-ok" class="color"></span> Log to Diary
+                    </a>
+                </td>
+                </tr>
+                <tr>
+                    <td class="col-md-12 col-xs-offset-1 col-xs-11"> 
+                        <a href="#" class="btn btn-outline-danger btn-block">
+                            <span class="glyphicon glyphicon-remove"></span> Delete Food Basket   
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                <!--     <div class="form-group"> -->
+                            <div class='input-group date' id='datetimepicker'>
+                                <input type='text' class="form-control" name="foodDate" id="inputFoodDate"/>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div> 
+                    </td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+    <!--end here--> 
   </div>
  
   <script>
@@ -136,11 +185,15 @@
 
         form.addEventListener( 'submit', function ( event ) {
                     event.preventDefault(); //stop the form from doing its normal post to server
-                    getFoodNutrients();
+                  //  getFoodNutrients();
+                  //add to a local table with delete option
+
                 }
         );
     })
 
+    // Lookup the nutrients for the select food from the autocomplete list. first, a REST call to the node server
+    // which is then forwarded to the Nutritionix API service. So,two calls are made in sequence
     function getFoodNutrients(){
 
         //lookup the food from the input box, code done for this before in autocomplete

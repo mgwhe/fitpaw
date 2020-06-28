@@ -84,3 +84,24 @@ a {
   display: block;
   margin: 5px;
 }
+
+/*
+Perform Bootstrap media query
+-----------------------------
+For devices with a max width of 48em (small devices), 
+reduce font size as follows
+*/
+@media (max-width: 48em) {
+  table .btn {
+      font-size: 0.75rem; /* fallback if browser does not support vw units*/
+      font-size: 3.5vw; /* dynamically change font size. 1vw ==== 1% of total viewport */
+  }
+}
+/*  Colour remove glyph red */
+.glyphicon-remove {
+  color: #E04C4C;
+}
+
+span {
+  text-align: center;
+}
