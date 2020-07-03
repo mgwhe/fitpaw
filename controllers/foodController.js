@@ -1,5 +1,7 @@
 "use strict";
 
+const { default: validator } = require("validator");
+
 const User = require("../models/user"),
 httpStatus = require("http-status-codes"),  
 FoodDiaryDay = require("../models/food_diary_day"),
@@ -145,19 +147,26 @@ module.exports = {
             const url =  NUTRITIONIX_API_ENDPOINT_FOOD_NUTRIENTS; 
             const data = {query:req.params.foodName};
 
-            axios.post(url, data, {
-              headers: {'x-app-key':'527d7ac47737983a2197102edde9b34a',
-                        'x-app-id':'179643b1'
-                  }, //Add API keys for account
-              }
-              )
-              .then(response=>{
-                res.locals.foodNameNutrients = JSON.stringify(response.data);
-                next();
-              })
-              .catch(error=>{
-                console.log(error);
-              });
+            //check look up food name before calling API
+            if(validator.isAlpha(data)){
+              axios.post(url, data, {
+                headers: {'x-app-key':'527d7ac47737983a2197102edde9b34a',
+                          'x-app-id':'179643b1'
+                    }, //Add API keys for account
+                }
+                )
+                .then(response=>{
+                  res.locals.foodNameNutrients = JSON.stringify(response.data);
+                  next();
+                })
+                .catch(error=>{
+                  console.log(error);
+                });
+            }
+            else{
+              console.log("Food name has invalid characters");
+            }
+            
            
         } //if(req.params.foodName != null)
         else{

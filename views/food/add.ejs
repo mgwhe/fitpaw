@@ -8,103 +8,97 @@
         <form class="data-form" id="idFoodAdd" autocomplete="off">
            <!-- <h2 class="form-signin-heading">Pet Diet Log</h2>-->
            <h2 class="h2">Pet Diet Log</h2>
-            <div class="col-xs-6">
-                <label for="inputFoodName">Food Name</label>
-                <input type="text" name="foodName" id="inputFoodName" class="form-control" placeholder="Food Name"  autofocus requried>
+           <div class="row">
+                <div class="col-xs-6">
+                    <label for="inputFoodName">Food Name</label>
+                    <input type="text" name="foodName" id="inputFoodName" class="form-control" placeholder="Food Name"  autofocus requried>
+                </div>
+                <div class="col-xs-2">
+                    <label for="inputFoodQuantity">Quantity</label>
+                    <input type="text" name="foodQuantity" id="inputFoodQuantity" class="form-control" placeholder="Qty" required>            
+                </div>
+                <div class="col-xs-4" style="vertical-align: middle;">
+                    <label for="inputFoodQuantity">Units</label>
+                    <h4 id="idFoodUnits" name="foodUnits"></h4>
+                </div>
+            </div> 
+            <div class="row">
+                <div class="col-sm-6" style="background-color:yellow;">
+                    <button class="btn btn-md btn-primary btn-block" type="submit">Add</button>
+                </div> 
             </div>
 
-            <div class="col-xs-3">
-                <label for="inputFoodQuantity">Quantity</label>
-                <input type="text" name="foodQuantity" id="inputFoodQuantity" class="form-control" placeholder="Food Quantity" required>            
-            </div>
-            <div class="col-xs-3">
-                <label for="listFoodUnits">Units</label>
-                <select class="form-control" id="listFoodUnits" name="foodUnits" required>
-                </select>
-            </div>
-            
             <script type="text/javascript">
                 $(function () {
-                    $('#datetimepicker').datetimepicker({showTodayButton: true});
+                    //Set-up Bootstrap 3 datetimepicket control
+                    //Options: https://eonasdan.github.io/bootstrap-datetimepicker/Options/ 
+                    $('#datetimepicker').datetimepicker({ 
+                        showTodayButton: true, //highlight today's date
+                        format: 'DD/MM/YYYY',  //use format for Ireland/EU
+                        maxDate: Date(), //dont allow future dates
+                        useCurrent: true //populate todays' date by default
+                    });
                 });
 
+                //Add event handler so that if there is a change to the datetimepicker this will fire
+                //and load the selected date to the foodDiaryDate input box
                 $('#datetimepicker').on('dp.change', function(e){ 
-                    var strDate = (e.date).toISOString().substring(0,10); //get year yyyy-mm-dd
+                    var strDate = (e.date).toISOString().substring(0,10); //get year yyyy-mm-dd as way decided to use in Mongo
                     document.getElementById("foodDiaryDate").value =strDate; //set date
                 })
+
             </script>
             
             <input type="hidden" id="memberObjectId" name="memberObjectId" value="<%=`${currentUser._id}`%>">
             <input type="hidden" id="foodDiaryDate" name="diaryDate" value="">
-
-            <br/><button class="btn btn-md btn-primary btn-block" type="submit">Add</button>
         </form>
     </div>
     <!--here-->
 
     <div class="row">
-        <div class="col-md-10 col-md-offset-1">
-          <table class="table table-striped ">
-            <thead>
-                <tr>
-                  <th class="info">
-                    <h5 class="text-center">Food</h5>
-                  </th>
-                  <th class="info">
-                    <h5 class="text-center">Unit</h5>
-                  </th>
-                  <th class="info">
-                    <h5 class="text-center">Qty</h5>
-                  </th>
-                  <th class="info">
-                    <h5 class="text-center">Remove</h5>
-                  </th>
-                </tr>
-              </thead>
-            <tbody>
-              <tr>
-                <td>Chocolate</td>
-                <td>2</td>
-                <td>Bars</td>
-                <td>
-                    <a href="#">
-                    <span class="glyphicon glyphicon-remove"></span>    
-                    </a>
-                </td>
-              </tr>
-              <tr>
-                <td class="col-md-12 col-xs-offset-1 col-xs-11">            
+        <div class="col-md-12">
+            <table class="table table-striped" id="idFoodBasket">
+                <thead>
+                    <th class="info">
+                        <h5 class="text-center">Food</h5>
+                    </th>
+                    <th class="info">
+                        <h5 class="text-center">Unit</h5>
+                    </th>
+                    <th class="info">
+                        <h5 class="text-center">Qty</h5>
+                    </th>
+                    <th class="info">
+                        <h5 class="text-center">Remove</h5>
+                    </th>
+                </thead>
+                <tbody class="info">  
+                    
+                </tbody>
+            </table>
+            
+            <div class="row">
+                <div class="col-md-6 ">            
                     <a href="#" class="btn btn-info btn-block">  
                         <span class="glyphicon glyphicon-ok" class="color"></span> Log to Diary
                     </a>
-                </td>
-                </tr>
-                <tr>
-                    <td class="col-md-12 col-xs-offset-1 col-xs-11"> 
-                        <a href="#" class="btn btn-outline-danger btn-block">
-                            <span class="glyphicon glyphicon-remove"></span> Delete Food Basket   
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                <!--     <div class="form-group"> -->
-                            <div class='input-group date' id='datetimepicker'>
-                                <input type='text' class="form-control" name="foodDate" id="inputFoodDate"/>
-                                <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                </span>
-                            </div> 
-                    </td>
-                </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+                </div>
+                <div class="col-md-6 "> 
+                    <div class='input-group date' id='datetimepicker'>
+                        <input type='text' class="form-control" name="foodDate" id="inputFoodDate"/>
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        
+        </div>      
+    </div>
+</div>
       
-    <!--end here--> 
-  </div>
- 
+
+
   <script>
 
     //code for autocomplete behaviour (based on list of countries example from W3C Schools))
@@ -113,54 +107,58 @@
   
     function getFoods(foodName){
         const stringEndpoint = "/api/food/lookup/"+foodName;
+        if(validator.isAlpha(foodName)){
 
-        console.log("in getFoods - before API call");
+            var displayData = [];
 
-        var displayData = [];
+            console.log("in getFoods - before API call");
+            //to do test what element is calling 
+            $.ajax({
+                url: stringEndpoint,
+                type: 'GET',
+                async:false, //This absolutely needs to be a sync call or the autocomplete solution does not work. 
+                success: function(results){
+                
+                    console.log("in getFoods - after API call ..dumping results ..");
+                
+                    console.log(results.data.foodNames);
+                    let data = results.data;
+                    if (!data || !data.foodNames){     
+                        console.log("bailing out");           
+                        return;
+                    }
 
-        //to do test what element is calling 
-         $.ajax({
-            url: stringEndpoint,
-            type: 'GET',
-            async:false, //This absolutely needs to be a sync call or the autocomplete solution does not work. 
-            success: function(results){
-            
-                console.log("in getFoods - after API call ..dumping results ..");
-               
-                console.log(results.data.foodNames);
-                let data = results.data;
-                if (!data || !data.foodNames){     
-                    console.log("bailing out");           
-                    return;
-                }
-
-                displayData = data.foodNames; 
-                return data.foodNames; //technically dont need
-            } //function()
-        });
-
-   //     console.log(displayData);
-        const foodNamesObj = JSON.parse(displayData); //Convert JSON back to an object as didn't work otherwise
-        var filteredFoods = [];
-
-        console.log(foodNamesObj.common[0]);
-
-        var foodDetails = new Object();
-
-        //Extract common food names only from nested array of foods details 
-        foodNamesObj.common.forEach(food =>{
-            
-            console.log(food.food_name);
-            foodDetails.foodName = capital_letter(food.food_name); 
-            foodDetails.foodUnits = food.serving_unit;
-            foodDetails.foodQuantity = food.serving_qty;
-
-            filteredFoods.push(foodDetails);
-
-            foodDetails = {};
-        }); 
+                    displayData = data.foodNames; 
+                    return data.foodNames; //technically dont need
+                } //function()
+            }); //ajax
         
-        return filteredFoods;
+    //     console.log(displayData);
+            const foodNamesObj = JSON.parse(displayData); //Convert JSON back to an object as didn't work otherwise
+            var filteredFoods = [];
+
+            console.log(foodNamesObj.common[0]);
+
+            var foodDetails = new Object();
+
+            //Extract common food names only from nested array of foods details 
+            foodNamesObj.common.forEach(food =>{
+                
+                console.log(food.food_name);
+                foodDetails.foodName = capital_letter(food.food_name); 
+                foodDetails.foodUnits = food.serving_unit;
+                foodDetails.foodQuantity = food.serving_qty;
+
+                filteredFoods.push(foodDetails);
+
+                foodDetails = {};
+            }); 
+            
+            return filteredFoods;
+        }
+        else { //bad food name
+            return null;
+        }
     } //getFoods
 
     //https://www.w3resource.com/javascript-exercises/javascript-basic-exercise-50.php#:~:text=ES6%20Version%3A&text=toUpperCase()%20%2B%20str%5Bi%5D.,word%20of%20a%20given%20string.
@@ -184,13 +182,66 @@
         const form = document.getElementById( "idFoodAdd" );
 
         form.addEventListener( 'submit', function ( event ) {
-                    event.preventDefault(); //stop the form from doing its normal post to server
+                event.preventDefault(); //stop the form from doing its normal post to server
                   //  getFoodNutrients();
-                  //add to a local table with delete option
-
+                var foodDetails =[];
+                
+                foodDetails.push(document.getElementById("idFoodUnits").innerHTML); 
+                foodDetails.push(document.getElementById("inputFoodQuantity").value); 
+                foodDetails.push(document.getElementById("inputFoodName").value); 
+                
+                if(IsValidFoodDetails(foodDetails)){
+                    
+                    addToFoodBasket(foodDetails);
+                    //clear form entry
+                    document.getElementById("idFoodUnits").innerHTML="";
+                    document.getElementById("inputFoodQuantity").value="";
+                    document.getElementById("inputFoodName").value="";
                 }
-        );
+                else{
+                    alert("Invalid basket item!");
+                }
+
+        });
     })
+
+    function IsValidFoodDetails(foodDetails){
+        if(
+            validator.isNumeric(document.getElementById("inputFoodQuantity").value)&&
+            //Use validator alphanumberic and spaces
+            //https://github.com/validatorjs/validator.js/issues/305
+            validator.isAlphanumeric(validator.blacklist(document.getElementById("inputFoodName").value, ' '))
+        ){
+            return true;
+        }
+        else{
+            return false;
+        } 
+    }
+
+    function addToFoodBasket(foodDetails){
+        var tableRef = document.getElementById('idFoodBasket').getElementsByTagName('tbody')[0];
+            var newRow   = tableRef.insertRow();
+            
+            var newCell  = newRow.insertCell(0);
+            newlink = document.createElement('a');
+            newlink.setAttribute('class', 'glyphicon glyphicon-remove');
+            newlink.setAttribute('href', 'javascript:deleteFoodFromBasket()');
+            newCell.appendChild(newlink);
+
+            foodDetails.forEach(item =>{
+                var newCell  = newRow.insertCell(0);
+                var newText  = document.createTextNode(item);
+                newCell.appendChild(newText);
+            });
+            
+            
+         //   <a href="#"><span class=""></span></a>
+    }
+
+    function deleteFoodFromBasket(){
+        alert("yup");
+    }
 
     // Lookup the nutrients for the select food from the autocomplete list. first, a REST call to the node server
     // which is then forwarded to the Nutritionix API service. So,two calls are made in sequence

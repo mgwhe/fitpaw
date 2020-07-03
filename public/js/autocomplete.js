@@ -22,8 +22,12 @@ function autocomplete(inp, obj) {
         if (val.length <3 ) { return false;} //IW: think this is where to change so only updates if >3 letters
         //IW: make API call for list of matching foods
         let foods = [];
-        foods = getFoods(val);
-       
+        foods = getFoods(val); //get food list or a null if invlaid food name
+
+        if(foods===null){ //bail out because invalid foor name entered and dont want corrupt data
+            return;
+        }
+
         var arr = foods.map(food=>food.foodName);
 
         console.log("after call to getFoods");
@@ -51,30 +55,25 @@ function autocomplete(inp, obj) {
                 b.addEventListener("click", function(e) {
                     /*insert the value for the autocomplete text field:*/
                     inp.value = this.getElementsByTagName("input")[0].value;
-                    //IW added: update list of units for that food
-                    let unitOption = document.createElement("option");
-                    unitOption.value =1; //set the index value to 1. need to update in future if more than one
-                                       
+                              
                     //IW: added. Find the food selected in the input control by looking up the array of foods objects created earlier
-                    //store the units in the units list options. Unsure if foods can have multiple units so sticking with
-                    //this for now
+                    //store the units in the units list options. 
 
-                    //clean down previous list entries in selection
-                    var i, L =  document.getElementById('listFoodUnits').options.length - 1;
-                    for(i = L; i >= 0; i--) {
-                        document.getElementById('listFoodUnits').remove(i);
-                    } 
                     //clear down quantity
                     document.getElementById('inputFoodQuantity').value ="";
 
+                    //clear down units
+                    document.getElementById('idFoodUnits').innerHTML ="";
+
                     //lookup foodName so can then get the qty and default amount
                     let foodDetailsMatch = foods.find(food => food.foodName === inp.value); //https://stackoverflow.com/questions/12462318/find-a-value-in-an-array-of-objects-in-javascript
-                    //update quantity field
-                    unitOption.text = foodDetailsMatch.foodUnits;
-                    //add new item to the list box
-                    document.getElementById('listFoodUnits').add(unitOption,null); //add to select a new option with units
+                    
                     //add food quantity to input box. user can edit as needs be
                     document.getElementById('inputFoodQuantity').value = foodDetailsMatch.foodQuantity;
+
+                     //update units field
+                     document.getElementById('idFoodUnits').innerHTML = foodDetailsMatch.foodUnits;
+                     console.log(foodDetailsMatch.foodUnits);
                     //IW end
 
                     /*close the list of autocompleted values,
