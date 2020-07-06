@@ -10,7 +10,7 @@ foodController = require("../controllers/foodController");
 router.get("/", foodController.filterFoodDiaryDay, foodController.showFoodDiaryDayView);
 router.get("/add/", foodController.add, foodController.redirectView);  
 
-router.post("/create", foodController.create, foodController.redirectView);
+//router.post("/create", foodController.create, foodController.redirectView);
 
 router.get("/:thisDate", foodController.filterFoodDiaryDay, foodController.showFoodDiaryDayView);
 router.put("/:thisDate", foodController.filterFoodDiaryDay, foodController.showFoodDiaryDayView);

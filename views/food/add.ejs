@@ -79,9 +79,9 @@
             
             <div class="row">
                 <div class="col-md-6 ">            
-                    <a href="#" class="btn btn-info btn-block">  
+                    <button class="btn btn-md btn-primary btn-block" id="idLogBasketToDiary" type="submit">
                         <span class="glyphicon glyphicon-ok" class="color"></span> Log to Diary
-                    </a>
+                    </button>
                 </div>
                 <div class="col-md-6 "> 
                     <div class='input-group date' id='datetimepicker'>
@@ -92,15 +92,14 @@
                     </div>
                 </div>
             </div>
-        
         </div>      
     </div>
 </div>
       
-
-
   <script>
 
+    var foodBasket =[]; //check if last for page only, etc
+    
     //code for autocomplete behaviour (based on list of countries example from W3C Schools))
     autocomplete(document.getElementById("inputFoodName"));
 
@@ -184,24 +183,46 @@
         form.addEventListener( 'submit', function ( event ) {
                 event.preventDefault(); //stop the form from doing its normal post to server
                   //  getFoodNutrients();
-                var foodDetails =[];
-                
-                foodDetails.push(document.getElementById("idFoodUnits").innerHTML); 
-                foodDetails.push(document.getElementById("inputFoodQuantity").value); 
-                foodDetails.push(document.getElementById("inputFoodName").value); 
-                
+             /*   var foodDetails={};
+                     
+                foodDetails['foodName']= document.getElementById("inputFoodName").value; 
+                foodDetails['foodQuantity']=document.getElementById("inputFoodQuantity").value; 
+                foodDetails['foodUnits']=document.getElementById("idFoodUnits").innerHTML; 
+            */
+
+               let foodDetails={
+                   foodName:document.getElementById("inputFoodName").value,
+                   foodQuantity:document.getElementById("inputFoodQuantity").value,
+                   foodUnits:document.getElementById("idFoodUnits").innerHTML
+               };
+                     
+
                 if(IsValidFoodDetails(foodDetails)){
                     
                     addToFoodBasket(foodDetails);
-                    //clear form entry
-                    document.getElementById("idFoodUnits").innerHTML="";
-                    document.getElementById("inputFoodQuantity").value="";
+
+                    //Update display of basket by adding a row to the basket table
+                    updateFoodBasketView(foodDetails);
+                    
+                    //clear food search entry
                     document.getElementById("inputFoodName").value="";
+                    document.getElementById("inputFoodQuantity").value="";
+                    document.getElementById("idFoodUnits").innerHTML="";
+                   
                 }
                 else{
                     alert("Invalid basket item!");
                 }
 
+        });
+
+        //HERE
+        const basketToDiary = document.getElementById( "idLogBasketToDiary");
+
+        basketToDiary.addEventListener( 'click', function ( event ) {
+                event.preventDefault(); //stop the form from doing its normal post to server
+                 
+                  uploadFoodBasket();
         });
     })
 
@@ -220,24 +241,96 @@
     }
 
     function addToFoodBasket(foodDetails){
+
+        foodBasket.push(foodDetails);
+    }
+
+    function uploadFoodBasket(){
+
+        //check basket date is valid
+        //validator.
+
+        const stringEndpoint = "/api/foodbasket";
+
+        console.log("in uploadFoodBasket - before API call");
+
+        //disable log basket button or user could press several times 
+        const button = document.getElementById("idLogBasketToDiary");
+        button.disabled = true;
+
+         $.ajax({
+            url: stringEndpoint,
+            type: 'POST',
+            data:{
+                foodBasketContents:JSON.stringify(foodBasket),
+                foodDate: document.getElementById("inputFoodDate").value
+            },
+            async:true, 
+            success: function(results){            
+                console.log(results);
+                if(results.status == 200)
+                {
+                    //Clear basket as now processed
+                    var tableRef = document.getElementById('idFoodBasket');
+                    //clear down table rows
+                    var rowCount = CountRows(); //dont want to delete headers
+                    for(i=0;i<rowCount;i++){
+                        tableRef.deleteRow(-1);
+                    }
+                    const button = document.getElementById("idLogBasketToDiary");
+                    button.disabled = false;
+                }
+                else{
+                    console.log("Error - failed to process food basket");
+                }
+            } //function()
+        });
+
+        function CountRows() {
+            var totalRowCount = 0;
+            var rowCount = 0;
+            var table = document.getElementById("idFoodBasket");
+            var rows = table.getElementsByTagName("tr")
+            for (var i = 0; i < rows.length; i++) {
+                totalRowCount++;
+                if (rows[i].getElementsByTagName("td").length > 0) {
+                    rowCount++;
+                }
+            }
+            return rowCount;
+        }
+    }
+
+    //Add a new row to the food basket HTML table showing the added food item
+    function updateFoodBasketView(foodDetails){
         var tableRef = document.getElementById('idFoodBasket').getElementsByTagName('tbody')[0];
             var newRow   = tableRef.insertRow();
             
+            //Add the delete symbol
             var newCell  = newRow.insertCell(0);
             newlink = document.createElement('a');
             newlink.setAttribute('class', 'glyphicon glyphicon-remove');
             newlink.setAttribute('href', 'javascript:deleteFoodFromBasket()');
             newCell.appendChild(newlink);
 
-            foodDetails.forEach(item =>{
-                var newCell  = newRow.insertCell(0);
-                var newText  = document.createTextNode(item);
-                newCell.appendChild(newText);
-            });
-            
-            
+            //Add foodUnits to the row
+            var newCell  = newRow.insertCell(0);
+            var newText  = document.createTextNode(foodDetails.foodUnits);
+            newCell.appendChild(newText);
+
+            //Add foodQuantity to the row
+            var newCell  = newRow.insertCell(0);
+            var newText  = document.createTextNode(foodDetails.foodQuantity);
+            newCell.appendChild(newText);
+
+             //Add foodName to the row
+            var newCell  = newRow.insertCell(0);
+            var newText  = document.createTextNode(foodDetails.foodName);
+            newCell.appendChild(newText);
+                       
          //   <a href="#"><span class=""></span></a>
     }
+
 
     function deleteFoodFromBasket(){
         alert("yup");

@@ -62,22 +62,19 @@ module.exports = {
       res.render("food/show");
     },
 
-    create: (req, res, next) => {
+    addFoodBasketItemsToDiary: (req, res, next) => {
       let currentUser = res.locals.currentUser;
-      let foodParams =  getFoodItemParams(req.body);
-      let foodDate = req.body.foodDate;
+      
+    //  let foodDate = req.body.foodDate;
 
       if (currentUser) {
-          var stuff = getFoodItemParams(req.body);
-        
-          console.log(stuff);
-          console.log("after");
-
-          foodDate = (new Date(foodDate)).toISOString().substring(0,10); //trim off time or date search wont match!!
+          
+          let foodDate = (new Date(req.body.foodDate)).toISOString().substring(0,10); //trim off time or date search wont match!!
           //validate data
-         
+        
+          let foodBasketContents = JSON.parse(req.body.foodBasketContents);
           //check if diary Day exists
-          FoodDiaryDay.findOne( {"foodDiaryDayDate": req.body.foodDate})
+          FoodDiaryDay.findOne( {"foodDiaryDayDate": foodDate})
           .where('userRef').equals(currentUser.id) 
           .then(foodDiaryDay=>{
             if(foodDiaryDay == null){
@@ -86,9 +83,12 @@ module.exports = {
               foodDiaryDay.save();
             }
 
-            let newFoodItem = new FoodItem(foodParams);
-            newFoodItem.save();
-            foodDiaryDay.foodDiaryItems.push(newFoodItem._id);    
+            foodBasketContents.forEach(foodItem =>{
+              let newFoodItem = new FoodItem(foodItem);
+              newFoodItem.save();
+              foodDiaryDay.foodDiaryItems.push(newFoodItem._id);  
+            }) 
+
           })
           .catch(error => {
             console.log(`Error: ${error.message}`);
@@ -136,6 +136,7 @@ module.exports = {
       } //if(currentuser)
       
     },
+
 
     nutritionDBLookupNutrients:(req,res,next)=>{
       let currentUser = res.locals.currentUser;

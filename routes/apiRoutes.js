@@ -29,6 +29,7 @@ router.post('/login', function(req, res, next) {
     })(req, res, next);
   });
   
+router.post('/foodbasket',foodController.addFoodBasketItemsToDiary,foodController.respondJSON);
 
 router.get("/food/lookup/:foodName", foodController.nutritionDBLookupFoods,foodController.respondJSON); //foodName - refer to in code
 router.get("/food_nutrients/lookup/:foodName", foodController.nutritionDBLookupNutrients,foodController.respondJSON); //foodName - refer to in code
