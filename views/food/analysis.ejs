@@ -1,0 +1,114 @@
+<div class="col-sm-6">
+    <canvas id="calorieChart" width="400" height="400"></canvas>
+</div>
+
+<div class="col-sm-6">
+    <canvas id="macroChart" width="400" height="400"></canvas>
+
+<script>
+
+var chartData = 
+    {
+        type: 'bar',
+        data: {
+            labels: [] //code in above floating week
+            ,
+            datasets: [{
+                label: 'Weekly Activity',
+                data: [], //load data via Ajax call below
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    }
+
+    var ctx = document.getElementById('calorieChart').getContext('2d');
+    
+    var daysLabelsArray = [];
+    
+
+    var myChart;
+
+    DrawCalorieBarGraph();
+     
+
+        function DrawCalorieBarGraph(){
+               //need to make a second call to get data in JSON format so can programme in to chart object
+                $.get("/api/food/calories/daily", (results ={}) =>{
+                    let d = results.data;
+                    if (!d || !d.dailyCalories){  
+                        //need smooth exit for graph              
+                        return;
+                    }
+                    d.dailyCalories.forEach(activity =>{
+                     
+                        if(isNaN(activity.activityTrackDistanceMetres)) //check undefined, null,etc and put 0
+                        {
+                            chartData.data.datasets[0].data.push(0);
+                        }
+                        else
+                        {
+                            chartData.data.datasets[0].data.push(activity.activityTrackDistanceMetres);
+                        }
+                    }); //forEach
+
+                    loadLabels();
+
+                    myChart = new Chart(ctx,chartData);  
+                }); //get
+                
+        }
+
+        function getDaysOfWeekLabels(){
+            var dayOfWeekLabels = [];
+
+            var tmpDate = new Date();
+            
+            var i;
+
+            tmpDate.setDate(tmpDate.getDate()-7); //start a week ago
+
+            for(i=0;i<7;i++)
+            { 
+                var tmpDayString = tmpDate.toString().split(' ')[0]; 
+                dayOfWeekLabels.push(tmpDayString);
+                tmpDate.setDate(tmpDate.getDate() + 1); //advance to next
+            }
+            
+            return dayOfWeekLabels;
+        }
+        function loadLabels()
+        {
+            daysLabelsArray = getDaysOfWeekLabels();
+            daysLabelsArray.forEach(dayLabel =>{
+            chartData.data.labels.push(dayLabel);
+    });
+        }
+    </script>
+</div>

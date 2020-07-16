@@ -6,7 +6,9 @@ const User = require("../models/user"),
 httpStatus = require("http-status-codes"),  
 FoodDiaryDay = require("../models/food_diary_day"),
 FoodItem = require("../models/food_diary_item"),
+FoodNutrients=require("../models/food_nutrients"),
 axios = require('axios'),
+helpers = require("./helpers"),
 getFoodItemParams = body => { //ES6 syntax using arrow function
   return {
     foodName: body.foodName,
@@ -69,26 +71,64 @@ module.exports = {
 
       if (currentUser) {
           
-          let foodDate = (new Date(req.body.foodDate)).toISOString().substring(0,10); //trim off time or date search wont match!!
-          //validate data
-        
+          let foodDateString = req.body.foodDate;
+          //reverse month and days
+          foodDateString = foodDateString.split("/").reverse().join("-");
+
+          let foodDate = new Date(foodDateString);
+
+          foodDate.setHours(12,0,0); //Make sure time is not mid-night or
+          //ISO call will flip back one hour and hence to the previous date!! So just pick mid-day
+          
+          foodDate = foodDate.toISOString().substring(0,10); //Trim off time or else Mongo date search wont match!!
+ 
           let foodBasketContents = JSON.parse(req.body.foodBasketContents);
           //check if diary Day exists
           FoodDiaryDay.findOne( {"foodDiaryDayDate": foodDate})
-          .where('userRef').equals(currentUser.id) 
+          .where('userRef').equals(currentUser.id).populate("foodDiaryItems") 
           .then(foodDiaryDay=>{
+
             if(foodDiaryDay == null){
               console.log("about to create FoodDiaryDay");
               foodDiaryDay= new FoodDiaryDay({userRef:currentUser.id,foodDiaryDayDate:foodDate});
-              foodDiaryDay.save();
             }
+            
+           //Find maximum value of a meal witihn an array of FoodItems 
+           //source: https://stackoverflow.com/questions/4020796/finding-the-max-value-of-an-attribute-in-an-array-of-objects
+          const maxMealCount = Math.max(...foodDiaryDay.foodDiaryItems.map(o => o.mealNumber), 0);
+          console.log("Max meal number is: "+maxMealCount);
 
             foodBasketContents.forEach(foodItem =>{
               let newFoodItem = new FoodItem(foodItem);
+          
+              let foodName = foodItem.foodName.trim();
+              
+              helpers.getNutrients(foodName)
+              .then(nutrients=>{
+                console.log(JSON.stringify(nutrients));
+              })
+              .catch(error=>{
+                  console.log("Error: "+error);
+              });
+             
+              let foodNutrients = new FoodNutrients();
+
+           //   foodNutrients.calories = nutrientsJSON.foods
+          
+
+              newFoodItem.mealNumber = maxMealCount+1;
+              
               newFoodItem.save();
               foodDiaryDay.foodDiaryItems.push(newFoodItem._id);  
+            
+              console.log(newFoodItem._id);
+              console.log(newFoodItem.foodName);
             }) 
 
+            foodDiaryDay.save();
+
+            console.log("foodDiaryDay.foodDiaryItems.length= "+foodDiaryDay.foodDiaryItems.length);
+            
           })
           .catch(error => {
             console.log(`Error: ${error.message}`);
@@ -104,6 +144,20 @@ module.exports = {
      console.log("route to form for adding food to diary");
    //  let thisDate = req.params.thisDate;
      next();
+    },
+
+    analysis:(req,res,next)=>{
+      let currentUser = res.locals.currentUser;
+      
+      if (currentUser) {
+     //   if(req.params.foodName != null)
+     //   {
+     //   }
+        console.log("analysis");
+
+        next();
+      } //if(currentUser)
+      
     },
     
     nutritionDBLookupFoods:(req,res,next)=>{
@@ -137,6 +191,16 @@ module.exports = {
       
     },
 
+    //hold
+    nutritionDBLookupCalories:(req,res,next)=>{
+      let currentUser = res.locals.currentUser;
+
+      console.log("called nutritionDBLookupCalories");
+      
+      if (currentUser) {
+        next();
+      }
+    },
 
     nutritionDBLookupNutrients:(req,res,next)=>{
       let currentUser = res.locals.currentUser;
@@ -148,8 +212,8 @@ module.exports = {
             const url =  NUTRITIONIX_API_ENDPOINT_FOOD_NUTRIENTS; 
             const data = {query:req.params.foodName};
 
-            //check look up food name before calling API
-            if(validator.isAlpha(data)){
+            //check look up food name before calling API, ignore spaces
+            if(validator.isAlpha(validator.blacklist(req.params.foodName, ' '))){
               axios.post(url, data, {
                 headers: {'x-app-key':'527d7ac47737983a2197102edde9b34a',
                           'x-app-id':'179643b1'
@@ -182,6 +246,11 @@ module.exports = {
       res.render("food/add");
     },
 
+    analysisView: (req, res) => {
+              
+      res.render("food/analysis");
+    },
+
     respondJSON: (req, res) => {
       res.json({
         status: httpStatus.OK,
@@ -191,4 +260,7 @@ module.exports = {
 
     
 } //module.exports
+
+
+
 

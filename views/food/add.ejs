@@ -30,22 +30,30 @@
 
             <script type="text/javascript">
                 $(function () {
-                    //Set-up Bootstrap 3 datetimepicket control
+                //Set-up Bootstrap 3 datetimepicket control
+
+                   //allow entries to be up to 60 days ago
+                    var todayDate = new Date().getDate();
+                    var startDate= new Date(new Date().setDate(todayDate - 60));
+                    
                     //Options: https://eonasdan.github.io/bootstrap-datetimepicker/Options/ 
                     $('#datetimepicker').datetimepicker({ 
                         showTodayButton: true, //highlight today's date
                         format: 'DD/MM/YYYY',  //use format for Ireland/EU
                         maxDate: Date(), //dont allow future dates
+                        minDate: startDate, //today minus 60 days 
                         useCurrent: true //populate todays' date by default
                     });
                 });
 
-                //Add event handler so that if there is a change to the datetimepicker this will fire
-                //and load the selected date to the foodDiaryDate input box
-                $('#datetimepicker').on('dp.change', function(e){ 
+
+         /*       $('#datetimepicker').on('dp.change', function(e){ 
                     var strDate = (e.date).toISOString().substring(0,10); //get year yyyy-mm-dd as way decided to use in Mongo
                     document.getElementById("foodDiaryDate").value =strDate; //set date
+                   
                 })
+            */
+                
 
             </script>
             
@@ -177,7 +185,12 @@
     // based on code from: https://developer.mozilla.org/en-US/docs/Learn/Forms/Sending_forms_through_JavaScript
     //
     // When form is first loaded, disable normal behaviour and add in a special listener that will call getFoodNutrients
-    window.addEventListener( 'load', function () {
+    window.addEventListener( 'load', function () { 
+       
+        //disable log basket to diary
+        const button = document.getElementById("idLogBasketToDiary");
+        button.disabled = false;
+
         const form = document.getElementById( "idFoodAdd" );
 
         form.addEventListener( 'submit', function ( event ) {
@@ -215,8 +228,8 @@
                 }
 
         });
+ 
 
-        //HERE
         const basketToDiary = document.getElementById( "idLogBasketToDiary");
 
         basketToDiary.addEventListener( 'click', function ( event ) {
@@ -243,6 +256,10 @@
     function addToFoodBasket(foodDetails){
 
         foodBasket.push(foodDetails);
+
+        //switch on upload basket button as items are present
+        const button = document.getElementById("idLogBasketToDiary");
+        button.disabled = false;
     }
 
     function uploadFoodBasket(){
@@ -277,8 +294,12 @@
                     for(i=0;i<rowCount;i++){
                         tableRef.deleteRow(-1);
                     }
+                    //empty basket array
+                    foodBasket = [];
+                    //switch off upload button as basket empty
                     const button = document.getElementById("idLogBasketToDiary");
-                    button.disabled = false;
+                    button.disabled = true;
+
                 }
                 else{
                     console.log("Error - failed to process food basket");

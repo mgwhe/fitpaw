@@ -19,7 +19,23 @@ FoodItemSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true 
-  }
+  },
+  mealNumber:{
+    type: Number,
+    default: 0
+  },
+  foodType: {
+    type: String,
+    required: true,
+    default: 'Common',
+    enum: [
+    'Common',
+    'Branded'
+  ]
+  },
+  foodNutrients: { 
+    type: mongoose.Schema.Types.ObjectId, ref: "FoodNutrients"
+  },
 },
 { //timestamp each record when created & updated
   timestamps: true
