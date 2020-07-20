@@ -29,7 +29,9 @@ router.post('/login', function(req, res, next) {
     })(req, res, next);
   });
   
+//router.post('/foodbasket',foodController.saveFoodsFromBasket,foodController.addFoodsToDiary,foodController.respondJSON);
 router.post('/foodbasket',foodController.addFoodBasketItemsToDiary,foodController.respondJSON);
+
 
 router.get("/food/calories/:frequency", foodController.nutritionDBLookupCalories,foodController.respondJSON); 
 

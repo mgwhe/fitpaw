@@ -3,59 +3,61 @@
 //get reference to mongoose module and store in varaiable mongoose 
 const mongoose = require("mongoose"),
 
-FoodNutrientsSchema = new mongoose.Schema({ 
-    foodName: {
+FoodNutrientsSchema = new mongoose.Schema({   
+  foodName: {
     type: String,
     required: true,
     trim: true //always call string trim before storing
   },
-  calories: { 
+  foodServingUnit: {
+    type: String,
+    required: true,
+    trim: true //always call string trim before storing
+  },
+  ndb_no: { //national db ref - may be useful
+    type: Number,
+    default:-1
+  },
+  foodServingWeightGrams: { //may be useful
     type: Number,
     required: true,
+    default:-1
+  },
+  foodReferenceQuantity: {
+    type: Number,
+    required: true,
+    default:-1
+  },
+  calories: { 
+    type: Number,
     default:-1
   },
   fat: { 
     type: Number,
-    required: true,
     default:-1
   },
   protein: { 
     type: Number,
-    required: true,
     default:-1
   },
   carbohydrates: { 
     type: Number,
-    required: true,
     default:-1
   },
   fibre: { 
     type: Number,
-    required: true,
     default:-1
   },
   fat_saturated: { 
     type: Number,
-    required: true
-  },
-  fat_trans: { 
-    type: Number,
-    required: true,
-    default:-1
-  },
-  fat_monounsaturated: { 
-    type: Number,
-    required: true,
-    default:-1
-  },
-  fat_polyunsaturated: { 
-    type: Number,
-    required: true,
     default:-1
   },
   sugar: { 
     type: Number,
-    required: true,
+    default:-1
+  },
+  sodium: { 
+    type: Number,
     default:-1
   }
 },

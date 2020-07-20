@@ -4,6 +4,7 @@ const { default: validator } = require("validator");
 
 const User = require("../models/user"),
 httpStatus = require("http-status-codes"),  
+FoodNutrients=require("../models/food_nutrients"),
 axios = require('axios');
 
 const NUTRITIONIX_API_ENDPOINT_FOOD_QUERY = 'https://trackapi.nutritionix.com/v2/search/instant?query=';
@@ -30,7 +31,7 @@ exports.getNutrients = function(foodName){
        //   console.log("in helper, after call dumping repsonse.data..");  
         //  console.log(JSON.stringify(response.data));
           
-          let result = response.data;
+          let result = response.data; //This saved my project. return response.data alone does NOT pass back data!!!!!
           return result;
         })
         .catch(error=>{
@@ -41,3 +42,45 @@ exports.getNutrients = function(foodName){
           return null;
       }
   } //getNutrients
+
+  //Extract relevent nutrient information from API call to Nutritionix service 
+  //and assign to FoodNutrient object
+  exports.assignNutrientAPIResultsToFoodNutrients = function(nutrientAPIResults){
+   
+    console.log("In helpers: "+nutrientAPIResults.foods[0].food_name);
+     
+
+    let foodNutrients = {  
+      foodName: nutrientAPIResults.foods[0].food_name,
+      foodReferenceQuantity: nutrientAPIResults.foods[0].serving_qty,
+      foodServingUnit:nutrientAPIResults.foods[0].serving_unit,
+      foodServingWeightGrams:nutrientAPIResults.foods[0].serving_weight_grams,
+      ndb_no:nutrientAPIResults.foods[0].ndb_no,
+      calories: nutrientAPIResults.foods[0].nf_calories,
+      fat: nutrientAPIResults.foods[0].nf_total_fat,
+      protein: nutrientAPIResults.foods[0].nf_protein,
+      carbohydrates: nutrientAPIResults.foods[0].nf_total_carbohydrate,
+      fibre: nutrientAPIResults.foods[0].nf_dietary_fiber,
+      fat_saturated: nutrientAPIResults.foods[0].nf_saturated_fat,
+      sugar: nutrientAPIResults.foods[0].nf_sugars,
+      sodium:nutrientAPIResults.foods[0].nf_sodium,
+    }
+    
+    return foodNutrients;
+    
+  }
+
+  exports.fixDate = function(foodDateString){
+    //reverse month and days - from stackflow
+    foodDateString = foodDateString.split("/").reverse().join("-");
+
+    let foodDate = new Date(foodDateString);
+
+    foodDate.setHours(12,0,0); //Make sure time is not mid-night or
+    //ISO call will flip back one hour and hence to the previous date!! So just pick mid-day - not using time so does not matter
+    
+    foodDate = foodDate.toISOString().substring(0,10); //Trim off time or else Mongo date search wont match!!
+
+    return foodDate;
+
+  }
