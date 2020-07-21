@@ -5,7 +5,9 @@ const { default: validator } = require("validator");
 const User = require("../models/user"),
 httpStatus = require("http-status-codes"),  
 FoodNutrients=require("../models/food_nutrients"),
+FoodDiaryDay=require("../models/food_diary_day"),
 axios = require('axios');
+const { promiseImpl } = require("ejs");
 
 const NUTRITIONIX_API_ENDPOINT_FOOD_QUERY = 'https://trackapi.nutritionix.com/v2/search/instant?query=';
 const NUTRITIONIX_API_ENDPOINT_FOOD_NUTRIENTS = 'https://trackapi.nutritionix.com/v2/natural/nutrients';
@@ -84,3 +86,5 @@ exports.getNutrients = function(foodName){
     return foodDate;
 
   }
+
+ 

@@ -11,7 +11,6 @@ FoodNutrientsSchema = new mongoose.Schema({
   },
   foodServingUnit: {
     type: String,
-    required: true,
     trim: true //always call string trim before storing
   },
   ndb_no: { //national db ref - may be useful
@@ -20,12 +19,10 @@ FoodNutrientsSchema = new mongoose.Schema({
   },
   foodServingWeightGrams: { //may be useful
     type: Number,
-    required: true,
     default:-1
   },
   foodReferenceQuantity: {
     type: Number,
-    required: true,
     default:-1
   },
   calories: { 

@@ -6,9 +6,10 @@ const { findByIdAndUpdate } = require("../models/user");
 const User = require("../models/user"),
 httpStatus = require("http-status-codes"),  
 FoodDiaryDay = require("../models/food_diary_day"),
-FoodItem = require("../models/food_diary_item"),
+//FoodItem = require("../models/food_diary_item"),
 FoodNutrients=require("../models/food_nutrients"),
 axios = require('axios'),
+mongoose = require("mongoose"),
 helpers = require("./helpers"),
 getFoodItemParams = body => { //ES6 syntax using arrow function
   return {
@@ -66,6 +67,7 @@ module.exports = {
     },
 
     
+
     addFoodBasketItemsToDiary: (req, res, next) => {
       let currentUser = res.locals.currentUser;
     
@@ -82,11 +84,10 @@ module.exports = {
   
             if(foodDiaryDay == null){
               console.log("about to create FoodDiaryDay");
-              FoodDiaryDay.create({userRef:currentUser.id,foodDiaryDayDate:foodDate})
+              FoodDiaryDay.create({userRef:currentUser.id,foodDiaryDayDate:foodDate,foodDiaryItems: new Array()})
               .then(foodDiaryDay=>{
-                //Find maximum value of a meal witihn an array of FoodItems 
-                  //source: https://stackoverflow.com/questions/4020796/finding-the-max-value-of-an-attribute-in-an-array-of-objects
-                  const maxMealCount = Math.max(...foodDiaryDay.foodDiaryItems.map(o => o.mealNumber), 0);
+               
+                  const maxMealCount =0;
                   console.log("Max meal number is: "+maxMealCount);
         
                     foodBasketContents.forEach(foodBasketItem =>{
@@ -94,12 +95,20 @@ module.exports = {
                         var basketFoodName = foodBasketItem.foodName.trim().toLowerCase();
                           FoodItem.create({
                             foodName:basketFoodName,
+                            foodUnits:foodBasketItem.foodUnits,
+                            foodQuantity:foodBasketItem.foodQuantity,
                             mealNumber:maxMealCount+1
                           })
                           .then((newFoodItem)=>{
 
+                            FoodNutrients.create({foodName:basketFoodName})
+                            .then(foodNutrients=>{
+                              newFoodItem.foodNutrients = foodNutrients._id;
+                              newFoodItem.save();
+                            }) 
+
                             foodDiaryDay.foodDiaryItems.push(newFoodItem._id);  
-                            foodDiaryDay.save();   
+                            
 
                           })     
                           .catch(error=>{ 
@@ -107,8 +116,9 @@ module.exports = {
                           }); //.catch      
 
                     }) //forEach
-                
-              }) //.then
+                    foodDiaryDay.save();  
+              })
+               //.then
             
             }
             else{
@@ -128,9 +138,15 @@ module.exports = {
                       mealNumber:maxMealCount+1
                     })
                     .then((newFoodItem)=>{
+                            
+                            FoodNutrients.create({foodName:basketFoodName})
+                            .then(foodNutrients=>{
+                              newFoodItem.foodNutrients = foodNutrients._id;
+                              newFoodItem.save();
+                            }) 
 
-                      foodDiaryDay.foodDiaryItems.push(newFoodItem._id);  
-                      foodDiaryDay.save();   
+                            foodDiaryDay.foodDiaryItems.push(newFoodItem._id);  
+                            foodDiaryDay.save();   
 
                     })     
                     .catch(error=>{ 
@@ -142,7 +158,7 @@ module.exports = {
             } //else
 
             next();
-          console.log("foodDiaryDay.foodDiaryItems.length= "+foodDiaryDay.foodDiaryItems.length);
+     //     console.log("foodDiaryDay.foodDiaryItems.length= "+foodDiaryDay.foodDiaryItems.length);
           }); 
   
       } //if user
@@ -202,13 +218,16 @@ module.exports = {
       } //if user
       
     },
+*/
+    addFoodToDiary: (req, res, next) => {
+      console.log("addFoodToDiary");
 
-    addFoodsToDiary: (req, res, next) => {
-      console.log("addFoodsToDiary");
-
-      let currentUser = res.locals.currentUser;
-      let foodDate = helpers.fixDate(req.body.foodDate); //set date to yyyy-MM-DD 
-      let foodItemIDs = res.locals.foodItemIDs; 
+      const currentUser = res.locals.currentUser;
+      const foodDate = helpers.fixDate(req.body.foodDate); //set date to yyyy-MM-DD 
+      const foodItem = JSON.parse(req.body.foodItem);
+      var foodItemName = foodItem.foodName.trim().toLowerCase();
+      var newFoodItemId;
+      var IsNewNutrient = true;
       
       if (currentUser) {
           
@@ -217,48 +236,343 @@ module.exports = {
           .where('userRef').equals(currentUser.id).populate("foodDiaryItems") 
           .then(foodDiaryDay=>{
 
-            //Food diary day with all food diary items for the logged in user
+              //Food diary day with all food diary items for the logged in user
+              var maxMealCount =0;
+             
 
-            if(foodDiaryDay == null){
-              console.log("about to create FoodDiaryDay");
-              foodDiaryDay= new FoodDiaryDay({userRef:currentUser.id,foodDiaryDayDate:foodDate});
-              foodDiaryDay.save();
-            }
-            
-            //Find maximum value of a meal witihn an array of FoodItems 
-            //source: https://stackoverflow.com/questions/4020796/finding-the-max-value-of-an-attribute-in-an-array-of-objects
-            const maxMealCount = Math.max(...foodDiaryDay.foodDiaryItems.map(o => o.mealNumber), 0);
-            console.log("Max meal number is: "+maxMealCount);
-
-
-            //loop through food _ids and add them to foodDiaryitems
-            foodItemIDs.forEach(foodItemID =>{
-              foodDiaryDay.foodDiaryItems.push(foodItemID); 
-       //       foodItemID.mealNumber = maxMealCount+1;
+              if(foodDiaryDay == null){
+                console.log("about to create FoodDiaryDay");
+                foodDiaryDay = new FoodDiaryDay({userRef:currentUser.id,foodDiaryDayDate:foodDate, foodDiaryItems: new Array()});
+                foodDiaryDay.save(); 
+   
+              }
+             else{
+                //Find current maximum value of a meal witihn an array of FoodItems before new is added
+                //source: https://stackoverflow.com/questions/4020796/finding-the-max-value-of-an-attribute-in-an-array-of-objects
+           //      maxMealCount = Math.max(...foodDiaryDay.foodDiaryItems.map(o => o.mealNumber), 0);
+                console.log("Max meal number is: "+maxMealCount);
+             }
                 
-              //update the meal number for each food item - i.e. during what meal was it eat
-              FoodItems.findByIdAndUpdate(foodItemID,{"mealNumber": maxMealCount+1}, (doc)=>{
-                console.log("Updated id"+doc._id);
-              });
+             
+             FoodItem.create({
+                  foodName:foodItemName,
+                  foodUnits:foodItem.foodUnits,
+                  foodQuantity:foodItem.foodQuantity,
+                  mealNumber:maxMealCount+1 //need to sort 
+                })
+                .then((newFoodItem)=>{
+
+                  newFoodItemId = newFoodItem._id;
+                        
+                  FoodNutrients.findOne({foodName:foodItemName})
+                  .then( foodMatch=>{
+                      if(foodMatch == null)
+                      {
+                        IsNewNutrient = true;
+
+                        FoodNutrients.create({foodName:foodItemName})
+                        .then(foodNutrients=>{
+                          newFoodItem.foodNutrients = foodNutrients._id;
+                          newFoodItem.save();
+                        }) 
+                      }
+                      else{
+                        IsNewNutrient = false;
+
+                        newFoodItem.foodNutrients = foodNutrients._id;
+                        newFoodItem.save();
+                      }
+
+                  })
+
+                  FoodDiaryDay.findOneAndUpdate( {"foodDiaryDayDate": foodDate},{"foodDiaryItems": newFoodItem})
+                  .where('userRef').equals(currentUser.id).exec();
+
+                //  foodDiaryDay.foodDiaryItems.push(newFoodItemId);  
+                //  foodDiaryDay.save();  
+                        
+                })     
+                .catch(error=>{ 
+                  console.log("Error: "+error);
+                }); //.catch 
+
+    
             })
 
-            foodDiaryDay.save();
-
-       
-            
-            console.log("foodDiaryDay.foodDiaryItems.length= "+foodDiaryDay.foodDiaryItems.length);
-            
-          })
-          .catch(error => {
-            console.log(`Error: ${error.message}`); 
-            next(error);
-          });
+            if(IsNewNutrient === true){
+                //Get nutrients from Nutritionix via API and update  
+                helpers.getNutrients(foodItemName) //Issue resolved - needed to do .then as API call is async and using let will return too early!!
+                .then(nutrientAPIResults=>{
+                    //find and update based on API call
+                    FoodNutrients.findOneAndUpdate(
+                      {foodName: foodItemName},
+                      helpers.assignNutrientAPIResultsToFoodNutrients(nutrientAPIResults)
+                    )
+                    .exec();
+                })
+            }
 
           next();
       } //if user
    
     },
-*/
+
+
+    addFoodToDiary2: (req, res, next) => {
+      console.log("addFoodToDiary");
+
+      const currentUser = res.locals.currentUser;
+      const foodDate = helpers.fixDate(req.body.foodDate); //set date to yyyy-MM-DD 
+      const foodItem = JSON.parse(req.body.foodItem);
+      var foodItemName = foodItem.foodName.trim().toLowerCase();
+      var IsNewNutrient = true;
+      var maxMealCount =0;
+      
+      if (currentUser) {
+
+          //check if diary Day exists
+          let foodDiaryDay =  helpers.getDiaryDay();
+          
+          //Food diary day with all food diary items for the logged in user
+         
+          if(foodDiaryDay == null){
+            console.log("about to create FoodDiaryDay");
+            foodDiaryDay = new FoodDiaryDay({userRef:currentUser.id,foodDiaryDayDate:foodDate, foodDiaryItems: new Array()});
+            foodDiaryDay.save(); 
+
+          }
+          else{
+            //Find current maximum value of a meal witihn an array of FoodItems before new is added
+            //source: https://stackoverflow.com/questions/4020796/finding-the-max-value-of-an-attribute-in-an-array-of-objects
+        //      maxMealCount = Math.max(...foodDiaryDay.foodDiaryItems.map(o => o.mealNumber), 0);
+            console.log("Diaryday exists. Max meal number is: "+maxMealCount);
+          }
+                  
+          let newFoodItem =  new FoodItem({
+                foodName:foodItemName,
+                foodUnits:foodItem.foodUnits,
+                foodQuantity:foodItem.foodQuantity,
+                mealNumber:maxMealCount+1 //need to sort 
+              });
+
+                      
+          let foodNutrients = FoodNutrients.findOne({foodName:foodItemName}).exec();
+          
+          if(foodNutrients == null)
+          {
+            IsNewNutrient = true;
+
+            foodNutrients = new FoodNutrients({foodName:foodItemName});
+            foodNutrients.save();
+           
+          }
+          else{
+            IsNewNutrient = false;
+          }
+
+          newFoodItem.foodNutrients = foodNutrients._id;
+          newFoodItem.save();
+
+          foodDiaryDay.foodDiaryItems.push(newFoodItem._id);  
+          foodDiaryDay.save();  
+               
+
+          if(IsNewNutrient === true){
+              //Get nutrients from Nutritionix via API and update  
+              helpers.getNutrients(foodItemName) //Issue resolved - needed to do .then as API call is async and using let will return too early!!
+              .then(nutrientAPIResults=>{
+                  //find and update based on API call
+                  FoodNutrients.findOneAndUpdate(
+                    {foodName: foodItemName},
+                    helpers.assignNutrientAPIResultsToFoodNutrients(nutrientAPIResults)
+                  )
+                  .exec();
+              })
+          }
+
+          next();
+      } //if user
+   
+    },
+
+    addFoodToDiary3: async (req, res, next) => {
+      console.log("addFoodToDiary");
+
+      const currentUser = res.locals.currentUser;
+      const foodDate = helpers.fixDate(req.body.foodDate); //set date to yyyy-MM-DD 
+      const foodItem = JSON.parse(req.body.foodItem);
+      const foodItemName = foodItem.foodName.trim().toLowerCase();
+      const foodItemUnits = foodItem.foodUnits.trim().toLowerCase();
+      const foodItemQuantity = foodItem.foodQuantity.trim().toLowerCase();
+      let IsNewNutrient = true;
+      
+      if (currentUser) {
+
+        let foodNutrientsID; //=mongoose.Types.ObjectId();
+
+        //FoodNutrients.findOne ** MUST ** be called first and the nutirents document created as needed. Otherwise
+        //if called AFTER FoodDiaryDay.findOne the reference id to this document does not seem to be ready when assigned and picks up a value of "1". Tried 1001 things tried to fix this
+        // but none worked. E.g. nesting calls in .then()'s, or using what is known as async/await to force synchronous calls where they wait until complete. Could be a bug in Mongoose. 
+
+        await FoodNutrients.findOne({foodName:foodItemName})
+          .then( foodMatch=>{
+              if(foodMatch == null)
+              {
+                IsNewNutrient = true;
+
+                FoodNutrients.create({foodName:foodItemName})
+                .then(foodNutrients=>{
+                  
+                //newFoodItem.foodNutrients = foodNutrients._id;
+                foodNutrientsID = foodNutrients._id;
+
+                console.log("New: newFoodItem.foodNutrients: "+foodNutrientsID);
+                  
+                //  foodDiaryDay.save();
+                }) 
+              }
+              else{
+                IsNewNutrient = false;
+                
+                //  newFoodItem.foodNutrients = foodNutrients._id;
+                foodNutrientsID = foodNutrients._id;
+                
+                console.log("Existing: newFoodItem.foodNutrients: "+foodNutrientsID);
+                
+                //      foodDiaryDay.save();
+              }
+          })
+  
+          //check if diary Day exists
+          FoodDiaryDay.findOne( {"foodDiaryDayDate": foodDate})
+          .where('userRef').equals(currentUser.id) 
+          .then(foodDiaryDay=>{
+
+              //Food diary day with all food diary items for the logged in user
+              var maxMealCount =0;
+
+              if(foodDiaryDay == null){
+                  console.log("about to create FoodDiaryDay");
+                  FoodDiaryDay.create({userRef:currentUser.id,foodDiaryDayDate:foodDate, foodDiaryItems: new Array()})
+                  .then((foodDiaryDay)=>{
+
+                      foodDiaryDay.foodDiaryItems.push({
+                        foodName:foodItemName,
+                        foodUnits:foodItemUnits,
+                        foodQuantity:foodItemQuantity,
+                        foodNutrients: foodNutrientsID,
+                        mealNumber:maxMealCount+1 //need to sort
+                      });  
+      
+                      foodDiaryDay.save();  
+                              
+                  })
+                  .then(()=>{ //THis API call to fill out the Nutrients document details needs to happen AFTER all the parent documents, sub-documents, references to nutrients documents are in place. Otherwise there is no way to sequence things even using nested .then()'s. 
+                    
+                  /*HERE
+                      if(IsNewNutrient === true){
+                        //Get nutrients from Nutritionix via API and update  
+                        helpers.getNutrients(foodItemName) //Issue resolved - needed to do .then as API call is async and using let will return too early!!
+                        .then(nutrientAPIResults=>{
+                            //find and update based on API call
+                            FoodNutrients.findOneAndUpdate(
+                              {foodName: foodItemName},
+                              helpers.assignNutrientAPIResultsToFoodNutrients(nutrientAPIResults)
+                            )
+                            .exec();
+                        })
+                    }
+                    */
+                })
+   
+              }
+             else{ //Add food item to matched FoodDiaryDay
+             
+
+                foodDiaryDay.foodDiaryItems.push({
+                  foodName:foodItemName,
+                  foodUnits:foodItemUnits,
+                  foodQuantity:foodItemQuantity,
+                  foodNutrients: foodNutrientsID,
+                  mealNumber:maxMealCount+1 //need to sort
+                });  
+
+                foodDiaryDay.save(); 
+
+                //Find current maximum value of a meal witihn an array of FoodItems before new is added
+                //source: https://stackoverflow.com/questions/4020796/finding-the-max-value-of-an-attribute-in-an-array-of-objects
+           //      maxMealCount = Math.max(...foodDiaryDay.foodDiaryItems.map(o => o.mealNumber), 0);
+                console.log("Max meal number is: "+maxMealCount);
+             }
+                ////
+                if(IsNewNutrient === true){
+                  //Get nutrients from Nutritionix via API and update  
+                  helpers.getNutrients(foodItemName) //Issue resolved - needed to do .then as API call is async and using let will return too early!!
+                  .then(nutrientAPIResults=>{
+                      //find and update based on API call
+                      FoodNutrients.findOneAndUpdate(
+                        {foodName: foodItemName},
+                        helpers.assignNutrientAPIResultsToFoodNutrients(nutrientAPIResults)
+                      )
+                      .exec();
+                  })
+                }
+
+
+
+
+             ////
+             /*
+             FoodItem.create({
+                  foodName:foodItemName,
+                  foodUnits:foodItem.foodUnits,
+                  foodQuantity:foodItem.foodQuantity,
+                  mealNumber:maxMealCount+1 //need to sort 
+                })
+                .then((newFoodItem)=>{
+
+                  newFoodItemId = newFoodItem._id;
+                        
+                  FoodNutrients.findOne({foodName:foodItemName})
+                  .then( foodMatch=>{
+                      if(foodMatch == null)
+                      {
+                        IsNewNutrient = true;
+
+                        FoodNutrients.create({foodName:foodItemName})
+                        .then(foodNutrients=>{
+                          newFoodItem.foodNutrients = foodNutrients._id;
+                          newFoodItem.save();
+                        }) 
+                      }
+                      else{
+                        IsNewNutrient = false;
+
+                        newFoodItem.foodNutrients = foodNutrients._id;
+                        newFoodItem.save();
+                      }
+
+                  })
+
+                  FoodDiaryDay.findOneAndUpdate( {"foodDiaryDayDate": foodDate},{"foodDiaryItems": newFoodItem})
+                  .where('userRef').equals(currentUser.id).exec();
+
+                //  foodDiaryDay.foodDiaryItems.push(newFoodItemId);  
+                //  foodDiaryDay.save();  
+                        
+                })     
+                .catch(error=>{ 
+                  console.log("Error: "+error);
+                }); //.catch 
+                */
+               next();
+            })
+
+      } //if user
+   
+    },
+
+
     add: (req, res, next) => {
      console.log("route to form for adding food to diary");
    //  let thisDate = req.params.thisDate;
@@ -309,6 +623,18 @@ module.exports = {
       } //if(currentuser)
       
     },
+
+    //hold
+    nutritionDBLookupCalories:(req,res,next)=>{
+      let currentUser = res.locals.currentUser;
+
+      console.log("called nutritionDBLookupCalories");
+      
+      if (currentUser) {
+        next();
+      }
+    },
+
 
     nutritionDBLookupNutrients:(req,res,next)=>{
       let currentUser = res.locals.currentUser;

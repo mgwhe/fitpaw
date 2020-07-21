@@ -49,8 +49,8 @@ FoodItemSchema.pre('save',function(next){
   console.log("in pre-save of fooditem");
 
   let foodItem = this;
-
-        FoodNutrients.findOne( {"foodName": foodItem.foodName})
+/*
+         FoodNutrients.findOne( {"foodName": foodItem.foodName})
         .then(nutrientqueryResult=>{
             if(nutrientqueryResult===null){ //food nutrients not known to FitPaw database 
                 console.log("No such food in FitPaw DB");
@@ -58,19 +58,25 @@ FoodItemSchema.pre('save',function(next){
                 helpers.getNutrients(foodItem.foodName) //Issue resolved - needed to do .then as API call is async and using let will return too early!!
                 .then(nutrientAPIResults=>{
                     FoodNutrients.create(helpers.assignNutrientAPIResultsToFoodNutrients(nutrientAPIResults))
-                    .then((foodNutrient)=>{
-                        this.foodNutrient =foodNutrient._id;
+                    .then((foodNutrientDocument)=>{
+                        foodItem.foodNutrients =foodNutrientDocument._id;
+                        console.log("attaching id to new FoodItem: "+foodNutrientDocument._id);
                     });
                 }) //.then
+
             }
             else{ //food in database - make link
-              this.foodNutrients = foodNutrient._id;
+              foodItem.foodNutrients = nutrientqueryResult._id;
+              console.log("attaching id to existing FoodItem: "+nutrientqueryResult._id);
+
             }
-            next();     
+ 
         })
         .catch(error=>{
           console.log(error);
         });
+    */    
+        next();
 });
 
 module.exports = mongoose.model("FoodItem", FoodItemSchema);

@@ -27,7 +27,7 @@
                     <button class="btn btn-md btn-primary btn-block" type="submit">Add</button>
                 </div> 
             </div>
-
+        <br/>
             <script type="text/javascript">
                 $(function () {
                 //Set-up Bootstrap 3 datetimepicket control
@@ -202,7 +202,6 @@
                 foodDetails['foodQuantity']=document.getElementById("inputFoodQuantity").value; 
                 foodDetails['foodUnits']=document.getElementById("idFoodUnits").innerHTML; 
             */
-
                let foodDetails={
                    foodName:document.getElementById("inputFoodName").value,
                    foodQuantity:document.getElementById("inputFoodQuantity").value,
@@ -212,7 +211,9 @@
 
                 if(IsValidFoodDetails(foodDetails)){
                     
-                    addToFoodBasket(foodDetails);
+                    addToFoodBasket(foodDetails); //may remove
+                    //july new
+                    uploadFoodItemToDiary();
 
                     //Update display of basket by adding a row to the basket table
                     updateFoodBasketView(foodDetails);
@@ -235,7 +236,7 @@
         basketToDiary.addEventListener( 'click', function ( event ) {
                 event.preventDefault(); //stop the form from doing its normal post to server
                  
-                  uploadFoodBasket();
+              //    uploadFoodBasket();
         });
     })
 
@@ -275,6 +276,7 @@
         const button = document.getElementById("idLogBasketToDiary");
         button.disabled = true;
 
+     
          $.ajax({
             url: stringEndpoint,
             type: 'POST',
@@ -357,8 +359,45 @@
         alert("yup");
     }
 
+    //Called on button press to add
+    //uploads to FitPaw database and makes API lookup call for nutrients
+    function uploadFoodItemToDiary(){
+        
+        const stringEndpoint = "/api/foodItem";
+
+        console.log("in uploadFoodToDiary - before API call");
+
+
+        let foodDetails={
+                   foodName:document.getElementById("inputFoodName").value,
+                   foodQuantity:document.getElementById("inputFoodQuantity").value,
+                   foodUnits:document.getElementById("idFoodUnits").innerHTML
+               };
+                   
+        $.ajax({
+            url: stringEndpoint,
+            type: 'POST',
+            data:{
+                foodItem:JSON.stringify(foodDetails),
+                foodDate: document.getElementById("inputFoodDate").value
+            },
+            async:true, 
+            success: function(results){            
+                console.log(results);
+                if(results.status == 200)
+                {
+                    alert("success!");
+                }
+                else{
+                    console.log("Error - failed to process food item");
+                }
+            } //function()
+        }) //ajax
+    }
+    
     // Lookup the nutrients for the select food from the autocomplete list. first, a REST call to the node server
     // which is then forwarded to the Nutritionix API service. So,two calls are made in sequence
+    
     function getFoodNutrients(){
 
         //lookup the food from the input box, code done for this before in autocomplete

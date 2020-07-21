@@ -3,14 +3,50 @@
 //get reference to mongoose module and store in varaiable mongoose 
 const mongoose = require("mongoose"),
 validator = require ("validator"), //validate e-mails, etc. 
-FoodItem = require("./food_diary_item"),
+FoodNutrients=require("./food_nutrients"),
 User = require("./user");
+
+const FoodItemSchema = new mongoose.Schema({ 
+  foodName: {
+  type: String,
+  required: true,
+  trim: true //always call string trim before storing
+},
+foodQuantity: { //make an enum
+  type: String,
+  required: true,
+  trim: true 
+},
+foodUnits: {
+  type: String,
+  required: true,
+  trim: true 
+},
+mealNumber:{
+  type: Number,
+  default: 0
+},
+foodType: {
+  type: String,
+  required: true,
+  default: 'Common',
+  enum: [
+  'Common',
+  'Branded'
+  ]
+},
+foodNutrients: { type: mongoose.Schema.Types.ObjectId, ref: "FoodNutrients"},
+},
+{ //timestamp each record when created & updated
+timestamps: true
+});
 
 //to do add a pre-save hook for the email so linked to the user profile 22.2
 const FoodDiaryDaySchema = new mongoose.Schema({ 
-    foodDiaryItems: [{ 
-     type: mongoose.Schema.Types.ObjectId, ref: "FoodItem"
-      }],
+    foodDiaryItems: [ 
+     //type: mongoose.Schema.Types.ObjectId, ref: "FoodItem"
+     FoodItemSchema
+      ],
     foodDiaryDayDate: {
         type: Date,
         required: true
@@ -22,3 +58,4 @@ const FoodDiaryDaySchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("FoodDiaryDay", FoodDiaryDaySchema);
+
