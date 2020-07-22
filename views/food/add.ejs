@@ -111,7 +111,7 @@
     //code for autocomplete behaviour (based on list of countries example from W3C Schools))
     autocomplete(document.getElementById("inputFoodName"));
 
-  
+  //Used by autocomplete functionlaity for selecting foods to be added to meal basket
     function getFoods(foodName){
         const stringEndpoint = "/api/food/lookup/"+foodName;
         if(validator.isAlpha(foodName)){
@@ -193,6 +193,7 @@
 
         const form = document.getElementById( "idFoodAdd" );
 
+        //Used to add a food item to the meal basket. 
         form.addEventListener( 'submit', function ( event ) {
                 event.preventDefault(); //stop the form from doing its normal post to server
                   //  getFoodNutrients();
@@ -213,7 +214,8 @@
                     
                     addToFoodBasket(foodDetails); //may remove
                     //july new
-                    uploadFoodItemToDiary();
+                 //   uploadFoodItemToDiary();
+                  
 
                     //Update display of basket by adding a row to the basket table
                     updateFoodBasketView(foodDetails);
@@ -233,10 +235,11 @@
 
         const basketToDiary = document.getElementById( "idLogBasketToDiary");
 
+        //Upload food basket to MongoDB
         basketToDiary.addEventListener( 'click', function ( event ) {
                 event.preventDefault(); //stop the form from doing its normal post to server
                  
-              //    uploadFoodBasket();
+                  uploadFoodBasket();
         });
     })
 
