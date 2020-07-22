@@ -1,9 +1,12 @@
+<div class="row">
 <div class="col-sm-6">
     <canvas id="calorieChart" width="400" height="400"></canvas>
 </div>
 
 <div class="col-sm-6">
     <canvas id="macroChart" width="400" height="400"></canvas>
+
+</row>
 
 <script>
 
@@ -60,6 +63,7 @@ var chartData =
 
         function DrawCalorieBarGraph(){
                //need to make a second call to get data in JSON format so can programme in to chart object
+               /*
                 $.get("/api/food/calories/daily", (results ={}) =>{
                     let d = results.data;
                     if (!d || !d.dailyCalories){  
@@ -82,6 +86,7 @@ var chartData =
 
                     myChart = new Chart(ctx,chartData);  
                 }); //get
+                */
                 
         }
 
@@ -112,3 +117,184 @@ var chartData =
         }
     </script>
 </div>
+
+<div class="row">
+    <div class="col-sm-12">
+
+       
+
+              <script type="text/javascript">
+                 
+                 window.onload = (event) => {
+                    
+                   getNutrients();
+                };
+
+                            
+                  function getNutrients()
+                  {     
+                        console.log("about to call GET api/food_nutrients/dates/");
+
+                        var stringAPIEndpoint = "/api/food_nutrients/dates?frequency=day";
+                     
+                     $.ajax({
+                        url: stringAPIEndpoint,
+                        type: 'GET', 
+                        data: $.param({
+                            frequency: 'day'    
+                        }),
+                        success: function(results){
+                
+                            console.log("in getNutrients - after API call ..dumping results ..");
+                    
+        
+                            //clear down table rows
+                          var table = document.getElementById("myTable");
+                          var rowCount = CountRows(); //dont want to delete headers
+                          for(i=0;i<rowCount;i++){
+                                table.deleteRow(-1);
+                          }
+                         
+                          let data = results.data;
+                         if (!data || !data.foodItems){                
+                            return;
+                          }
+                                     
+                            data.foodItems.forEach(foodItem => {
+                             
+                              var row = table.insertRow(-1);
+                 
+                              var cell1 = row.insertCell(0); 
+                              var cell2 = row.insertCell(1);
+                              var cell3 = row.insertCell(2);
+                              var cell4 = row.insertCell(3);
+                              var cell5 = row.insertCell(4);
+          
+                              cell1.innerHTML = "<a href=`/foodItems/"+foodItem._id+">"+foodItem.foodName+"</a>";   
+                              cell2.innerHTML = foodItem.foodQuantity;
+                              cell3.innerHTML = foodItem.foodUnits;
+                              cell4.innerHTML = "Edit";
+                              cell5.innerHTML = "Delete";
+                            }) //forEach
+                            //return data.foodNames; //technically dont need
+                        } //function()
+                    }); //ajax
+
+                     /*
+                        $.get(stringEndpoint, (results ={}) =>{
+                         
+                          //clear down table rows
+                          var table = document.getElementById("myTable");
+                          var rowCount = CountRows(); //dont want to delete headers
+                          for(i=0;i<rowCount;i++){
+                                table.deleteRow(-1);
+                          }
+                         
+                          let data = results.data;
+                         if (!data || !data.foodItems){                
+                            return;
+                          }
+                                     
+                            data.foodItems.forEach(foodItem => {
+                             
+                              var row = table.insertRow(-1);
+                 
+                              var cell1 = row.insertCell(0); 
+                              var cell2 = row.insertCell(1);
+                              var cell3 = row.insertCell(2);
+                              var cell4 = row.insertCell(3);
+                              var cell5 = row.insertCell(4);
+          
+                              cell1.innerHTML = "<a href=`/foodItems/"+foodItem._id+">"+foodItem.foodName+"</a>";   
+                              cell2.innerHTML = foodItem.foodQuantity;
+                              cell3.innerHTML = foodItem.foodUnits;
+                              cell4.innerHTML = "Edit";
+                              cell5.innerHTML = "Delete";
+                            }) //forEach
+                            
+                        }); //AJAX call
+                        */
+   
+                  } //function
+                
+                  function generateTableHead(table, data) {
+                      let thead = table.createTHead();
+                      let row = thead.insertRow();
+                      for (let key of data) {
+                        let th = document.createElement("th");
+                        let text = document.createTextNode(key);
+                        th.appendChild(text);
+                        row.appendChild(th);
+                      } //for
+                  } //for
+          
+                  function generateTable(table, data) {
+                    for (let element of data) {
+                      let row = table.insertRow();
+                      for (key in element) {
+                          let cell = row.insertCell();
+                          let text = document.createTextNode(element[key]);
+                          cell.appendChild(text);
+                      } //for
+                    } //for
+                  } //function
+          
+                   function CountRows() {
+                      var totalRowCount = 0;
+                      var rowCount = 0;
+                      var table = document.getElementById("myTable");
+                      var rows = table.getElementsByTagName("tr")
+                      for (var i = 0; i < rows.length; i++) {
+                          totalRowCount++;
+                          if (rows[i].getElementsByTagName("td").length > 0) {
+                              rowCount++;
+                          }
+                      }
+                      return rowCount;
+                  }
+              </script>
+
+
+        <table class="table table-striped" id="myTable">
+            <thead>
+            <tr>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Units</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+            
+            <% if(typeof(foodItems)=="undefined")
+            {}
+            else { %>
+                <% foodItems.forEach(foodItem => { %>
+                <tr>
+                <td>
+                    <a href="<%= `/foodItems/${foodItem._id}` %>">
+                    <%= foodItem.foodName %>
+                    </a>
+                </td>
+                <td>
+                    <%= foodItem.foodQuantity %>
+                </td>
+                <td>
+                    <%= foodItem.foodUnits %>
+                </td>
+                <td>
+                    <a href="<%=`foodItems/${foodItem._id}/edit`%>">
+                    Edit
+                    </a>
+                </td>
+                <td>
+                    <a href="<%= `foodItems/${foodItem._id}/delete?_method=DELETE` %>" onclick="return confirm('Are you sure you want to delete this record?')">Delete</a>
+                </td>
+                </tr>
+                <% }); %>
+            <% } %> 
+            </tbody>
+        </table>
+    </div> <!--Row-->           
+</div> <!--Row-->

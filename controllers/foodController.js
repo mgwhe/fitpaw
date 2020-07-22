@@ -128,91 +128,12 @@ module.exports = {
             }
 
             foodDiaryDay.save();  
-/*
-            foodBasketContents.forEach(foodBasketItem =>{
-                        
-              var basketFoodName = foodBasketItem.foodName.trim().toLowerCase();
-           
-              let foodNutrientsID;
-              await FoodNutrients.create({foodName:basketFoodName})
-                  .then(foodNutrients=>{
-                    foodNutrientsID = foodNutrients._id;
-              })
 
-              foodDiaryDay.foodDiaryItems.push({
-                foodName:basketFoodName,
-                foodUnits:foodBasketItem.foodItemUnits,
-                foodQuantity:foodBasketItem.foodQuantity,
-                foodNutrients: foodBasketItem.foodNutrientsID,
-                mealNumber:maxMealCount+1 
-              });  
-
-              foodDiaryDay.save();  
-
-              }) //forEach
-              
-*/
             next();
 
       } //if user
    
-    },
-/*
-    saveFoodsFromBasket: (req, res, next) => {
-      let currentUser = res.locals.currentUser;
-      
-    //  let foodDate = req.body.foodDate;
-
-      if (currentUser) {
-
-          let foodItemIDs = [];
-
-          let foodBasketContents = JSON.parse(req.body.foodBasketContents);
-              
-            foodBasketContents.forEach(foodItem =>{
-              let foodName = newFoodItem.foodName.trim().toLowerCase();
-
-                FoodNutrients.findOne( {"foodName": foodName})
-                .then(nutrientqueryResult=>{
-                    if(nutrientqueryResult===null){ //food nutrients not known to FitPaw database 
-                      console.log("No such food in FitPaw DB");
-                        //Get nutrients from Nutritionix via API
-                        helpers.getNutrients(foodName) //Issue resolved - needed to do .then as API call is async and using let will return too early!!
-                        .then(nutrientAPIResults=>{
-                            FoodNutrients.create(helpers.assignNutrientAPIResultsToFoodNutrients(nutrientAPIResults)).exec();
-                        })
-                    } //if
-
-                  })
-                }) //.then
-            }) //foreach
-
-          
-
-                FoodItem.findOne({foodName:foodNutrients.foodName})
-                                .then((foodItem)=>{
-                                  findByIdAndUpdate(foodItem._id,{foodNutrients:foodNutrients._id}).exec();
-                FoodItem.create(foodItem)
-                .then((newFoodItem)=>{
-               
-              
-                foodItemIDs.push(newFoodItem._id); //Add newFoodItem._id to array, so at the end pass on on addFoodsToDiary call which saves to FoodDay
-                            
-                console.log(newFoodItem._id);
-                console.log(newFoodItem.foodName);
-              }
-              .catch(error=>{ //FoodNutrients.findOne( {"foodName": foodName})
-                console.log("Error: "+error);
-              }); //.catch  
-            }) //FoodItem.create(foodItem)
-
-          })//forEach
-          
-      } //if user
-      
-    },
-*/
-    
+    },    
     
     addFoodToDiary: async (req, res, next) => {
       console.log("addFoodToDiary");
@@ -341,6 +262,47 @@ module.exports = {
       
     },
     
+    //Lookup last 7 days of food nutrients. 
+    nutritionDBLookupNutrients:(req,res,next)=>{
+      let currentUser = res.locals.currentUser;
+
+      let startDate, endDate;
+
+      if (currentUser) {
+        console.log("req.params.frequency: "+req.params.frequency);
+
+      //  if(req.params.frequency != null)
+      //  {
+          console.log("Page GET /food/calories/"); //use today's date as default
+          endDate = new Date().toISOString().substring(0,10);
+          startDate = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString().substring(0,10);
+          
+          console.log("start date: "+startDate);
+          console.log("end date: "+endDate);
+
+
+          FoodDiaryDay.find({"foodDiaryDayDate": {"$gte": startDate, "$lte": endDate}})
+          .where('userRef').equals(currentUser.id).populate('foodNutrients')
+          .then(results=>{
+            console.log(JSON.stringify(results));
+            results.forEach(result=>{
+              console.log(JSON.stringify(result.foodDiaryItems[0].foodNutrients.protein));
+            })
+          }) 
+          .catch(error=>{
+            console.log("Query error:" + error);
+          })
+   
+    /*    } //if(req.params.frequency === "daily")
+        else{
+          console.log("Only works for daily!");
+        }
+        */
+        next();
+      } //if(currentuser)
+      
+    },
+
     nutritionDBLookupFoods:(req,res,next)=>{
       let currentUser = res.locals.currentUser;
       
@@ -371,7 +333,6 @@ module.exports = {
       } //if(currentuser)
       
     },
-
     //hold
     nutritionDBLookupCalories:(req,res,next)=>{
       let currentUser = res.locals.currentUser;
@@ -383,7 +344,8 @@ module.exports = {
       }
     },
 
-
+//not used??
+/*
     nutritionDBLookupNutrients:(req,res,next)=>{
       let currentUser = res.locals.currentUser;
       
@@ -423,7 +385,7 @@ module.exports = {
       } //if(currentuser)
       
     },
-
+*/
     redirectView: (req, res) => {
       res.render("food/add");
     },

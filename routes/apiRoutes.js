@@ -31,12 +31,18 @@ router.post('/login', function(req, res, next) {
   
 //router.post('/foodbasket',foodController.saveFoodsFromBasket,foodController.addFoodsToDiary,foodController.respondJSON);
 router.post('/foodbasket',foodController.addFoodBasketItemsToDiary,foodController.respondJSON);
+//router.post('/foodbasket',foodController.addFoodBasketItemsToDiary,foodController.respondJSON);
+
 router.post('/foodItem',foodController.addFoodToDiary,foodController.respondJSON);
+
+router.get("/food_nutrients/dates/", foodController.nutritionDBLookupNutrients,foodController.respondJSON); //foodName - refer to in code
 
 router.get("/food/calories/:frequency", foodController.nutritionDBLookupCalories,foodController.respondJSON); 
 
 router.get("/food/lookup/:foodName", foodController.nutritionDBLookupFoods,foodController.respondJSON); //foodName - refer to in code
-router.get("/food_nutrients/lookup/:foodName", foodController.nutritionDBLookupNutrients,foodController.respondJSON); //foodName - refer to in code
+
+//router.get("/food_nutrients/lookup/:foodName", foodController.nutritionDBLookupNutrients,foodController.respondJSON); //foodName - refer to in code
+
 router.get("/food/:thisDate", foodController.filterFoodDiaryDay, foodController.respondJSON);
 
 //need to change to put
