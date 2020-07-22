@@ -263,7 +263,8 @@ module.exports = {
     },
     
     //Lookup last 7 days of food nutrients. 
-    nutritionDBLookupNutrients:(req,res,next)=>{
+  nutritionDBLookupNutrients: async (req,res,next)=>{
+
       let currentUser = res.locals.currentUser;
 
       let startDate, endDate;
@@ -280,19 +281,38 @@ module.exports = {
           console.log("start date: "+startDate);
           console.log("end date: "+endDate);
 
+        let nutrientIDs =[];
+        let nutrients =[];
 
-          FoodDiaryDay.find({"foodDiaryDayDate": {"$gte": startDate, "$lte": endDate}})
+          await FoodDiaryDay.find({"foodDiaryDayDate": {"$gte": startDate, "$lte": endDate}})
           .where('userRef').equals(currentUser.id).populate('foodNutrients')
-          .then(results=>{
-            console.log(JSON.stringify(results));
-            results.forEach(result=>{
-              console.log(JSON.stringify(result.foodDiaryItems[0].foodNutrients.protein));
-            })
-          }) 
-          .catch(error=>{
-            console.log("Query error:" + error);
+          .then(diaryDays=>{
+                console.log(JSON.stringify(diaryDays));
+                diaryDays.forEach(diaryDay=>{
+                  diaryDay.foodDiaryItems.forEach(foodItem=>{
+                    console.log(JSON.stringify(foodItem.foodNutrients._id)); 
+                    nutrientIDs.push(foodItem.foodNutrients._id); 
+                  })
+                })
+            //     console.log(JSON.stringify(result.foodDiaryItems[0].foodNutrients._id));
           })
-   
+         
+            
+            for (var index = 0; index < nutrientIDs.length; index++) {
+        
+                let details =  await FoodNutrients.findById(nutrientIDs[index]).exec();
+                console.log(details);
+                nutrients.push(details);
+              }
+ 
+           //   console.log(JSON.stringify(nutrients));
+            nutrients.forEach(nutrient=>{
+              console.log(JSON.stringify(nutrient))
+            })
+            
+          
+
+           
     /*    } //if(req.params.frequency === "daily")
         else{
           console.log("Only works for daily!");
