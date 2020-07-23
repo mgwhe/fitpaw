@@ -35,6 +35,10 @@ foodType: {
   'Branded'
   ]
 },
+foodCalories:{
+  type: Number,
+  default: 0
+},
 foodNutrients: { type: mongoose.Schema.Types.ObjectId, ref: "FoodNutrients"},
 },
 { //timestamp each record when created & updated

@@ -35,7 +35,7 @@ router.post('/foodbasket',foodController.addFoodBasketItemsToDiary,foodControlle
 
 router.post('/foodItem',foodController.addFoodToDiary,foodController.respondJSON);
 
-router.get("/food_nutrients/dates/", foodController.nutritionDBLookupNutrients,foodController.respondJSON); //foodName - refer to in code
+router.get("/food_nutrients/dates/", foodController.fitpawDBLookupNutrients,foodController.respondJSON); //foodName - refer to in code
 
 router.get("/food/calories/:frequency", foodController.nutritionDBLookupCalories,foodController.respondJSON); 
 

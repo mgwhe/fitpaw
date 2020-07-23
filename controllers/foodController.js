@@ -70,6 +70,7 @@ module.exports = {
 
     addFoodBasketItemsToDiary: async (req, res, next) => {
       let currentUser = res.locals.currentUser;
+      let IsNewNutrient = true;
     
       if (currentUser) {
           
@@ -100,22 +101,57 @@ module.exports = {
             }
                 
             //You MUST use a for loop or at least NOT use forEach loop if using await 
-            //picked up from StackOverflow comments. Details unknown only it works!!
+            //picked up from StackOverflow comments. Details unknown - related to iterators
             for (var index = 0; index < foodBasketContents.length; index++) {
               console.log(foodBasketContents[index]);
 
               var basketFoodName = foodBasketContents[index].foodName.trim().toLowerCase();
 
               let foodNutrientsID;
-              await FoodNutrients.create({foodName:basketFoodName})
-                  .then(foodNutrients=>{
+              //
+              await FoodNutrients.findOne({foodName:basketFoodName})
+                .then( foodNutrients=>{
+                    if(foodNutrients == null)
+                    {
+                      IsNewNutrient = true;
+      
+                    }
+                    else{
+                      IsNewNutrient = false;
+                      
+                      //  newFoodItem.foodNutrients = foodNutrients._id;
+                      foodNutrientsID = foodNutrients._id;
+                      
+                      console.log("Existing: newFoodItem.foodNutrients: "+foodNutrientsID);
+      
+                    }
+                })
+                
+                if(IsNewNutrient===true)
+                {
+                  await FoodNutrients.create({foodName:basketFoodName})
+                    .then(foodNutrients=>{
+                  
                     foodNutrientsID = foodNutrients._id;
-                    console.log("foodNutrientsID"+foodNutrientsID);
-                  })
-                  .catch(error =>{
-                    console.log("Error creating new nutrient document: "+error);
-                  });
 
+                    console.log("New: newFoodItem.foodNutrients: "+foodNutrientsID);
+                  
+                  }) 
+
+                  console.log("Making call to Nutritionix for details of nutrients..");
+
+                  //Get nutrients from Nutritionix via API and update  
+                  await helpers.getNutrients(basketFoodName) //Issue resolved - needed to do .then as API call is async and using let will return too early!!
+                    .then(nutrientAPIResults=>{
+                        //find and update based on API call
+                         FoodNutrients.findOneAndUpdate(
+                          {foodName: basketFoodName},
+                          helpers.assignNutrientAPIResultsToFoodNutrients(nutrientAPIResults)
+                        )
+                        .exec();
+                    })
+                } //if
+              
              
               foodDiaryDay.foodDiaryItems.push({
                 foodName:basketFoodName,
@@ -223,6 +259,9 @@ module.exports = {
              }
                 ////
                 if(IsNewNutrient === true){
+
+                  console.log("Making call to Nutritionix for details of nutrients..");
+
                   //Get nutrients from Nutritionix via API and update  
                   helpers.getNutrients(foodItemName) //Issue resolved - needed to do .then as API call is async and using let will return too early!!
                   .then(nutrientAPIResults=>{
@@ -263,7 +302,7 @@ module.exports = {
     },
     
     //Lookup last 7 days of food nutrients. 
-  nutritionDBLookupNutrients: async (req,res,next)=>{
+  fitpawDBLookupNutrients: async (req,res,next)=>{
 
       let currentUser = res.locals.currentUser;
 
@@ -301,7 +340,7 @@ module.exports = {
             for (var index = 0; index < nutrientIDs.length; index++) {
         
                 let details =  await FoodNutrients.findById(nutrientIDs[index]).exec();
-                console.log(details);
+         //       console.log(details);
                 nutrients.push(details);
               }
  
