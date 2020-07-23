@@ -127,61 +127,38 @@ var chartData =
                  
                  window.onload = (event) => {
                     
+                    getNutrientsTotals();
                    getNutrients();
                 };
 
+                function getNutrientsTotals(){
+                    //    let strDate = (e.date).toISOString().substring(0,10); //get year yyyy-mm-dd
+                        
+                    let strDate = "2020-07-23"; //get year yyyy-mm-dd
+
+                    let stringAPIEndpointTotals = "/api/food_nutrients_totals/"+strDate;
+                    console.log("About to call to: "+stringAPIEndpointTotals);
+
+                    $.get(stringAPIEndpointTotals, (results ={}) =>{
+                    
+
+                    let data = results.data;
+                    if (!data || !data.foodItems){                
+                    return;
+                    }                        
+                    
+                    }); //AJAX call
+                }
                             
                   function getNutrients()
                   {     
                         console.log("about to call GET api/food_nutrients/dates/");
 
-                        var stringAPIEndpoint = "/api/food_nutrients/dates?frequency=day";
-                     
-                     $.ajax({
-                        url: stringAPIEndpoint,
-                        type: 'GET', 
-                        data: $.param({
-                            frequency: 'day'    
-                        }),
-                        success: function(results){
-                
-                            console.log("in getNutrients - after API call ..dumping results ..");
-                    
-        
-                            //clear down table rows
-                          var table = document.getElementById("myTable");
-                          var rowCount = CountRows(); //dont want to delete headers
-                          for(i=0;i<rowCount;i++){
-                                table.deleteRow(-1);
-                          }
-                         
-                          let data = results.data;
-                         if (!data || !data.foodItems){                
-                            return;
-                          }
-                                     
-                            data.foodItems.forEach(foodItem => {
-                             
-                              var row = table.insertRow(-1);
-                 
-                              var cell1 = row.insertCell(0); 
-                              var cell2 = row.insertCell(1);
-                              var cell3 = row.insertCell(2);
-                              var cell4 = row.insertCell(3);
-                              var cell5 = row.insertCell(4);
-          
-                              cell1.innerHTML = "<a href=`/foodItems/"+foodItem._id+">"+foodItem.foodName+"</a>";   
-                              cell2.innerHTML = foodItem.foodQuantity;
-                              cell3.innerHTML = foodItem.foodUnits;
-                              cell4.innerHTML = "Edit";
-                              cell5.innerHTML = "Delete";
-                            }) //forEach
-                            //return data.foodNames; //technically dont need
-                        } //function()
-                    }); //ajax
+                        let frequency = "day";
 
-                     /*
-                        $.get(stringEndpoint, (results ={}) =>{
+                        var stringAPIEndpoint = "/api/food_nutrients/dates/"+frequency;
+                        
+                        $.get(stringAPIEndpoint, (results ={}) =>{
                          
                           //clear down table rows
                           var table = document.getElementById("myTable");
@@ -213,8 +190,7 @@ var chartData =
                             }) //forEach
                             
                         }); //AJAX call
-                        */
-   
+
                   } //function
                 
                   function generateTableHead(table, data) {

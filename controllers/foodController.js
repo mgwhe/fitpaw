@@ -100,7 +100,7 @@ module.exports = {
               console.log("Max meal number is: "+maxMealCount);
             }
                 
-            //You MUST use a for loop or at least NOT use forEach loop if using await 
+            //If using await you MUST use a for loop or at least NOT use forEach loop if using await 
             //picked up from StackOverflow comments. Details unknown - related to iterators
             for (var index = 0; index < foodBasketContents.length; index++) {
               console.log(foodBasketContents[index]);
@@ -302,7 +302,7 @@ module.exports = {
     },
     
     //Lookup last 7 days of food nutrients. 
-  fitpawDBLookupNutrients: async (req,res,next)=>{
+  fitpawDBLookupNutrientsForDatePeriod: async (req,res,next)=>{
 
       let currentUser = res.locals.currentUser;
 
@@ -313,9 +313,9 @@ module.exports = {
 
       //  if(req.params.frequency != null)
       //  {
-          console.log("Page GET /food/calories/"); //use today's date as default
+         
           endDate = new Date().toISOString().substring(0,10);
-          startDate = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString().substring(0,10);
+          startDate = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString().substring(0,10); //A week ago
           
           console.log("start date: "+startDate);
           console.log("end date: "+endDate);
@@ -361,6 +361,59 @@ module.exports = {
       } //if(currentuser)
       
     },
+
+    //Lookup food nutrient totals for date
+    fitpawDBLookupNutrientsTotalsForDate: async (req,res,next)=>{
+
+      console.log("Entering fitpawDBLookupNutrientsTotalsForDate.. ");
+      
+      let currentUser = res.locals.currentUser;
+
+      let thisDate = req.params.strDate;
+    
+      if (currentUser) {
+          console.log("req.params.frequency: "+req.params.frequency);
+         
+          thisDate = new Date().toISOString().substring(0,10);
+          
+          console.log("Lookup nutrients for date: "+thisDate);
+        
+          let nutrientIDs =[];
+          let nutrients =[];
+
+          //Lookup diary day based on date
+          await FoodDiaryDay.findOne({"foodDiaryDayDate": thisDate})
+          .where('userRef').equals(currentUser.id)
+          .then(diaryDay=>{
+                console.log(JSON.stringify(diaryDay));
+                
+                //lookup the nuttrient ids for each food item for the day
+                  diaryDay.foodDiaryItems.forEach(foodItem=>{
+                    console.log(JSON.stringify(foodItem.foodNutrients._id)); 
+                    nutrientIDs.push(foodItem.foodNutrients._id); 
+                  
+                })
+          })
+         
+            //lookup the nuttrients for each food item for the day
+            for (var index = 0; index < nutrientIDs.length; index++) {
+        
+                let details =  await FoodNutrients.findById(nutrientIDs[index]).exec();
+                nutrients.push(details);
+            }
+           //   console.log(JSON.stringify(nutrients));
+
+            //sum the food nutrients for the day
+           let sum = helpers.getNutrientsTotalForNutrient(nutrients,"calories");
+
+            console.log("total calories for day is: "+sum);
+         
+        next();
+      } //if(currentuser)
+      
+      
+    },
+ 
 
     nutritionDBLookupFoods:(req,res,next)=>{
       let currentUser = res.locals.currentUser;

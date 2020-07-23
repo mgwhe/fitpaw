@@ -87,4 +87,30 @@ exports.getNutrients = function(foodName){
 
   }
 
- 
+  exports.getNumberOfMealsforDay = async function(foodDate){
+
+    let foodDiaryDay = await FoodDiaryDay.findOne({"foodDiaryDayDate": foodDate})
+    .where('userRef').equals(currentUser.id).exec();
+  
+    //Find maximum value of a meal witihn an array of FoodItems 
+    //algorithm source: https://stackoverflow.com/questions/4020796/finding-the-max-value-of-an-attribute-in-an-array-of-objects
+    let maxMealCount = Math.max(...foodDiaryDay.foodDiaryItems.map(o => o.mealNumber), 0);
+    console.log("Max meal number is: "+maxMealCount);
+      
+    return maxMealCount;    
+
+  }
+
+  exports.getNutrientsTotalsForsMeal = function(foodDate, mealNumber){
+
+  }
+
+  exports.getNutrientsTotalsForsDay = function(foodDate){
+
+  }
+
+  exports.getNutrientsTotalForNutrient = function(nutrients, name){
+    return nutrients.reduce( function(a, b){
+        return a + b[name];
+    }, 0);
+  }
