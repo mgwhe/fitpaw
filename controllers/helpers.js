@@ -110,7 +110,22 @@ exports.getNutrients = function(foodName){
   }
 
   exports.getNutrientsTotalForNutrient = function(nutrients, name){
+    //Based on: https://stackoverflow.com/questions/23247859/better-way-to-sum-a-property-value-in-an-array
     return nutrients.reduce( function(a, b){
         return a + b[name];
     }, 0);
+  }
+
+  exports.getNutrientKeyNames = async function(){
+    let keys =[];
+
+    //based on: https://stackoverflow.com/questions/38684419/mongoose-return-only-keys-from-a-document
+    await FoodNutrients.findOne({})
+    .then(result=>{
+        keys = Object.keys(result._doc);
+        console.log("inside: "+JSON.stringify(keys));
+    });
+
+    return keys; 
+
   }

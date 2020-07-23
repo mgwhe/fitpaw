@@ -336,7 +336,7 @@ module.exports = {
             //     console.log(JSON.stringify(result.foodDiaryItems[0].foodNutrients._id));
           })
          
-            
+            //lookup the nutrients for each food based on the id
             for (var index = 0; index < nutrientIDs.length; index++) {
         
                 let details =  await FoodNutrients.findById(nutrientIDs[index]).exec();
@@ -344,12 +344,12 @@ module.exports = {
                 nutrients.push(details);
               }
  
-           //   console.log(JSON.stringify(nutrients));
+              console.log(JSON.stringify("what is being dumped here:"));
             nutrients.forEach(nutrient=>{
               console.log(JSON.stringify(nutrient))
             })
             
-          
+            res.locals.foodItems = nutrients;
 
            
     /*    } //if(req.params.frequency === "daily")
@@ -401,14 +401,38 @@ module.exports = {
                 let details =  await FoodNutrients.findById(nutrientIDs[index]).exec();
                 nutrients.push(details);
             }
-           //   console.log(JSON.stringify(nutrients));
+         
+
+             // 'foodName',
+            //    'foodServingUnit',
+              //  'foodServingWeightGrams',
+                //'foodReferenceQuantity',
 
             //sum the food nutrients for the day
-           let sum = helpers.getNutrientsTotalForNutrient(nutrients,"calories");
+            let nutrientKeyNames = [   
+                'calories',
+                'fat', 
+                'protein', 
+                'carbohydrates',
+                'fibre',
+                'fat_saturated',
+                'sugar',
+                'sodium'
+            ];
 
-            console.log("total calories for day is: "+sum);
-         
-        next();
+            let nutrientSums = [];
+
+            nutrientKeyNames.forEach(nutrientKeyName=>{
+              let sum = helpers.getNutrientsTotalForNutrient(nutrients,nutrientKeyName);
+              nutrientSums.push(sum);
+              console.log("Nutrient: "+nutrientKeyName +" sum: "+ sum);
+            })
+            
+            console.log("Dumping.."+JSON.stringify(nutrientSums));
+
+            ////NEED TO SCALE!!!
+
+            next();
       } //if(currentuser)
       
       
