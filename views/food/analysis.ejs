@@ -4,11 +4,13 @@
 </div>
 
 <div class="col-sm-6">
-    <canvas id="macroChart" width="400" height="400"></canvas>
+    <canvas id="macroChart" width="100" height="100"></canvas>
 
 </row>
 
 <script>
+
+
 
 var chartDataCalories = 
     {
@@ -37,7 +39,8 @@ var chartDataCalories =
                     'rgba(153, 102, 255, 1)',
                     'rgba(255, 159, 64, 1)'
                 ],
-                borderWidth: 1
+                borderWidth: 1,
+                order: 1
             }]
         },
         options: {
@@ -51,22 +54,52 @@ var chartDataCalories =
         }
     }
 
-    var ctx = document.getElementById('calorieChart').getContext('2d');
+    charPieMacros = {
+    datasets: [{
+        label: 'Macronutrients',
+        data: [10, 20, 30],
+        backgroundColor: [
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)'
+                ],
+        borderColor: [
+                    'rgba(75, 192, 192, .5)',
+                    'rgba(54, 162, 235, .5)',
+                    'rgba(255, 206, 86, .5)'
+        ]
+    }],
+
+    //labels appear in the legend and in the tooltips when hovering different segments
+    labels: [
+        'Protein',
+        'Carbohydrates',
+        'Fat'
+    ]
+};
+
+    var ctxCalorieBar = document.getElementById('calorieChart').getContext('2d');
+    var ctxMacroPie = document.getElementById('macroChart').getContext('2d'); //check 2d
     
     var daysLabelsArray = [];
 
-    var calorieChart;
+    var calorieChart, macroChart;
 
     DrawCalorieBarGraph();
-     
+    DrawPieGraph();
 
+    function DrawPieGraph(){
+
+        macroChart = new Chart(ctxMacroPie, {
+            type: 'pie',
+            data: charPieMacros
+           // options: options
+        });
+    }
+    
+        //async with await needed down the call line as $get is asynchronous at bottom
         async function DrawCalorieBarGraph(){
                
-            //    let startDate = "2020-07-23";
-            //    let endDate = "2020-07-23";
-            
-                
-            //   let totalCalories =  [300,500,800,700,1000,300,800];
 
             let totalCalories =  await getDailyCalories();
             
@@ -84,10 +117,19 @@ var chartDataCalories =
                 }
             }); //forEach
 
+            let recommendedCalories = {
+                label: 'Target Calorie Intake',
+                data: [500, 500, 500, 500,500,500,500],
+                type: 'line',
+                order: 2
+                };
+
+                chartDataCalories.data.datasets.push(recommendedCalories);
+
             //load days of week names
             loadLabels();
             //attach the data to the chart and draw
-            calorieChart = new Chart(ctx,chartDataCalories);  
+            calorieChart = new Chart(ctxCalorieBar,chartDataCalories);  
                 
         }
 
@@ -165,10 +207,9 @@ var chartDataCalories =
     </script>
 </div>
 
+<!--Nutrition table -->
 <div class="row">
     <div class="col-sm-12">
-
-       
 
               <script type="text/javascript">
                  
@@ -176,8 +217,7 @@ var chartDataCalories =
                     
                     getNutrients();
                 };
-
-                            
+                 
                   function getNutrients()
                   {     
                         console.log("about to call GET api/food_nutrients/dates/");
@@ -300,9 +340,6 @@ var chartDataCalories =
                             sodium_cell.innerHTML = Math.round(data.foodItemTotals[7]);
                        
                         }); //AJAX call
-
-                    
-                       
 
                   } //function
              
