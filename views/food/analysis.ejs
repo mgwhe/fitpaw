@@ -10,7 +10,7 @@
 
 <script>
 
-var chartData = 
+var chartDataCalories = 
     {
         type: 'bar',
         data: {
@@ -60,33 +60,34 @@ var chartData =
     DrawCalorieBarGraph();
      
 
-        function DrawCalorieBarGraph(){
+        async function DrawCalorieBarGraph(){
                
             //    let startDate = "2020-07-23";
             //    let endDate = "2020-07-23";
             
                 
-               let totalCalories =  [300,500,800,700,1000,300,800];
+            //   let totalCalories =  [300,500,800,700,1000,300,800];
 
-     //       let totalCalories = await getDailyCalories();
+            let totalCalories =  await getDailyCalories();
             
+
             //populate graph data 
             totalCalories.forEach(dailyCalories =>{
                     
                 if(isNaN(dailyCalories)) //check undefined, null,etc and put 0 so at least it draws
                 {
-                    chartData.data.datasets[0].data.push(0); //based on sample chart.js code this is the location where it picks it up from in the chart control
+                    chartDataCalories.data.datasets[0].data.push(0); //based on sample chart.js code this is the location where it picks it up from in the chart control
                 }
                 else
                 {
-                    chartData.data.datasets[0].data.push(dailyCalories); //this is the location where it picks it up from
+                    chartDataCalories.data.datasets[0].data.push(dailyCalories); //this is the location where it picks it up from
                 }
             }); //forEach
 
             //load days of week names
             loadLabels();
             //attach the data to the chart and draw
-            calorieChart = new Chart(ctx,chartData);  
+            calorieChart = new Chart(ctx,chartDataCalories);  
                 
         }
 
@@ -105,8 +106,9 @@ var chartData =
                     
                     nutrientTotals = await getNutrientsTotals(thisDate, thisDate); 
                     
-                    console.log("nutrientTotals.data.foodItemTotals[0]:"+nutrientTotals.data.foodItemTotals[0]);
-                    
+                    console.log("nutrientTotals:"+nutrientTotals);
+                    console.log("nutrientTotals[0]:"+nutrientTotals[0]);
+
                     totalCalories.push(nutrientTotals.data.foodItemTotals[0]); //0 contains calories (1=fat, etc.)
             }
 
@@ -157,7 +159,7 @@ var chartData =
         {
             daysLabelsArray = getDaysOfWeekLabels();
             daysLabelsArray.forEach(dayLabel =>{
-            chartData.data.labels.push(dayLabel);
+            chartDataCalories.data.labels.push(dayLabel);
     });
         }
     </script>
@@ -327,7 +329,7 @@ var chartData =
             <thead nowrap="nowrap">
             <tr>
                 <th>Food Name</th>
-                <th>Food Qty</th>
+                <th>Qty</th>
                 <th>Food Units</th>
                 <th>Calories</th>
                 <th>Fat</th>
