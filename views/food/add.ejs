@@ -168,17 +168,7 @@
         }
     } //getFoods
 
-    //https://www.w3resource.com/javascript-exercises/javascript-basic-exercise-50.php#:~:text=ES6%20Version%3A&text=toUpperCase()%20%2B%20str%5Bi%5D.,word%20of%20a%20given%20string.
-    function capital_letter(str) 
-    {
-        str = str.split(" ");
 
-        for (var i = 0, x = str.length; i < x; i++) {
-            str[i] = str[i][0].toUpperCase() + str[i].substr(1);
-        }
-        return str.join(" ");
-
-    }
 
     // Disable normal form submit up to the node server. This will allow the food not to be added to the diary in mongo
     // but instead added to a food basket and display it to the user, allowing the user to add/remove foods for the pets meal

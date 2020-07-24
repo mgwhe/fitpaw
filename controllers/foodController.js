@@ -306,22 +306,22 @@ module.exports = {
 
       let currentUser = res.locals.currentUser;
 
-      let startDate, endDate;
+      let startDate = req.params.startDate;
+      let endDate = req.params.endDate;
+
+      console.log("req.params.startDate: "+req.params.startDate);
+      console.log("req.params.endDate: "+req.params.endDate);
 
       if (currentUser) {
-        console.log("req.params.frequency: "+req.params.frequency);
-
-      //  if(req.params.frequency != null)
-      //  {
-         
-          endDate = new Date().toISOString().substring(0,10);
-          startDate = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString().substring(0,10); //A week ago
+        
+    //      endDate = new Date().toISOString().substring(0,10);
+    //      startDate = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString().substring(0,10); //A week ago
           
           console.log("start date: "+startDate);
           console.log("end date: "+endDate);
 
-        let nutrientIDs =[];
-        let nutrients =[];
+          let nutrientIDs =[];
+          let nutrients =[];
 
           await FoodDiaryDay.find({"foodDiaryDayDate": {"$gte": startDate, "$lte": endDate}})
           .where('userRef').equals(currentUser.id).populate('foodNutrients')
@@ -388,11 +388,14 @@ module.exports = {
                 console.log(JSON.stringify(diaryDay));
                 
                 //lookup the nuttrient ids for each food item for the day
+                if(diaryDay!=null){
+
                   diaryDay.foodDiaryItems.forEach(foodItem=>{
                     console.log(JSON.stringify(foodItem.foodNutrients._id)); 
                     nutrientIDs.push(foodItem.foodNutrients._id); 
                   
                 })
+              }
           })
          
             //lookup the nuttrients for each food item for the day
@@ -403,10 +406,7 @@ module.exports = {
             }
          
 
-             // 'foodName',
-            //    'foodServingUnit',
-              //  'foodServingWeightGrams',
-                //'foodReferenceQuantity',
+             
 
             //sum the food nutrients for the day
             let nutrientKeyNames = [   
