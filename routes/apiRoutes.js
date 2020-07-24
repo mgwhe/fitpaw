@@ -36,11 +36,11 @@ router.post('/foodbasket',foodController.addFoodBasketItemsToDiary,foodControlle
 router.post('/foodItem',foodController.addFoodToDiary,foodController.respondJSON);
 
              
-router.get("/food_nutrients_totals/:strDate", foodController.fitpawDBLookupNutrientsTotalsForDate,foodController.respondJSON); 
+router.get("/food_nutrients_totals/:startDate.:endDate", foodController.fitpawDBLookupNutrientsTotalsForDatePeriod,foodController.respondJSON); 
 
 //Source on how to add two paramters to a GET call - choose a separator like . and use to seperate when sending using $get!
 //https://expressjs.com/en/guide/routing.html
-router.get("/food_nutrients/dates/:startDate.:endDate", foodController.fitpawDBLookupNutrientsForDatePeriod,foodController.respondJSON); //foodName - refer to in code
+router.get("/food_nutrients/dates/:startDate.:endDate", foodController.fitpawDBLookupNutrientsForDatePeriod,foodController.fitpawDBLookupNutrientsTotalsForDatePeriod,foodController.respondJSON); //foodName - refer to in code
 
 router.get("/food/calories/:frequency", foodController.nutritionDBLookupCalories,foodController.respondJSON); 
 

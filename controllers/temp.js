@@ -244,4 +244,77 @@ addFoodBasketItemsToDiary: (req, res, next) => {
     
   }
 
+  //Lookup food nutrient totals for date
+  fitpawDBLookupNutrientsTotalsForDatePeriod: async (req,res,next)=>{
+
+    console.log("Entering fitpawDBLookupNutrientsTotalsForDate.. ");
+    
+    let currentUser = res.locals.currentUser;
+
+    let thisDate = req.params.strDate;
+  
+    if (currentUser) {
+        console.log("req.params.frequency: "+req.params.frequency);
+       
+        thisDate = new Date().toISOString().substring(0,10);
+        
+        console.log("Lookup nutrients for date: "+thisDate);
+      
+        let nutrientIDs =[];
+        let nutrients =[];
+
+        //Lookup diary day based on date
+        await FoodDiaryDay.findOne({"foodDiaryDayDate": thisDate})
+        .where('userRef').equals(currentUser.id)
+        .then(diaryDay=>{
+              console.log(JSON.stringify(diaryDay));
+              
+              //lookup the nuttrient ids for each food item for the day
+              if(diaryDay!=null){
+
+                diaryDay.foodDiaryItems.forEach(foodItem=>{
+                  console.log(JSON.stringify(foodItem.foodNutrients._id)); 
+                  nutrientIDs.push(foodItem.foodNutrients._id); 
+                
+              })
+            }
+        })
+       
+          //lookup the nuttrients for each food item for the day
+          for (var index = 0; index < nutrientIDs.length; index++) {
+      
+              let details =  await FoodNutrients.findById(nutrientIDs[index]).exec();
+              nutrients.push(details);
+          }
+
+          //sum the food nutrients for the day
+          let nutrientKeyNames = [   
+              'calories',
+              'fat', 
+              'protein', 
+              'carbohydrates',
+              'fibre',
+              'fat_saturated',
+              'sugar',
+              'sodium'
+          ];
+
+          let nutrientSums = [];
+
+          nutrientKeyNames.forEach(nutrientKeyName=>{
+            let sum = helpers.getNutrientsTotalForNutrient(nutrients,nutrientKeyName);
+            nutrientSums.push(sum);
+            console.log("Nutrient: "+nutrientKeyName +" sum: "+ sum);
+          })
+          
+          console.log("Dumping.."+JSON.stringify(nutrientSums));
+
+          ////NEED TO SCALE!!!
+
+          next();
+    } //if(currentuser)
+    
+    
+  }
+
  

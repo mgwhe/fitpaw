@@ -362,40 +362,34 @@ module.exports = {
       
     },
 
-    //Lookup food nutrient totals for date
-    fitpawDBLookupNutrientsTotalsForDate: async (req,res,next)=>{
 
-      console.log("Entering fitpawDBLookupNutrientsTotalsForDate.. ");
+    //Lookup food nutrient totals for date
+    fitpawDBLookupNutrientsTotalsForDatePeriod: async (req,res,next)=>{
+
+      console.log("Entering fitpawDBLookupNutrientsTotalsForDatePeriod.. ");
       
       let currentUser = res.locals.currentUser;
 
-      let thisDate = req.params.strDate;
+      let startDate = req.params.startDate;
+      let endDate = req.params.endDate;
+
+      console.log("req.params.startDate: "+req.params.startDate);
+      console.log("req.params.endDate: "+req.params.endDate);
     
       if (currentUser) {
-          console.log("req.params.frequency: "+req.params.frequency);
-         
-          thisDate = new Date().toISOString().substring(0,10);
-          
-          console.log("Lookup nutrients for date: "+thisDate);
-        
+                
           let nutrientIDs =[];
           let nutrients =[];
 
-          //Lookup diary day based on date
-          await FoodDiaryDay.findOne({"foodDiaryDayDate": thisDate})
-          .where('userRef').equals(currentUser.id)
-          .then(diaryDay=>{
-                console.log(JSON.stringify(diaryDay));
-                
-                //lookup the nuttrient ids for each food item for the day
-                if(diaryDay!=null){
-
+          await FoodDiaryDay.find({"foodDiaryDayDate": {"$gte": startDate, "$lte": endDate}})
+          .where('userRef').equals(currentUser.id).populate('foodNutrients')
+          .then(diaryDays=>{
+                diaryDays.forEach(diaryDay=>{
                   diaryDay.foodDiaryItems.forEach(foodItem=>{
                     console.log(JSON.stringify(foodItem.foodNutrients._id)); 
                     nutrientIDs.push(foodItem.foodNutrients._id); 
-                  
+                  })
                 })
-              }
           })
          
             //lookup the nuttrients for each food item for the day
@@ -404,9 +398,6 @@ module.exports = {
                 let details =  await FoodNutrients.findById(nutrientIDs[index]).exec();
                 nutrients.push(details);
             }
-         
-
-             
 
             //sum the food nutrients for the day
             let nutrientKeyNames = [   
@@ -429,6 +420,8 @@ module.exports = {
             })
             
             console.log("Dumping.."+JSON.stringify(nutrientSums));
+
+            res.locals.foodItemTotals = nutrientSums;
 
             ////NEED TO SCALE!!!
 
