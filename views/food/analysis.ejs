@@ -17,7 +17,7 @@ var chartData =
             labels: [] //code in above floating week
             ,
             datasets: [{
-                label: 'Weekly Activity',
+                label: 'Total Daily Calories',
                 data: [], //load data via Ajax call below
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
@@ -54,40 +54,85 @@ var chartData =
     var ctx = document.getElementById('calorieChart').getContext('2d');
     
     var daysLabelsArray = [];
-    
 
-    var myChart;
+    var calorieChart;
 
     DrawCalorieBarGraph();
      
 
         function DrawCalorieBarGraph(){
-               //need to make a second call to get data in JSON format so can programme in to chart object
-               /*
-                $.get("/api/food/calories/daily", (results ={}) =>{
-                    let d = results.data;
-                    if (!d || !d.dailyCalories){  
-                        //need smooth exit for graph              
-                        return;
-                    }
-                    d.dailyCalories.forEach(activity =>{
-                     
-                        if(isNaN(activity.activityTrackDistanceMetres)) //check undefined, null,etc and put 0
-                        {
-                            chartData.data.datasets[0].data.push(0);
-                        }
-                        else
-                        {
-                            chartData.data.datasets[0].data.push(activity.activityTrackDistanceMetres);
-                        }
-                    }); //forEach
-
-                    loadLabels();
-
-                    myChart = new Chart(ctx,chartData);  
-                }); //get
-                */
+               
+            //    let startDate = "2020-07-23";
+            //    let endDate = "2020-07-23";
+            
                 
+               let totalCalories =  [300,500,800,700,1000,300,800];
+
+     //       let totalCalories = await getDailyCalories();
+            
+            //populate graph data 
+            totalCalories.forEach(dailyCalories =>{
+                    
+                if(isNaN(dailyCalories)) //check undefined, null,etc and put 0 so at least it draws
+                {
+                    chartData.data.datasets[0].data.push(0); //based on sample chart.js code this is the location where it picks it up from in the chart control
+                }
+                else
+                {
+                    chartData.data.datasets[0].data.push(dailyCalories); //this is the location where it picks it up from
+                }
+            }); //forEach
+
+            //load days of week names
+            loadLabels();
+            //attach the data to the chart and draw
+            calorieChart = new Chart(ctx,chartData);  
+                
+        }
+
+        async function getDailyCalories(){
+            
+            let nutrientTotals = [];
+            let totalCalories = [];
+
+            for (var index = 6; index > -1; index--) { //do 7 calls, one for each day of last week till today
+                    //extract string date in format yyyy-mm-dd
+                    let thisDate = new Date(Date.now() - index * 24 * 60 * 60 * 1000).toISOString().substring(0,10); 
+                    console.log(thisDate);
+                    
+                    //getNutrientsTotals does the DB lookup and return sum of each key nutients over start end dates 
+                    //here use it a day of the week by setting the start and end dates the same
+                    
+                    nutrientTotals = await getNutrientsTotals(thisDate, thisDate); 
+                    
+                    console.log("nutrientTotals.data.foodItemTotals[0]:"+nutrientTotals.data.foodItemTotals[0]);
+                    
+                    totalCalories.push(nutrientTotals.data.foodItemTotals[0]); //0 contains calories (1=fat, etc.)
+            }
+
+            return totalCalories;
+        }
+
+        async function getNutrientsTotals(startDate, endDate){
+  
+            let stringAPIEndpointTotals = "/api/food_nutrients_totals/"+startDate+"."+endDate; //Dot is used as separator as indicated in route
+            console.log("About to call to: "+stringAPIEndpointTotals);
+
+            let queryResults =  await $.get(stringAPIEndpointTotals, (results ={}) =>{
+            
+            let data = results.data;
+            if (!data || !data.foodItemTotals){  
+                            
+            return;
+            }            
+            
+            console.log("foodItemTotals in call are: "+data.foodItemTotals);
+            console.log("calories in call are: "+data.foodItemTotals[0]);
+            return data.foodItemTotals;
+            
+            }); //AJAX call
+            
+            return queryResults;
         }
 
         function getDaysOfWeekLabels(){
@@ -130,28 +175,6 @@ var chartData =
                     getNutrients();
                 };
 
-                function getNutrientsTotals(){
-                    //    let strDate = (e.date).toISOString().substring(0,10); //get year yyyy-mm-dd
-                        
-                    let startDate = "2020-07-23"; //must be yyyy-mm-dd
-                    let endDate = "2020-07-23";
-
-                    let stringAPIEndpointTotals = "/api/food_nutrients_totals/"+startDate+"."+endDate; //Dot is used as separator as indicated in route
-                    console.log("About to call to: "+stringAPIEndpointTotals);
-
-                    $.get(stringAPIEndpointTotals, (results ={}) =>{
-                    
-
-                    let data = results.data;
-                    if (!data || !data.foodItemTotals){  
-                                  
-                    return;
-                    }            
-                    
-                    return data.foodItemTotals;
-                    
-                    }); //AJAX call
-                }
                             
                   function getNutrients()
                   {     
@@ -180,7 +203,7 @@ var chartData =
                            
                           var tableRef = table.getElementsByTagName('tbody')[0];
 
-                          console.log(JSON.stringify(data.foodItemTotals));
+                          console.log("also returned totals: "+JSON.stringify(data.foodItemTotals));
 
                             data.foodItems.forEach(foodItem => {
                              
@@ -231,7 +254,7 @@ var chartData =
                             //Add in totals:
                             var row = tableRef.insertRow(-1);
 
-                            row.style.fontWeight = "900";
+                            row.style.fontWeight = "500";   
 
                             var food_name_cell = row.insertCell(0); 
                             var food_quantity_cell = row.insertCell(1);
