@@ -65,7 +65,8 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="container flex-container">
+            <!--<div class="container flex-container">-->
+                <h2 class="h2">Meal Basket</h2>
                 <table class="table table-striped"  id="idFoodBasket">
                     <thead>
                         <th class="info">
@@ -85,7 +86,7 @@
                         
                     </tbody>
                 </table>
-            </div>
+         <!--   </div> -->
             <div class="row">
                 <div class="col-md-6 ">            
                     <button class="btn btn-md btn-primary btn-block" id="idLogBasketToDiary" type="submit">
@@ -322,13 +323,17 @@
     function updateFoodBasketView(foodDetails){
         var tableRef = document.getElementById('idFoodBasket').getElementsByTagName('tbody')[0];
             var newRow   = tableRef.insertRow();
-            
+        
             //Add the delete symbol
             var newCell  = newRow.insertCell(0);
-            newlink = document.createElement('a');
-            newlink.setAttribute('class', 'glyphicon glyphicon-remove');
-            newlink.setAttribute('href', 'javascript:deleteFoodFromBasket()');
-            newCell.appendChild(newlink);
+       //     newlink = document.createElement('a');
+         //   newlink.setAttribute('class', 'glyphicon glyphicon-remove');
+     
+           // newlink.setAttribute('href', 'javascript:deleteFoodFromBasket(this)');
+            
+           //newlink.setAttribute('href', 'javascript:deleteRow(this)');
+            
+           // newCell.appendChild(newlink);
 
             //Add foodUnits to the row
             var newCell  = newRow.insertCell(0);
@@ -336,22 +341,61 @@
             newCell.appendChild(newText);
 
             //Add foodQuantity to the row
-            var newCell  = newRow.insertCell(0);
+            var newCell  = newRow.insertCell(1);
             var newText  = document.createTextNode(foodDetails.foodQuantity);
             newCell.appendChild(newText);
 
              //Add foodName to the row
-            var newCell  = newRow.insertCell(0);
+            var newCell  = newRow.insertCell(2);
             var newText  = document.createTextNode(foodDetails.foodName);
             newCell.appendChild(newText);
+
+            //
+            var newCell  = newRow.insertCell(3);
+
+            var btn = document.createElement('input');
+            btn.type = "button";
+            btn.className = "btn";
+            btn.value = "Remove";
+
+            var icon = document.createElement("span");
+            icon.className ="glyphicon glyphicon-remove";
+            
+            btn.appendChild(icon);
+            btn.addEventListener('click', function() { deleteFoodFromBasket() }, false);
+
+            newCell.appendChild(btn);
                        
-         //   <a href="#"><span class=""></span></a>
     }
 
+    function deleteFoodFromBasket(){  
+        
+  
+        try {
+      //    var table = document.getElementById(tableID);
+          var table = document.getElementById('idFoodBasket').getElementsByTagName('tbody')[0];
+          
+          var rowCount = table.rows.length;
 
-    function deleteFoodFromBasket(){
-        alert("yup");
+          for (var i = 0; i < rowCount; i++) {
+            var row = table.rows[i];
+            if (document.getElementById('cell').onclick == true) {
+              if (rowCount <= 1) {
+                alert("Cannot delete all the rows.");
+                break;
+              }
+              table.deleteRow(i);
+              rowCount--;
+              i--;
+            }
+
+          }
+        } catch (e) {
+          alert(e);
+        }
+        
     }
+    
 
     //Called on button press to add
     //uploads to FitPaw database and makes API lookup call for nutrients

@@ -129,3 +129,9 @@ exports.getNutrients = function(foodName){
     return keys; 
 
   }
+
+  exports.scaleNutrientsBasedOnQuantity = function(details,foodQuantity){
+
+      let scaledDetails = details.map(detail=>detail*foodQuantity);
+      return scaledDetails;
+  }

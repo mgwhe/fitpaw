@@ -326,7 +326,8 @@ module.exports = {
           let foodItemsDetails=[];
 
           await FoodDiaryDay.find({"foodDiaryDayDate": {"$gte": startDate, "$lte": endDate}})
-          .where('userRef').equals(currentUser.id).populate('foodNutrients')
+          .where('userRef').equals(currentUser.id)
+          .sort({'foodDiaryDayDate':-1})
           .then(diaryDays=>{
                 console.log(JSON.stringify(diaryDays));
                 diaryDays.forEach(diaryDay=>{
@@ -338,6 +339,11 @@ module.exports = {
                     //Add foodName for debugging & testing
 
                     foodItemsDetails.push({foodQuantity:foodItem.foodQuantity,mealNumber:foodItem.mealNumber,foodName:foodItem.foodName,createdAt:foodItem.createdAt,foodDate:foodItem.createdAt.toISOString().substring(5,10)});
+                 
+/*
+                foodItemsDetails.push({foodQuantity:foodItem.foodQuantity,mealNumber:foodItem.mealNumber,foodName:foodItem.foodName,createdAt:foodItem.createdAt,foodDate:foodItem.parent.foodDiaryDayDate.toISOString().substring(5,10)});
+      */
+
                   })
                 })
             //     console.log(JSON.stringify(result.foodDiaryItems[0].foodNutrients._id));
@@ -348,6 +354,8 @@ module.exports = {
         
                 let details =  await FoodNutrients.findById(nutrientIDs[index]).exec();
          //       console.log(details);
+                //this scales the nutrients based on the base units
+         //       details = helpers.scaleNutrientsBasedOnQuantity(details,foodItemsDetails[index].foodQuantity);
                 nutrients.push(details);
               }
             
@@ -366,7 +374,6 @@ module.exports = {
       } //if(currentuser)
       
     },
-
 
     //Lookup food nutrient totals for date range
     fitpawDBLookupNutrientsTotalsForDatePeriod: async (req,res,next)=>{
@@ -387,7 +394,8 @@ module.exports = {
           let nutrients =[];
 
           await FoodDiaryDay.find({"foodDiaryDayDate": {"$gte": startDate, "$lte": endDate}})
-          .where('userRef').equals(currentUser.id).populate('foodNutrients')
+          .where('userRef').equals(currentUser.id)
+          .sort({'foodDiaryDayDate':-1})
           .then(diaryDays=>{
                 diaryDays.forEach(diaryDay=>{
                   diaryDay.foodDiaryItems.forEach(foodItem=>{
@@ -396,6 +404,9 @@ module.exports = {
                   })
                 })
           })
+          .catch(error=>{
+            console.log("Error executing FoodDiaryDay.find: "+error);
+          })  
          
             //lookup the nuttrients for each food item for the day
             for (var index = 0; index < nutrientIDs.length; index++) {
@@ -419,7 +430,11 @@ module.exports = {
             let nutrientSums = [];
 
             nutrientKeyNames.forEach(nutrientKeyName=>{
+
               let sum = helpers.getNutrientsTotalForNutrient(nutrients,nutrientKeyName);
+
+              //scale for qty consumed..
+       //       sum = sum * 
               nutrientSums.push(sum);
               console.log("Nutrient: "+nutrientKeyName +" sum: "+ sum);
             })
@@ -427,8 +442,6 @@ module.exports = {
             console.log("Dumping.."+JSON.stringify(nutrientSums));
 
             res.locals.foodItemTotals = nutrientSums;
-
-            ////NEED TO SCALE!!!
 
             next();
       } //if(currentuser)
