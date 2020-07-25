@@ -291,38 +291,44 @@ var chartDataCalories =
                             data.foodNutrients.forEach(foodItem => {
                                 
                                 var row = tableRef.insertRow(-1);
-
-                                var food_name_cell = row.insertCell(0); 
-                                var food_quantity_cell = row.insertCell(1);
-                                var food_units_cell = row.insertCell(2);
+                               
+                                var food_eaten_date_cell = row.insertCell(0); 
+                                var meal_number_cell = row.insertCell(1); 
+                                var food_name_cell = row.insertCell(2); 
+                                var food_quantity_cell = row.insertCell(3);
+                                var food_units_cell = row.insertCell(4);
                                 
-                                var calories_cell = row.insertCell(3);
+                                var calories_cell = row.insertCell(5);
                                 calories_cell.setAttribute("class", "text-right"); //set all numbers right
                                 
-                                var fat_cell = row.insertCell(4);
+                                var fat_cell = row.insertCell(6);
                                 fat_cell.setAttribute("class", "text-right");
                                 
-                                var protein_cell = row.insertCell(5);
+                                var protein_cell = row.insertCell(7);
                                 protein_cell.setAttribute("class", "text-right");
                                 
-                                var carbohydrates_cell = row.insertCell(6);
+                                var carbohydrates_cell = row.insertCell(8);
                                 carbohydrates_cell.setAttribute("class", "text-right");
 
-                                var fibre_cell = row.insertCell(7);
+                                var fibre_cell = row.insertCell(9);
                                 fibre_cell.setAttribute("class", "text-right");
 
-                                var fat_saturated_cell = row.insertCell(8);
+                                var fat_saturated_cell = row.insertCell(10);
                                 fat_saturated_cell.setAttribute("class", "text-right");
                                 
-                                var sugar_cell = row.insertCell(9);
+                                var sugar_cell = row.insertCell(11);
                                 sugar_cell.setAttribute("class", "text-right");
 
-                                var sodium_cell = row.insertCell(10);
+                                var sodium_cell = row.insertCell(12);
                                 sodium_cell.setAttribute("class", "text-right");
 
+                                //Add data elements to new row
+                                food_eaten_date_cell.innerHTML = data.foodItemsDetails[qtyIndex].foodDate;
+                                meal_number_cell.innerHTML = data.foodItemsDetails[qtyIndex].mealNumber;
                                 food_name_cell.innerHTML = capital_letter(foodItem.foodName);   
                                 
                                 //this data comes from foodItems rather than general nutrition DB info
+                                //so attached to another object in the HTTP response
                                 food_quantity_cell.innerHTML = data.foodItemsDetails[qtyIndex].foodQuantity;  
                                 qtyIndex++;
 
@@ -343,35 +349,39 @@ var chartDataCalories =
 
                             row.style.fontWeight = "500";   
 
-                            var food_name_cell = row.insertCell(0); 
-                            var food_quantity_cell = row.insertCell(1);
-                            var food_units_cell = row.insertCell(2);
+                            var food_eaten_date_cell = row.insertCell(0); 
+                            var meal_number_cell = row.insertCell(1); 
+                            var food_name_cell = row.insertCell(2); 
+                            var food_quantity_cell = row.insertCell(3);
+                            var food_units_cell = row.insertCell(4);
                             food_units_cell.setAttribute("class", "text-right"); //Set Totals right
                             
-                            var calories_cell = row.insertCell(3);
+                            var calories_cell = row.insertCell(5);
                             calories_cell.setAttribute("class", "text-right"); //set all numbers right
                             
-                            var fat_cell = row.insertCell(4);
+                            var fat_cell = row.insertCell(6);
                             fat_cell.setAttribute("class", "text-right");
                             
-                            var protein_cell = row.insertCell(5);
+                            var protein_cell = row.insertCell(7);
                             protein_cell.setAttribute("class", "text-right");
                             
-                            var carbohydrates_cell = row.insertCell(6);
+                            var carbohydrates_cell = row.insertCell(8);
                             carbohydrates_cell.setAttribute("class", "text-right");
 
-                            var fibre_cell = row.insertCell(7);
+                            var fibre_cell = row.insertCell(9);
                             fibre_cell.setAttribute("class", "text-right");
 
-                            var fat_saturated_cell = row.insertCell(8);
+                            var fat_saturated_cell = row.insertCell(10);
                             fat_saturated_cell.setAttribute("class", "text-right");
                             
-                            var sugar_cell = row.insertCell(9);
+                            var sugar_cell = row.insertCell(11);
                             sugar_cell.setAttribute("class", "text-right");
 
-                            var sodium_cell = row.insertCell(10);
+                            var sodium_cell = row.insertCell(12);
                             sodium_cell.setAttribute("class", "text-right");
 
+                            food_eaten_date_cell="";
+                            meal_number_cell="";
                             food_name_cell.innerHTML = "";   
                             food_quantity_cell.innerHTML = "";  
                             food_units_cell.innerHTML = "Totals:";  
@@ -410,6 +420,8 @@ var chartDataCalories =
         <table class="table table-striped w-auto table-responsive" id="nutrientsTable">
             <thead nowrap="nowrap">
             <tr>
+                <th>Date</th>
+                <th>Meal</th>
                 <th>Food Name</th>
                 <th>Qty</th>
                 <th>Food Units</th>

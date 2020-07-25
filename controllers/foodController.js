@@ -322,9 +322,7 @@ module.exports = {
 
           let nutrientIDs =[];
           let nutrients =[];
-          //use 'undefined' when value not known but you need to create like here in advance of creating array
-          //source: https://stackoverflow.com/questions/15523638/declaring-variables-without-a-value
-         
+          
           let foodItemsDetails=[];
 
           await FoodDiaryDay.find({"foodDiaryDayDate": {"$gte": startDate, "$lte": endDate}})
@@ -338,8 +336,8 @@ module.exports = {
 
                     //Add food quantity and meal number for the table display on the dashboard
                     //Add foodName for debugging & testing
-                    foodItemsDetails.push({foodQuantity:foodItem.foodQuantity,mealNumber:foodItem.mealNumber,foodName:foodItem.foodName,createdAt:foodItem.createdAt});
-                    
+
+                    foodItemsDetails.push({foodQuantity:foodItem.foodQuantity,mealNumber:foodItem.mealNumber,foodName:foodItem.foodName,createdAt:foodItem.createdAt,foodDate:foodItem.createdAt.toISOString().substring(5,10)});
                   })
                 })
             //     console.log(JSON.stringify(result.foodDiaryItems[0].foodNutrients._id));
