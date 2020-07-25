@@ -12,7 +12,7 @@ const FoodItemSchema = new mongoose.Schema({
   required: true,
   trim: true //always call string trim before storing
 },
-foodQuantity: { //make an enum
+foodQuantity: { 
   type: String,
   required: true,
   trim: true 
@@ -34,10 +34,6 @@ foodType: {
   'Common',
   'Branded'
   ]
-},
-foodCalories:{
-  type: Number,
-  default: 0
 },
 foodNutrients: { type: mongoose.Schema.Types.ObjectId, ref: "FoodNutrients"},
 },

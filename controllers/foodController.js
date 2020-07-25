@@ -322,6 +322,10 @@ module.exports = {
 
           let nutrientIDs =[];
           let nutrients =[];
+          //use 'undefined' when value not known but you need to create like here in advance of creating array
+          //source: https://stackoverflow.com/questions/15523638/declaring-variables-without-a-value
+         
+          let foodItemsDetails=[];
 
           await FoodDiaryDay.find({"foodDiaryDayDate": {"$gte": startDate, "$lte": endDate}})
           .where('userRef').equals(currentUser.id).populate('foodNutrients')
@@ -331,6 +335,11 @@ module.exports = {
                   diaryDay.foodDiaryItems.forEach(foodItem=>{
                     console.log(JSON.stringify(foodItem.foodNutrients._id)); 
                     nutrientIDs.push(foodItem.foodNutrients._id); 
+
+                    //Add food quantity and meal number for the table display on the dashboard
+                    //Add foodName for debugging & testing
+                    foodItemsDetails.push({foodQuantity:foodItem.foodQuantity,mealNumber:foodItem.mealNumber,foodName:foodItem.foodName,createdAt:foodItem.createdAt});
+                    
                   })
                 })
             //     console.log(JSON.stringify(result.foodDiaryItems[0].foodNutrients._id));
@@ -343,27 +352,25 @@ module.exports = {
          //       console.log(details);
                 nutrients.push(details);
               }
- 
-              console.log(JSON.stringify("what is being dumped here:"));
-            nutrients.forEach(nutrient=>{
-              console.log(JSON.stringify(nutrient))
-            })
             
-            res.locals.foodItems = nutrients;
+              nutrients.forEach(nutrient=>{
+                console.log(JSON.stringify(nutrient))
+              })
 
+              foodItemsDetails.forEach(detail=>{
+                console.log(JSON.stringify(detail));
+              })
+            
+            res.locals.foodNutrients = nutrients;
+            res.locals.foodItemsDetails = foodItemsDetails;
            
-    /*    } //if(req.params.frequency === "daily")
-        else{
-          console.log("Only works for daily!");
-        }
-        */
         next();
       } //if(currentuser)
       
     },
 
 
-    //Lookup food nutrient totals for date
+    //Lookup food nutrient totals for date range
     fitpawDBLookupNutrientsTotalsForDatePeriod: async (req,res,next)=>{
 
       console.log("Entering fitpawDBLookupNutrientsTotalsForDatePeriod.. ");

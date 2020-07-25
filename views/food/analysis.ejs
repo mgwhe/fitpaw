@@ -1,16 +1,21 @@
 <div class="row">
-<div class="col-sm-6">
-    <canvas id="calorieChart" width="400" height="400"></canvas>
-</div>
+    <div class="col-sm-6">
+        <canvas id="calorieChart" width="400" height="400"></canvas>
+    </div>
 
-<div class="col-sm-6">
-    <canvas id="macroChart" width="100" height="100"></canvas>
-
+    <div class="col-sm-6">
+        <div class="row">
+            <div class="col-sm-6">
+                <canvas id="macroChartDay" width="600" height="600"></canvas>
+            </div>
+            <div class="col-sm-6">
+                <canvas id="macroChartWeek" width="600" height="600"></canvas>
+            </div>
+        </div>
+    </div>
 </row>
 
 <script>
-
-
 
 var chartDataCalories = 
     {
@@ -54,9 +59,9 @@ var chartDataCalories =
         }
     }
 
-    charPieMacros = {
+    charPieMacrosDay = {
     datasets: [{
-        label: 'Macronutrients',
+        label: 'Macronutrients for Day',
         data: [10, 20, 30],
         backgroundColor: [
                     'rgba(75, 192, 192, 0.2)',
@@ -69,7 +74,6 @@ var chartDataCalories =
                     'rgba(255, 206, 86, .5)'
         ]
     }],
-
     //labels appear in the legend and in the tooltips when hovering different segments
     labels: [
         'Protein',
@@ -77,61 +81,95 @@ var chartDataCalories =
         'Fat'
     ]
 };
-
-    var ctxCalorieBar = document.getElementById('calorieChart').getContext('2d');
-    var ctxMacroPie = document.getElementById('macroChart').getContext('2d'); //check 2d
     
+    charPieMacrosWeek = {
+    datasets: [{
+        label: 'Macronutrients for Week',
+        data: [15, 40, 30],
+        backgroundColor: [
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)'
+                ],
+        borderColor: [
+                    'rgba(75, 192, 192, .5)',
+                    'rgba(54, 162, 235, .5)',
+                    'rgba(255, 206, 86, .5)'
+        ]
+    }],
+    //labels appear in the legend and in the tooltips when hovering different segments
+    labels: [
+        'Protein',
+        'Carbohydrates',
+        'Fat'
+    ]
+};
+    //Calories bar grapth
+    var ctxCalorieBar = document.getElementById('calorieChart').getContext('2d');
+    //Macro pie day
+    var ctxMacroPieDay = document.getElementById('macroChartDay').getContext('2d'); 
+    //Macro pie week
+    var ctxMacroPieWeek = document.getElementById('macroChartWeek').getContext('2d'); 
+
     var daysLabelsArray = [];
 
     var calorieChart, macroChart;
 
     DrawCalorieBarGraph();
-    DrawPieGraph();
+    DrawPieGraphDay();
+    DrawPieGraphWeek();
 
-    function DrawPieGraph(){
+    function DrawPieGraphDay(){
 
-        macroChart = new Chart(ctxMacroPie, {
+        macroChartDay = new Chart(ctxMacroPieDay, {
             type: 'pie',
-            data: charPieMacros
+            data: charPieMacrosDay
            // options: options
         });
     }
+
+    function DrawPieGraphWeek(){
+
+        macroChartWeek = new Chart(ctxMacroPieWeek, {
+            type: 'pie',
+            data: charPieMacrosWeek
+        // options: options
+        });
+    }
     
-        //async with await needed down the call line as $get is asynchronous at bottom
-        async function DrawCalorieBarGraph(){
-               
+    //async with await needed down the call line as $get is asynchronous at bottom
+    async function DrawCalorieBarGraph(){
 
-            let totalCalories =  await getDailyCalories();
-            
+        let totalCalories =  await getDailyCalories();
 
-            //populate graph data 
-            totalCalories.forEach(dailyCalories =>{
-                    
-                if(isNaN(dailyCalories)) //check undefined, null,etc and put 0 so at least it draws
-                {
-                    chartDataCalories.data.datasets[0].data.push(0); //based on sample chart.js code this is the location where it picks it up from in the chart control
-                }
-                else
-                {
-                    chartDataCalories.data.datasets[0].data.push(dailyCalories); //this is the location where it picks it up from
-                }
-            }); //forEach
-
-            let recommendedCalories = {
-                label: 'Target Calorie Intake',
-                data: [500, 500, 500, 500,500,500,500],
-                type: 'line',
-                order: 2
-                };
-
-                chartDataCalories.data.datasets.push(recommendedCalories);
-
-            //load days of week names
-            loadLabels();
-            //attach the data to the chart and draw
-            calorieChart = new Chart(ctxCalorieBar,chartDataCalories);  
+        //populate graph data 
+        totalCalories.forEach(dailyCalories =>{
                 
-        }
+            if(isNaN(dailyCalories)) //check undefined, null,etc and put 0 so at least it draws
+            {
+                chartDataCalories.data.datasets[0].data.push(0); //based on sample chart.js code this is the location where it picks it up from in the chart control
+            }
+            else
+            {
+                chartDataCalories.data.datasets[0].data.push(dailyCalories); //this is the location where it picks it up from
+            }
+        }); //forEach
+
+        let recommendedCalories = {
+            label: 'Target Calorie Intake',
+            data: [500, 500, 500, 500,500,500,500],
+            type: 'line',
+            order: 2
+            };
+
+            chartDataCalories.data.datasets.push(recommendedCalories);
+
+        //calculate the names of the last 7 day of week from today and attached to bar grapth 
+        loadLabels();
+        //attach the data to the chart and draw
+        calorieChart = new Chart(ctxCalorieBar,chartDataCalories);  
+            
+    }
 
         async function getDailyCalories(){
             
@@ -222,8 +260,8 @@ var chartDataCalories =
                   {     
                         console.log("about to call GET api/food_nutrients/dates/");
 
-                        let startDate = "2020-07-23";
-                        let endDate = "2020-07-24";
+                        let endDate = new Date().toISOString().substring(0,10);
+                        let startDate = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString().substring(0,10); //A week ago
 
                         var stringAPIEndpoint = "/api/food_nutrients/dates/"+startDate+"."+endDate;
                         
@@ -239,7 +277,7 @@ var chartDataCalories =
                           }
                          
                           let data = results.data;
-                         if (!data || !data.foodItems){                
+                         if (!data || !data.foodNutrients){                
                             return;
                           }
                            
@@ -247,49 +285,56 @@ var chartDataCalories =
 
                           console.log("also returned totals: "+JSON.stringify(data.foodItemTotals));
 
-                            data.foodItems.forEach(foodItem => {
-                             
-                              var row = tableRef.insertRow(-1);
+                          let qtyIndex = 0;
 
-                              var food_name_cell = row.insertCell(0); 
-                              var food_quantity_cell = row.insertCell(1);
-                              var food_units_cell = row.insertCell(2);
-                              
-                              var calories_cell = row.insertCell(3);
-                              calories_cell.setAttribute("class", "text-right"); //set all numbers right
-                              
-                              var fat_cell = row.insertCell(4);
-                              fat_cell.setAttribute("class", "text-right");
-                              
-                              var protein_cell = row.insertCell(5);
-                              protein_cell.setAttribute("class", "text-right");
-                              
-                              var carbohydrates_cell = row.insertCell(6);
-                              carbohydrates_cell.setAttribute("class", "text-right");
 
-                              var fibre_cell = row.insertCell(7);
-                              fibre_cell.setAttribute("class", "text-right");
+                            data.foodNutrients.forEach(foodItem => {
+                                
+                                var row = tableRef.insertRow(-1);
 
-                              var fat_saturated_cell = row.insertCell(8);
-                              fat_saturated_cell.setAttribute("class", "text-right");
-                              
-                              var sugar_cell = row.insertCell(9);
-                              sugar_cell.setAttribute("class", "text-right");
+                                var food_name_cell = row.insertCell(0); 
+                                var food_quantity_cell = row.insertCell(1);
+                                var food_units_cell = row.insertCell(2);
+                                
+                                var calories_cell = row.insertCell(3);
+                                calories_cell.setAttribute("class", "text-right"); //set all numbers right
+                                
+                                var fat_cell = row.insertCell(4);
+                                fat_cell.setAttribute("class", "text-right");
+                                
+                                var protein_cell = row.insertCell(5);
+                                protein_cell.setAttribute("class", "text-right");
+                                
+                                var carbohydrates_cell = row.insertCell(6);
+                                carbohydrates_cell.setAttribute("class", "text-right");
 
-                              var sodium_cell = row.insertCell(10);
-                              sodium_cell.setAttribute("class", "text-right");
+                                var fibre_cell = row.insertCell(7);
+                                fibre_cell.setAttribute("class", "text-right");
 
-                              food_name_cell.innerHTML = capital_letter(foodItem.foodName);   
-                              food_quantity_cell.innerHTML = foodItem.foodQuantity;  
-                              food_units_cell.innerHTML = foodItem.foodServingUnit;  
-                              calories_cell.innerHTML = Math.round(foodItem.calories);
-                              fat_cell.innerHTML = Math.round(foodItem.fat);
-                              protein_cell.innerHTML = Math.round(foodItem.protein);
-                              carbohydrates_cell.innerHTML = Math.round(foodItem.carbohydrates);
-                              fibre_cell.innerHTML = Math.round(foodItem.fibre);
-                              fat_saturated_cell.innerHTML = Math.round(foodItem.fat_saturated);
-                              sugar_cell.innerHTML = Math.round(foodItem.sugar);
-                              sodium_cell.innerHTML = Math.round(foodItem.sodium);
+                                var fat_saturated_cell = row.insertCell(8);
+                                fat_saturated_cell.setAttribute("class", "text-right");
+                                
+                                var sugar_cell = row.insertCell(9);
+                                sugar_cell.setAttribute("class", "text-right");
+
+                                var sodium_cell = row.insertCell(10);
+                                sodium_cell.setAttribute("class", "text-right");
+
+                                food_name_cell.innerHTML = capital_letter(foodItem.foodName);   
+                                
+                                //this data comes from foodItems rather than general nutrition DB info
+                                food_quantity_cell.innerHTML = data.foodItemsDetails[qtyIndex].foodQuantity;  
+                                qtyIndex++;
+
+                                food_units_cell.innerHTML = foodItem.foodServingUnit;  
+                                calories_cell.innerHTML = Math.round(foodItem.calories);
+                                fat_cell.innerHTML = Math.round(foodItem.fat);
+                                protein_cell.innerHTML = Math.round(foodItem.protein);
+                                carbohydrates_cell.innerHTML = Math.round(foodItem.carbohydrates);
+                                fibre_cell.innerHTML = Math.round(foodItem.fibre);
+                                fat_saturated_cell.innerHTML = Math.round(foodItem.fat_saturated);
+                                sugar_cell.innerHTML = Math.round(foodItem.sugar);
+                                sodium_cell.innerHTML = Math.round(foodItem.sodium);
 
                             }) //forEach     
 
