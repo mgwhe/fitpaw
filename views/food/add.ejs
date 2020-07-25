@@ -9,6 +9,7 @@
            <!-- <h2 class="form-signin-heading">Pet Diet Log</h2>-->
            <h2 class="h2">Pet Diet Log</h2>
            <div class="row">
+           
                 <div class="col-xs-6">
                     <label for="inputFoodName">Food Name</label>
                     <input type="text" name="foodName" id="inputFoodName" class="form-control" placeholder="Food Name"  autofocus requried>
@@ -22,10 +23,13 @@
                     <h4 id="idFoodUnits" name="foodUnits"></h4>
                 </div>
             </div> 
-            <div class="row">
-                <div class="col-sm-6" style="background-color:yellow;">
+            <div class="row top-buffer">
+                <div class="col-sm-6">
                     <button class="btn btn-md btn-primary btn-block" type="submit">Add</button>
                 </div> 
+                <div class="col-sm-6">
+                 <input type="checkbox" checked data-toggle="toggle" data-on="Common" data-off="Pet Branded/Custom">
+                </div>
             </div>
         <br/>
             <script type="text/javascript">
@@ -61,48 +65,63 @@
             <input type="hidden" id="foodDiaryDate" name="diaryDate" value="">
         </form>
     </div>
-    <!--here-->
-
+  
     <div class="row">
         <div class="col-md-12">
-            <!--<div class="container flex-container">-->
-                <h2 class="h2">Meal Basket</h2>
-                <table class="table table-striped"  id="idFoodBasket">
-                    <thead>
-                        <th class="info">
-                            <h5 class="text-center">Food</h5>
-                        </th>
-                        <th class="info">
-                            <h5 class="text-center">Unit</h5>
-                        </th>
-                        <th class="info">
-                            <h5 class="text-center">Qty</h5>
-                        </th>
-                        <th class="info">
-                            <h5 class="text-center">Remove</h5>
-                        </th>
-                    </thead>
-                    <tbody class="info">  
+
+            <div class="panel panel-info">
+				<div class="panel-heading">
+					<div class="panel-title">
+						<div class="row">
+							<div class="col-xs-6">
+								<h5><span class="glyphicon glyphicon-shopping-cart"></span> Meal Basket</h5>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="panel-body">
+
+                       
+                        <table class="table table-striped"  id="idFoodBasket">
+                            <thead>
+                                <th class="info">
+                                    <h5 class="text-center">Food</h5>
+                                </th>
+                                <th class="info">
+                                    <h5 class="text-center">Unit</h5>
+                                </th>
+                                <th class="info">
+                                    <h5 class="text-center">Qty</h5>
+                                </th>
+                                <th class="info">
+                                    <h5 class="text-center">Remove</h5>
+                                </th>
+                            </thead>
+                            <tbody class="info">  
+                                
+                            </tbody>
+                        </table>
                         
-                    </tbody>
-                </table>
-         <!--   </div> -->
-            <div class="row">
-                <div class="col-md-6 ">            
-                    <button class="btn btn-md btn-primary btn-block" id="idLogBasketToDiary" type="submit">
-                        <span class="glyphicon glyphicon-ok" class="color"></span> Log to Diary
-                    </button>
-                </div>
-                <div class="col-md-6 "> 
-                    <div class='input-group date' id='datetimepicker'>
-                        <input type='text' class="form-control" name="foodDate" id="inputFoodDate"/>
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
+                </div> <!--panel body-->
+                <div class="panel-footer">
+					<div class="row">
+                        <div class="col-md-6 ">            
+                            <button class="btn btn-md btn-primary btn-block" id="idLogBasketToDiary" type="submit">
+                                <span class="glyphicon glyphicon-ok" class="color"></span> Log to Diary
+                            </button>
+                        </div>
+                        <div class="col-md-6 "> 
+                            <div class='input-group date' id='datetimepicker'>
+                                <input type='text' class="form-control" name="foodDate" id="inputFoodDate"/>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>      
+				</div>
+            </div> <!--panel-->
+        </div>   
     </div>
 </div>
       

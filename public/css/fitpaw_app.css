@@ -112,6 +112,8 @@ table#nutrientsTable tr td {
   font: 14px Arial;
 }
 
+.top-buffer { margin-top:15px; }
+
 /* food basket to do
 .flex-container {
   display: flex;
