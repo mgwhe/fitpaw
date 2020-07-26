@@ -24,10 +24,11 @@ function autocomplete(inp, obj) {
         let foods = [];
         foods = getFoods(val); //get food list or a null if invlaid food name
 
-        if(foods===null){ //bail out because invalid foor name entered and dont want corrupt data
+        if(foods===null || foods.length ===0){ //bail out because invalid foor name entered and dont want corrupt data
+            alert("No food matches, do you want to add a new food to the database?");
             return;
         }
-
+        //extract only the food names by using map
         var arr = foods.map(food=>food.foodName);
 
         console.log("after call to getFoods");

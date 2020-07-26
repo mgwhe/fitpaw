@@ -112,20 +112,12 @@ table#nutrientsTable tr td {
   font: 14px Arial;
 }
 
+/* scrolling */
+/*
+.tableFixHead          { overflow-y: auto; height: 100px; }
+.tableFixHead thead th { position: sticky; top: 0; }
+
 .top-buffer { margin-top:15px; }
-
-/* food basket to do
-.flex-container {
-  display: flex;
-  flex-direction: column;
-  border: 2px solid rgb(156, 184, 197);
-}
-.header {
-  background-color: red;
-}
-
-.main {
-  background-color: green;
-  flex: 1;
-}
 */
+/* end scrolling table */
+
