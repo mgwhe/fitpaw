@@ -17,7 +17,7 @@ FoodNutrientsSchema = new mongoose.Schema({
     type: Number,
     default:-1
   },
-  foodServingWeightGrams: { //may be useful
+  foodServingWeightGrams: { 
     type: Number,
     default:-1
   },

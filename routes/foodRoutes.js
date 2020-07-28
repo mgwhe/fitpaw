@@ -9,7 +9,7 @@ foodController = require("../controllers/foodController");
 //I think /xyz will trigger /:id using a value of xyz !! 
 router.get("/", foodController.filterFoodDiaryDay, foodController.showFoodDiaryDayView);
 router.get("/add/", foodController.add, foodController.redirectView);  
-router.get("/analysis/", foodController.analysis, foodController.analysisView);  
+  router.get("/analysis/",  foodController.analysisView);  
 //router.post("/create", foodController.create, foodController.redirectView);
 
 router.get("/:thisDate", foodController.filterFoodDiaryDay, foodController.showFoodDiaryDayView);

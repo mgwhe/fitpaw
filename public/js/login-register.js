@@ -44,7 +44,7 @@ function openRegisterModal(){
     
 }
 
-function loginAjax(){
+function  loginAjax(){
     /*
     $.post( "/api/login?", data => {
         console.log("here is data response");
@@ -57,12 +57,24 @@ function loginAjax(){
             }
         });
         */
-       $.ajax( 
+       alert("called");
+
+        $.ajax( 
            {
             type: "POST",
             url:   "/api/login",
-            data: "email=a.a%40a.a&password=a"
-            }
+            data: {
+                email:"a.a@a.com",
+                password:"a"
+                }
+            ,
+            async:false, 
+            success: function(results){
+                
+                console.log("back in ajax and seems to have worked");
+                console.log(results);
+            } //function
+
    //    data => {
      //   console.log("here is data response");
        // console.log(data);
@@ -77,9 +89,14 @@ function loginAjax(){
             window.opener.open(url, '_self');
             window.opener.focus();
             window.close();*/
-         );
+       
+        });
 
-   
+
+
+
+
+   ///////////////
 
 /*   Simulate error message from the server   */
      shakeModal();

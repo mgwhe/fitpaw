@@ -1,89 +1,109 @@
-<div class="col-md-5">
+<div class="col-md-5 d-flex align-items-center">
+    <div class="row">
   <img src="../../images/food.jpg" class="img-responsive hidden-xs" alt="">
+  </div>
 </div>
 
 <div class="col-md-7">
     <div class="row">
+        <div class="col-md-12">
         <!--autocomplete MUSt be off for custom autocomplete to work-->
-        <form class="data-form" id="idFoodAdd" autocomplete="off">
-           <!-- <h2 class="form-signin-heading">Pet Diet Log</h2>-->
-           <h2 class="h2">Pet Diet Log</h2>
-           <div class="row">
-           
-                <div class="col-xs-6">
-                    <label for="inputFoodName">Food Name</label>
-                    <input type="text" name="foodName" id="inputFoodName" class="form-control" placeholder="Common Foods"  autofocus requried>
-                </div>
-                <div class="col-xs-2">
-                    <label for="inputFoodQuantity">Quantity</label>
-                    <input type="text" name="foodQuantity" id="inputFoodQuantity" class="form-control" placeholder="Qty" required>            
-                </div>
-                <div class="col-xs-4" style="vertical-align: middle;">
-                    <label for="inputFoodQuantity">Units</label>
-                    <h4 id="idFoodUnits" name="foodUnits"></h4>
-                </div>
-            </div> 
-            <div class="row top-buffer" style="margin-top:7px">
-                <div class="col-sm-6">
-                    <button id="idAddButton" class="btn btn-md btn-primary btn-block" type="submit">Add</button>
-                </div> 
-                <div class="col-sm-6" >
-                 <input id="idFoodSourceChk" type="checkbox" checked data-toggle="toggle" data-on="Common" data-off="Pet Branded" data-offstyle="info">
-                </div>
-            </div>
-        <br/>
-            <script type="text/javascript">
-                $(function () {
-                //Set-up Bootstrap 3 datetimepicket control
+            <form class="data-form" id="idFoodAdd" autocomplete="off">
+            <!-- <h2 class="form-signin-heading">Pet Diet Log</h2>-->
+            <h2 class="h2">Pet Diet Log</h2>
+            <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <h5><span class="glyphicon glyphicon-search"></span> Add Food</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
 
-                   //allow entries to be up to 60 days ago
-                    var todayDate = new Date().getDate();
-                    var startDate= new Date(new Date().setDate(todayDate - 60));
-                    
-                    //Options: https://eonasdan.github.io/bootstrap-datetimepicker/Options/ 
-                    $('#datetimepicker').datetimepicker({ 
-                        showTodayButton: true, //highlight today's date
-                        format: 'DD/MM/YYYY',  //use format for Ireland/EU
-                        maxDate: Date(), //dont allow future dates
-                        minDate: startDate, //today minus 60 days 
-                        useCurrent: true //populate todays' date by default
-                    });
-                
-                    //
-                    $('#idFoodSourceChk').change(function() {
+                            <div class="row">
+        
+                                <div class="col-xs-6">
+                                    <label for="inputFoodName">Food Name</label>
+                                    <input type="text" name="foodName" id="inputFoodName" class="form-control" placeholder="Common Foods"  autofocus requried>
+                                </div>
+                                <div class="col-xs-2">
+                                    <label for="inputFoodQuantity">Quantity</label>
+                                    <input type="text" name="foodQuantity" id="inputFoodQuantity" class="form-control" placeholder="Qty" required>            
+                                </div>
+                                <div class="col-xs-4" style="vertical-align: middle;">
+                                    <label for="inputFoodQuantity">Units</label>
+                                <h4><small id="idFoodUnits" name="foodUnits"></small></h4>
+                                </div>
+                            </div> 
+                            <div class="row top-buffer" style="margin-top:7px">
+                                <div class="col-sm-6">
+                                    <button id="idAddButton" class="btn btn-md btn-primary btn-block" type="submit">Add</button>
+                                </div> 
+                                <div class="col-sm-6" data-toggle="tooltip" title="Click to change food source">
+                                <input id="idFoodSourceChk" type="checkbox" checked data-toggle="toggle" data-on="Common" data-off="Pet Branded" data-offstyle="info">
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                <br/>
+                <script type="text/javascript">
+                    $(function () {
+                    //Set-up Bootstrap 3 datetimepicket control
+
+                    //allow entries to be up to 60 days ago
+                        var todayDate = new Date().getDate();
+                        var startDate= new Date(new Date().setDate(todayDate - 60));
                         
-                        let addButton = document.getElementById("idAddButton");
-                        let inputFoodName = document.getElementById("inputFoodName");
+                        //Options: https://eonasdan.github.io/bootstrap-datetimepicker/Options/ 
+                        $('#datetimepicker').datetimepicker({ 
+                            showTodayButton: true, //highlight today's date
+                            format: 'DD/MM/YYYY',  //use format for Ireland/EU
+                            maxDate: Date(), //dont allow future dates
+                            minDate: startDate, //today minus 60 days 
+                            useCurrent: true //populate todays' date by default
+                        });
+                    
+                        //
+                        $('#idFoodSourceChk').change(function() {
+                            
+                            let addButton = document.getElementById("idAddButton");
+                            let inputFoodName = document.getElementById("inputFoodName");
 
-                        if ($(this).prop('checked')==true)
-                        { //change add button to dark blue & text prompt message
-                           //common food search
-                           addButton.className = "btn btn-md btn-primary btn-block";
-                            inputFoodName.placeholder="Common Foods";
-                        }
-                        else{ //change add button to light blue
-                           //pet branded food search
-                           addButton.className = "btn btn-md btn-info btn-block";
-                            inputFoodName.placeholder="Pet Branded Foods";
-                        }
+                            if ($(this).prop('checked')==true)
+                            { //change add button to dark blue & text prompt message
+                            //common food search
+                            addButton.className = "btn btn-md btn-primary btn-block";
+                                inputFoodName.placeholder="Common Foods";
+                            }
+                            else{ //change add button to light blue
+                            //pet branded food search
+                            addButton.className = "btn btn-md btn-info btn-block";
+                                inputFoodName.placeholder="Pet Branded Foods";
+                            }
+                        })
+                    
+                    });
+
+
+            /*       $('#datetimepicker').on('dp.change', function(e){ 
+                        var strDate = (e.date).toISOString().substring(0,10); //get year yyyy-mm-dd as way decided to use in Mongo
+                        document.getElementById("foodDiaryDate").value =strDate; //set date
+                    
                     })
-                
+                */
+                $(document).ready(function(){
+                    $('[data-toggle="tooltip"]').tooltip();
                 });
 
-
-         /*       $('#datetimepicker').on('dp.change', function(e){ 
-                    var strDate = (e.date).toISOString().substring(0,10); //get year yyyy-mm-dd as way decided to use in Mongo
-                    document.getElementById("foodDiaryDate").value =strDate; //set date
-                   
-                })
-            */
+                </script>
                 
-
-            </script>
-            
-            <input type="hidden" id="memberObjectId" name="memberObjectId" value="<%=`${currentUser._id}`%>">
-            <input type="hidden" id="foodDiaryDate" name="diaryDate" value="">
-        </form>
+                <input type="hidden" id="memberObjectId" name="memberObjectId" value="<%=`${currentUser._id}`%>">
+                <input type="hidden" id="foodDiaryDate" name="diaryDate" value="">
+            </form>
+            </div>
     </div>
   
     <div class="row">

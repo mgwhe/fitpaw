@@ -287,19 +287,6 @@ module.exports = {
      next();
     },
 
-    analysis:(req,res,next)=>{
-      let currentUser = res.locals.currentUser;
-      
-      if (currentUser) {
-     //   if(req.params.foodName != null)
-     //   {
-     //   }
-        console.log("analysis");
-
-        next();
-      } //if(currentUser)
-      
-    },
     
     //Lookup last 7 days of food nutrients. 
   fitpawDBLookupNutrientsForDatePeriod: async (req,res,next)=>{
@@ -327,7 +314,7 @@ module.exports = {
 
           await FoodDiaryDay.find({"foodDiaryDayDate": {"$gte": startDate, "$lte": endDate}})
           .where('userRef').equals(currentUser.id)
-          .sort({'foodDiaryDayDate':-1})
+          .sort({'foodDiaryDayDate':-1}) //newest first
           .then(diaryDays=>{
                 console.log(JSON.stringify(diaryDays));
                 diaryDays.forEach(diaryDay=>{

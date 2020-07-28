@@ -9,26 +9,41 @@ trackController = require("../controllers/trackController");
 
 //router.post("/login", userController.authenticateWithAPI);
 
+
 router.post('/login', function(req, res, next) {
     passport.authenticate('local', function(err, user, info) {
       if (err) { return next(err); }
-      
+
+      console.log("login seems to have worked till here from modal click: ");    
+
       if (!user) { return res.redirect('/login'); }
-     
+
       req.logIn(user, function(err) {
         if (err) { return next(err); }
     //    return res.redirect('/users/' + user.username);
    // return res.redirect("/master");
  //  return res.send('<script>window.close()</script>');
- return res.json({
-    status: httpStatus.OK,
-    data: res.locals
-  });
+        return res.json({
+            status: httpStatus.OK,
+            data: res.locals
+          });
       });
 
     })(req, res, next);
   });
+
+/*
+ router.post('/login', function(req, res) {
+  passport.authenticate('local', function(req, res) {
   
+    console.log("login seems to have worked till here from modal click: "+state);    
+    res.redirect('/users/' + req.user.username);
+  });
+});
+*/
+
+
+
 //router.post('/foodbasket',foodController.saveFoodsFromBasket,foodController.addFoodsToDiary,foodController.respondJSON);
 router.post('/foodbasket',foodController.addFoodBasketItemsToDiary,foodController.respondJSON);
 //router.post('/foodbasket',foodController.addFoodBasketItemsToDiary,foodController.respondJSON);

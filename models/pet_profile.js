@@ -16,7 +16,8 @@ const PetProfileSchema = new mongoose.Schema({
     trim:true,
     unique: true 
   },
-   petName: {
+  userRef: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
+  petName: {
     type: String,
     required: true
   },
@@ -32,9 +33,6 @@ const PetProfileSchema = new mongoose.Schema({
   petTagNumber: {
     type: String,
     required: false
-  },
-  foodDiary:{
-    type: mongoose.Schema.Types.ObjectId, ref: "FoodDiary"
   },
   petWeight:{
     type: Number,

@@ -46,6 +46,7 @@ module.exports = {
     User.findById(memberObjectId)
     .then(foundUser=>{
           let petProfileParams = {
+            userRef: foundUser._id,
             petOwnerEmail: foundUser.email,
             petName: req.body.petName,
             petAge: req.body.petAge,
@@ -59,7 +60,7 @@ module.exports = {
              User.findByIdAndUpdate(memberObjectId, {$set:{petProfile:newPetProfile}})
                   .then()
                   { 
-                      res.locals.redirect = "/master"; 
+                      res.locals.redirect = "../index_internal"; 
                       res.locals.petprofile_variable = newPetProfile; 
                       next();  
                   }   
@@ -70,7 +71,7 @@ module.exports = {
             });
       }); //User.findById then
             
-      next();
+  //    next();
   },
 
   show: (req, res, next) => {
@@ -94,6 +95,9 @@ module.exports = {
     let redirectPath = res.locals.redirect;
     if (redirectPath !== undefined) res.redirect(redirectPath);
     else next();
+
+    //res.render("index_internal");
+
   },
   /*
   respondJSON: (req, res) => {

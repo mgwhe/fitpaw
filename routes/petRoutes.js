@@ -28,7 +28,9 @@ router.post("/create", petController.create, petController.redirectView);
 //router.get("/:id/edit", petController.edit);
 //router.put("/:id/update", petController.update, petController.redirectView);
 
-router.get("/:id", petController.show, petController.showView);
+router.get("/view", petController.show, petController.showView);
+
+// july 20 router.get("/:id", petController.show, petController.showView);
 
 //router.delete("/:id/delete", petController.delete, petController.redirectView);
 
