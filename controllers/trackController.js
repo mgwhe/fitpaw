@@ -20,8 +20,9 @@ module.exports = {
 
             ActivityTrack.find( {"activityTrackDate": {"$gte": start, "$lt": end}})
             .where('userRef').equals(currentUser.id) //filter for this user
-            .sort({activityTrackDate: 'ascending'}) 
+            .sort({'activityTrackDate':-1})
             .then(activities=>{
+               
                 res.locals.activities = activities;
      
                 next();

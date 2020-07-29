@@ -435,6 +435,31 @@ module.exports = {
       
     },
  
+    
+
+
+    fitpawDBLookupNutrientsRDA: async (req,res,next)=>{
+
+      console.log("Entering fitpawDBLookupNutrientsRDA.. ");
+              
+            let nutrientRDA = [ 
+                400,
+                80, 
+                70, 
+                80,
+                80,
+                50,
+                20,
+                15
+              ];
+        
+            console.log("Dumping.."+JSON.stringify(nutrientRDA));
+
+            res.locals.foodItemRDA = nutrientRDA;
+
+            next();
+      
+    },
 
     fitpawDBLookupFoods:(req,res,next)=>{
       let currentUser = res.locals.currentUser;

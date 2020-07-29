@@ -39,10 +39,10 @@ db.once("open", () => {
    /* test user t: 5eb109e9f821b94524021754 */
 
   ActivityTrack.create({
-    activityTrackDistanceMetres:2000,
-    activityTrackTimeSeconds:1500,
-    userRef:'5eb109e9f821b94524021754',
-    activityTrackDate:'2020-05-02'
+    activityTrackDistanceMetres:2500,
+    activityTrackTimeSeconds:800,
+    userRef:'5f207eca762adcada88f0235',
+    activityTrackDate:'2020-07-26'
 })
 .catch(error => {
         console.log(`IW Error: ${error.message}`);

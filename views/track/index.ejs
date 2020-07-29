@@ -2,12 +2,12 @@
 
     <h2>Activity Summary</h2>
     
-    <table class="table">
-      <thead>
+    <table class="table table-striped w-auto table-responsive" id="nutrientsTable>
+      <thead nowrap="nowrap">
         <tr>
           <th>Date</th>
-          <th>Distance</th>
-          <th>Time</th>
+          <th>Distance (metres)</th>
+          <th>Time (min)</th>
           <th>Intensity Level</th>
         </tr>
       </thead>
@@ -21,18 +21,10 @@
             <%= activity.activityTrackDistanceMetres %>
           </td>
           <td>
-            <%= activity.activityTrackTimeSeconds %>
+            <%= parseInt(activity.activityTrackTimeSeconds/60) %>
           </td>
           <td>
-            <%= activity.activityTrackDate.toString().split(' ')[0]; %>
-          </td>
-          <td>
-            <a href="<%=`/track/${activity._id}/edit`%>">
-              Edit
-            </a>
-          </td>
-          <td>
-            <a href="<%=`/track/${activity._id}/delete?_method=DELETE` %>" onclick="return confirm('Are you sure you want to delete this record?')">Delete</a>
+            <%= (activity.activityTrackDistanceMetres/activity.activityTrackTimeSeconds).toFixed(2) %>
           </td>
         </tr>
         <% }); %>
@@ -95,30 +87,41 @@ var chartData =
     DrawGraph();
      
 
-        function DrawGraph(){
+        async function DrawGraph(){
+
+            let receivedActivities;
+
                //need to make a second call to get data in JSON format so can programme in to chart object
-                $.get("/api/track", (results ={}) =>{
+                await $.get("/api/track", (results ={}) =>{
                     let d = results.data;
                     if (!d || !d.activities){  
                         //need smooth exit for graph              
                         return;
                     }
-                    d.activities.forEach(activity =>{
-                     
-                        if(isNaN(activity.activityTrackDistanceMetres)) //check undefined, null,etc and put 0
-                        {
-                            chartData.data.datasets[0].data.push(0);
-                        }
-                        else
-                        {
-                            chartData.data.datasets[0].data.push(activity.activityTrackDistanceMetres);
-                        }
-                    }); //forEach
 
-                    loadLabels();
-
-                    myChart = new Chart(ctx,chartData);  
+                    receivedActivities = d.activities;
+   
                 }); //get
+
+                receivedActivities = receivedActivities.reverse();
+
+                receivedActivities.forEach(activity =>{
+                     
+                     if(isNaN(activity.activityTrackDistanceMetres)) //check undefined, null,etc and put 0
+                     {
+                         chartData.data.datasets[0].data.push(0);
+                         console.log(0);
+                     }
+                     else
+                     {
+                         chartData.data.datasets[0].data.push(activity.activityTrackDistanceMetres);
+                         console.log(activity.activityTrackDistanceMetres);
+                     }
+                 }); //forEach
+
+                 loadLabels();
+
+                 myChart = new Chart(ctx,chartData);  
                 
         }
 
