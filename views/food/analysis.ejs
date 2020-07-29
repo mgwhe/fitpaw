@@ -1,4 +1,4 @@
-<h3 class="h3">Pet Nutrition Dashboard</h3>
+<h4 class="h3">Pet Daily Calorie Consumption</h4>
 <div class="row">
     <div class="col-sm-6">
         <canvas id="calorieChart" width="400" height="400"></canvas>
@@ -14,7 +14,7 @@
             </div>
         </div>
         <row>
-            here
+            herefddfg
         </row>
     </div>
 </row>
@@ -228,7 +228,7 @@ var chartDataCalories =
             
             var i;
 
-            tmpDate.setDate(tmpDate.getDate()-7); //start a week ago
+            tmpDate.setDate(tmpDate.getDate()-6); //start a week ago
 
             for(i=0;i<7;i++)
             { 
@@ -257,15 +257,40 @@ var chartDataCalories =
                  
                  window.onload = (event) => {
                     
-                    getNutrients();
+                    let option = 'all';
+
+                    getNutrients(option);
+
+                    $('#idNutrientTableDisplayType').change(function() {
+                            
+                            let addButton = document.getElementById("idAddButton");
+                            let inputFoodName = document.getElementById("inputFoodName");
+
+                            if ($(this).prop('checked')==true)
+                            { //Run for all days 
+                                getNutrients('week');
+                            }
+                            else{ //Run for daily 
+                                getNutrients('one');
+                            }
+                    })
                 };
                  
-                  function getNutrients()
+                  function getNutrients(option)
                   {     
                         console.log("about to call GET api/food_nutrients/dates/");
 
                         let endDate = new Date().toISOString().substring(0,10);
-                        let startDate = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString().substring(0,10); //A week ago
+                        var startDate;
+
+                        if(option==='one')
+                        {
+                            startDate = endDate;
+                        }
+                        else //get all
+                        {
+                             startDate = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString().substring(0,10); //A week ago
+                        }
 
                         var stringAPIEndpoint = "/api/food_nutrients/dates/"+startDate+"."+endDate;
                         
@@ -415,14 +440,28 @@ var chartDataCalories =
                       }
                       return rowCount;
                   }
+
+                  
               </script>
 
 
         <!--w-auto automatically widens column to fit content
             source:https://mdbootstrap.com/docs/jquery/tables/responsive/
         -->
-        <hr>
-        <h4>Pet Food Nutrient Analysis</h4>
+       
+            <table class="table" id="dashboardSubHeadTable">
+                <tbody class="info">  
+                    <tr>
+                        <td><h3>Pet Food Nutrient Analysis</h3></td>
+                        <td><h3>
+
+                            <input id="idNutrientTableDisplayType" type="checkbox" checked data-toggle="toggle" data-on="To-date" data-off="Today" data-offstyle="info">
+
+                        </h3></td>
+                    </tr>
+                </tbody>
+            </table>
+        
         <div class="tableFixHead">
             <table class="table table-striped w-auto table-responsive" id="nutrientsTable">
                 <thead nowrap="nowrap">

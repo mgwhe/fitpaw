@@ -56,7 +56,16 @@ FoodNutrientsSchema = new mongoose.Schema({
   sodium: { 
     type: Number,
     default:-1
-  }
+  },
+  foodType: {
+    type: String,
+    required: true,
+    default: 'Common',
+    enum: [
+    'Common',
+    'Branded'
+    ]
+  },
 },
   { //timestamp each record when created & updated
     timestamps: true

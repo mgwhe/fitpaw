@@ -170,7 +170,7 @@
             stringEndpoint = "/api/food/lookup/"+foodName;
         }
         else{ //API for branded foods
-            stringEndpoint = "/api/food/lookup/"+foodName;
+            stringEndpoint = "/api/food/lookup_branded/"+foodName;
             console.log("getFoods - calling API for branded foods");
         }
 
@@ -204,22 +204,46 @@
             const foodNamesObj = JSON.parse(displayData); //Convert JSON back to an object as didn't work otherwise
             var filteredFoods = [];
 
-            console.log(foodNamesObj.common[0]);
+            //check which type of food common or branded pet food
+            //HERE
+            if(IsCommonFood()===true)
+            {
+                console.log(foodNamesObj.common[0]);
 
-            var foodDetails = new Object();
+                var foodDetails = new Object();
 
-            //Extract common food names only from nested array of foods details 
-            foodNamesObj.common.forEach(food =>{
-                
-                console.log(food.food_name);
-                foodDetails.foodName = capital_letter(food.food_name); 
-                foodDetails.foodUnits = food.serving_unit;
-                foodDetails.foodQuantity = food.serving_qty;
+                //Extract common food names only from nested array of foods details 
+                foodNamesObj.common.forEach(food =>{
+                    
+                    console.log(food.food_name);
+                    foodDetails.foodName = capital_letter(food.food_name); 
+                    foodDetails.foodUnits = food.serving_unit;
+                    foodDetails.foodQuantity = food.serving_qty;
 
-                filteredFoods.push(foodDetails);
+                    filteredFoods.push(foodDetails);
 
-                foodDetails = {};
-            }); 
+                    foodDetails = {};
+                }); 
+            }
+            else{ //fitpaw branded foods only
+                console.log(foodNamesObj);
+
+                var foodDetails = new Object();
+
+                //Extract common food names only from nested array of foods details 
+                foodNamesObj.forEach(food =>{
+                    
+                    console.log(food.foodName);
+                    foodDetails.foodName = capital_letter(food.foodName); 
+                    foodDetails.foodUnits = food.foodServingUnit;
+                    foodDetails.foodQuantity = food.foodReferenceQuantity;
+
+                    filteredFoods.push(foodDetails);
+
+                    foodDetails = {};
+                });
+
+            }
             
             return filteredFoods;
         }

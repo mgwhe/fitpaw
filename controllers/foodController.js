@@ -89,7 +89,6 @@ module.exports = {
               await FoodDiaryDay.create({userRef:currentUser.id,foodDiaryDayDate:foodDate,foodDiaryItems: new Array()})
             .then(newFoodDiaryDay=>{
               foodDiaryDay = newFoodDiaryDay;
-                console.log("Max meal number is: "+maxMealCount);
             })
           }
           else{ //diaryday exists
@@ -437,6 +436,26 @@ module.exports = {
     },
  
 
+    fitpawDBLookupFoods:(req,res,next)=>{
+      let currentUser = res.locals.currentUser;
+      
+      if (currentUser) {
+        if(req.params.foodName != null)
+        {
+          let searchFoodName = req.params.foodName; 
+        //regex regular expression which allows fuzzy matching
+       FoodNutrients.find({foodName: { $regex: searchFoodName, $options: 'i' }, foodType: 'Branded'})
+                .then( foodNutrients=>{
+                    res.locals.foodNames = JSON.stringify(foodNutrients);
+                   next();
+                })
+                .catch(error=>{
+                  console.log(error);
+                });
+        }
+      }
+    },
+
     nutritionDBLookupFoods:(req,res,next)=>{
       let currentUser = res.locals.currentUser;
       
@@ -478,48 +497,6 @@ module.exports = {
       }
     },
 
-//not used??
-/*
-    nutritionDBLookupNutrients:(req,res,next)=>{
-      let currentUser = res.locals.currentUser;
-      
-      if (currentUser) {
-        if(req.params.foodName != null)
-        {
-            //make remote call to nutrition database
-            const url =  NUTRITIONIX_API_ENDPOINT_FOOD_NUTRIENTS; 
-            const data = {query:req.params.foodName};
-
-            //check look up food name before calling API, ignore spaces
-            if(validator.isAlpha(validator.blacklist(req.params.foodName, ' '))){
-              axios.post(url, data, {
-                headers: {'x-app-key':'527d7ac47737983a2197102edde9b34a',
-                          'x-app-id':'179643b1'
-                    }, //Add API keys for account
-                }
-                )
-                .then(response=>{
-                  res.locals.foodNameNutrients = JSON.stringify(response.data);
-                  next();
-                })
-                .catch(error=>{
-                  console.log(error);
-                });
-            }
-            else{
-              console.log("Food name has invalid characters");
-            }
-            
-           
-        } //if(req.params.foodName != null)
-        else{
-          console.log("Food name is null!!");
-        }
-        
-      } //if(currentuser)
-      
-    },
-*/
     redirectView: (req, res) => {
       res.render("food/add");
     },

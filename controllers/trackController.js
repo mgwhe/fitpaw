@@ -7,6 +7,7 @@ path = require('path');
 
 module.exports = {
 
+    
     index: (req, res, next) => {
         let currentUser = res.locals.currentUser;
        
@@ -32,15 +33,17 @@ module.exports = {
         } //if
     },
 
+    // /track/add/:duration.:distance", trackController.saveTrack, trackController.respondJSON);
     saveTrack: (req, res, next) => {
         let currentUser = res.locals.currentUser;
        
-        const query = req.query;
+        let duration = req.params.duration;
+        let distance = req.params.distance;
 
         if (currentUser) {
             //extract activity data & validate
-            var d = parseInt(query.distance);
-            var t = parseInt(query.time);
+            var d = parseInt(distance);
+            var t = parseInt(duration);
 
             if(Number.isNaN(d)===false && Number.isNaN(t)===false)
             {
@@ -101,25 +104,3 @@ module.exports = {
     },
 }
 
-/* move to client side 
-function getDaysOfWeekLabels(){
-    var tmpDate = new Date();
-    var daysOfWeekLabels ="[";
-    var i;
-
-    tmpDate.setDate(tmpDate.getDate()-7); //start a week ago
-
-    for(i=0;i<7;i++)
-    { 
-    var tmpDayString = tmpDate.toString().split(' ')[0];         
-    tmpDate.setDate(tmpDate.getDate() + 1);
-    //   daysOfWeekLabels = daysOfWeekLabels + tmpDayString + ",";
-    daysOfWeekLabels =daysOfWeekLabels.concat("\'",tmpDayString,"\',");
-    }
-    //remove last comma
-    daysOfWeekLabels = daysOfWeekLabels.substring(0, daysOfWeekLabels.length - 1);
-    daysOfWeekLabels = daysOfWeekLabels + "]";
-
-    return daysOfWeekLabels;
-}
-*/

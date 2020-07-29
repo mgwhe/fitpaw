@@ -1,54 +1,112 @@
-    <script>
-        function openMapDialog() {
-          $("#mapModal").dialog({
-                autoOpen: false, 
-                modal: true, 
-                title: 'Modal', 
-                width: 'auto', 
-                height: 'auto', 
-                buttons: { "Cancel": function () { $(this).dialog("close"); } },
-            }).dialog('open');
-            return false;
-        }
-        </script>
     
 <div class="col-sm-6"> 
         <img src="../images/dog_activity.jpg" id="activityImage"alt="" class="img-responsive hidden-xs">
 </div>
 <div class="col-sm-6"> 
-    <div class="card">
-        <div class="card-body">
-          <h3 class="card-title">Track Exercise Activity</h3>
-          <p class="card-text">
-              <ul>
-              <li>Click Start at the beginning of your dog exercise</li>
-                <li>Stop when finished</li> 
-                    <li>Save to upload to your activity history</li>
-            </ul>
-            </p>
-            
-            <button id="start-button" class="btn btn-danger" onclick="startTracking()">Capture</button>
-            <button id="stop-button" class="btn btn-primary" onclick="stopTracking()">Stop</button>
-            <a href="/track/add" id="cancel-link" class="btn btn-primary">Cancel</a> 
-            <a class="btn btn-primary" href="/track/save" id="save-link" onclick="return confirm('Are you sure you want to save?')">Save</a>
-
-            <p id="message"></p>
-            <h4 id="timeLapsed"></h4>
-            <h4 id="currentDistance"></h4>
     
-    </div>
-    </div>
-   
+    <h2 class="h2">Dog Walk Tracker</h2>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <div class="panel-title">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <h5><span class="glyphicon glyphicon-play"></span> Track Exercise Activity</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+
+            <h4 id="intervalTime">Interval Time: <i>not started</i></h4>
+            <h4 id="position">Location: <i>unknown</i></h4>
+            <h4 id="timeLapsed">Time Elapsed: 0 minutes</h4>
+            <h4 id="currentDistance">Total Distance: 0 m</h4>
+
+        </div> <!--panel body-->
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 ">            
+                    <button class="btn btn-md btn-primary btn-block" id="idStartButton" onclick="startTracking()">
+                        <span class="glyphicon glyphicon-ok" class="color"></span> Capture
+                    </button>
+              <!--      <button class="btn btn-md btn-primary btn-block" id="idStopButton" onclick="stopTracking()">
+                        <span class="glyphicon glyphicon-stop" class="color"></span> Stop
+                    </button>
+                -->
+                <button type="button" class="btn btn-md btn-primary btn-block open-modal" id="idStopButton" ><span class="glyphicon glyphicon-stop" class="color"></span>
+                    Stop</button></div>
+            </div>
+        </div>
+    </div> <!--panel-->
 
 </div>
 
-<script>
-    
+
+<script type="text/javascript">
+  
     var distanceTotal =0;
     var startTime, endTime;
     var duarationInSecs=0;
     var firstFlag = true;
     
+    $(function () {
+        //switch on stop
+        setButtonsStop();
+    })
+
+     //display modal
+     $(document).on("click", ".open-modal", function () {
+        var x = new Date(); 
+        
+        stopTracking();
+
+        clearInterval(timerRef);
+
+        const millis = Date.now() - startTime
+        
+        duarationInSecs = Math.floor(millis/1000);
+
+        distanceTotal = calculateTotalDistance();
+
+        let htmlMessage = "<h2>Total duration: "+ duarationInSecs + "total distance: " + distanceTotal + "</h2>";
+
+        $("#modal-body").html(htmlMessage);     
+        $('#modal').modal('show');
+    });
+
+    //click on close button trigger boostrap event 
+    $(document).on('show.bs.modal', function (event) {
+        console.log("here");
+       
+        //change button colour as test..
+        console.log("duration in seconds:"+duarationInSecs);        
+        console.log("distance total metres: "+distanceTotal);    
+
+        //clear display
+        intervalTimeDisplay.innerHTML = "Interval Time:";
+        posDisplay.innerHTML = "Location: ";
+        timeElapsed.innerHTML = "Duration: ";
+        totalDistanceCalculated.innerHTML = "Distance: ";
+
+      
+        //add API to upload activity
+        var stringEndpoint = "/api/track/add/"+ duarationInSecs+"."+distanceTotal;
+        
+        console.log("About to call to: "+stringEndpoint);
+        
+        $.get(stringEndpoint, (results ={}) =>{
+            
+            let data = results.data;
+            if (!data || !data.foodItemTotals){  
+                            
+            return;
+            }            
+            
+            console.log("Returned from API call");
+            
+        }); //AJAX call
+        
+    });
 
     function coordinate(x, y) {
         this.x = x;
@@ -58,12 +116,36 @@
     var timerRef;
     var locs = new Array();
 
-    var x = document.getElementById("message");
-    var t = document.getElementById("timeLapsed");
-    var d = document.getElementById("currentDistance");
+    var intervalTimeDisplay = document.getElementById("intervalTime");
+    var posDisplay = document.getElementById("position");
+    var timeElapsed = document.getElementById("timeLapsed");
+    var totalDistanceCalculated = document.getElementById("currentDistance");
      
+
+    function setButtonsStart(){
+        let stopBtn = document.getElementById("idStopButton");
+        stopBtn.disabled = false;
+
+        let startBtn = document.getElementById("idStartButton");
+        startBtn.disabled = true;
+
+    }
+
+    function setButtonsStop(){
+        let stopBtn = document.getElementById("idStopButton");
+        stopBtn.disabled = true;
+
+        let startBtn = document.getElementById("idStartButton");
+        startBtn.disabled = false;
+    }
+
     function startTracking(){
-              
+
+        //update text on time so user knows something is happening
+        intervalTimeDisplay.innerHTML = "Interval Time: starting..."; 
+
+        setButtonsStart();
+
         //reset array of locs
         while (locs.length>0) { 
             locs.pop(); 
@@ -83,19 +165,23 @@
     }
 
     function stopTracking(){
+
+        //switch on start button/ off stop
+        setButtonsStop();
+
         clearInterval(timerRef);
 
         const millis = Date.now() - startTime
-       // alert("Time now:"+Date.now()+" Time at start: "+startTime);
-
+       
         duarationInSecs = Math.floor(millis/1000);
 
         distanceTotal = calculateTotalDistance();
 
-        alert("RESULT Total time (secs):" + duarationInSecs +" Total distance: "+distanceTotal);
+       
+    //    alert("RESULT Total time (secs):" + duarationInSecs +" Total distance: "+distanceTotal);
         
         //add API to upload activity
-        var stringEndpoint = "/api/track/"+position.coords.latitude+ ","+ position.coords.longitude;
+  //      var stringEndpoint = "/api/track/"+position.coords.latitude+ ","+ position.coords.longitude;
         
         /*
         $.get(stringEndpoint, (results ={}) =>{                  
@@ -114,7 +200,7 @@
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(processPosition);
       } else { 
-        x.innerHTML = "Geolocation is not supported by this browser.";
+        alert("Sorry - Geolocation is not supported by this browser");
       }
     }
     
@@ -129,9 +215,14 @@
     function processPosition(position) {
         var tmpTotalDistance = calculateTotalDistance();
         
-        x.innerHTML = "Date: "+ Date() + "<br>Latitude: " + position.coords.latitude +
-        "<br>Longitude: " + position.coords.longitude;
+        posDisplay.innerHTML = "Location: " + position.coords.latitude.toFixed(3) + ", " +
+                position.coords.longitude.toFixed(3);
+
+        let currentDateTime = new Date();
+        intervalTimeDisplay.innerHTML = "Interval Time: "+ currentDateTime.toLocaleTimeString(); //Get the time only
         
+        console.log("Latitude: " + position.coords.latitude + "Longitude: " + position.coords.longitude);
+
         if(firstFlag===true)
         {
             //change image to map
@@ -142,8 +233,9 @@
         }
         const millis = Date.now() - startTime;
         
-        t.innerHTML = formatCurrentDuration(millis);
-        d.innerHTML = "Distance: " +calculateTotalDistance();
+   //     intervalTimeDisplay
+        timeElapsed.innerHTML = formatCurrentDuration(millis);
+        totalDistanceCalculated.innerHTML = "Distance: " +calculateTotalDistance().toFixed(0) +" m";
 
         locs.push(new coordinate(position.coords.latitude,position.coords.longitude));
         console.log("Dumping.."+JSON.stringify(locs));
@@ -167,7 +259,7 @@
         }
         return tmpDistance;
     }
-
+    //Algorithm sourced online
     function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
         var R = 6371; // Radius of the earth in km
         var dLat = deg2rad(lat2-lat1);  // deg2rad below
@@ -186,9 +278,30 @@
     return deg * (Math.PI/180)
     }
 
+
 </script>
 
-<%- include ../partials/modal_upload_activity %>
+ <!----modal starts here--->
+ <div id="modal" class="modal fade" role='dialog'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title"> Activity Tracker</h4>
+            </div>
+            <div class="modal-body" id= "modal-body">
+                <p>Here the description starts here........</p>
+                
+            </div>
+            <div class="modal-footer">
+          <!--      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                <button type="submit" class="btn btn-default btn-success btn-block" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-off"></span> Submit</button>
+            </div>
+        </div>
+      </div>
+  </div>
+  <!--Modal ends here--->
 
 
 

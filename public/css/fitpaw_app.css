@@ -106,12 +106,33 @@ span {
   text-align: center;
 }
 
+/*source stackoverflow */
+span.myMessageClass{text-align:right;}
+
 table#nutrientsTable tr td {
   padding-top: 2px;
   padding-bottom: 2px; 
   font: 14px Arial;
+  white-space: nowrap;
 }
 
+table#nutrientsTable th {
+  padding-top: 0;
+  padding-bottom: 0; 
+  font: 16px Arial;
+  white-space: nowrap;
+}
+
+table#dashboardSubHeadTable tr {
+  padding-top: 0;
+  padding-bottom: 0; 
+  font: 14px Arial;
+  margin-bottom: 0;
+}
+
+h3{
+margin:0;
+}
 /* scrolling */
 /*
 .tableFixHead          { overflow-y: auto; height: 100px; }
