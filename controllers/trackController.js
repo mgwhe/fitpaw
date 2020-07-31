@@ -18,7 +18,7 @@ module.exports = {
             var end = new Date();
             start.setDate(end.getDate()-6); // a week ago
 
-            ActivityTrack.find( {"activityTrackDate": {"$gte": start, "$lt": end}})
+            ActivityTrack.find( {"activityTrackDate": {"$gte": start, "$lte": end}})
             .where('userRef').equals(currentUser.id) //filter for this user
             .sort({'activityTrackDate':-1})
             .then(activities=>{

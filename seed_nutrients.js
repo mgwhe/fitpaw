@@ -20,16 +20,16 @@ db.once("open", () => {
 
 
 let foodNutrients = {  
-  foodName: "bakers wild foul",
-  foodReferenceQuantity: 1,
-  foodServingUnit: "scoop",
-  foodServingWeightGrams: 25,
-  calories: 140,
-  fat: 25,
-  protein: 12,
-  carbohydrates: 80,
+  foodName: "bakers puppy pieces",
+  foodReferenceQuantity: 2,
+  foodServingUnit: "pieces",
+  foodServingWeightGrams: 30,
+  calories: 100,
+  fat: 10,
+  protein: 18,
+  carbohydrates: 40,
   fibre: 1,
-  fat_saturated: 24,
+  fat_saturated: 8,
   sugar: 60,
   sodium: 40,
   foodType:"Branded"

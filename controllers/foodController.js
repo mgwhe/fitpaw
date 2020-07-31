@@ -25,7 +25,7 @@ const NUTRITIONIX_API_ENDPOINT_FOOD_NUTRIENTS = 'https://trackapi.nutritionix.co
 
 module.exports = {
 
-    filterFoodDiaryDay: (req, res, next) => {
+    filterFoodDiaryDay: async (req, res, next) => {
         let currentUser = res.locals.currentUser;
         var thisDate;
 
@@ -43,22 +43,30 @@ module.exports = {
         if (currentUser) {
             // FoodDiaryDay.find({}).where("foodDiaryDayDate").equals(date)
             // lookup food for user for user
-      //      FoodDiaryDay.findOne({foodDiaryDayDate:'2020-05-01', userRef:currentUser._id}).populate("foodDiaryItems")
-      FoodDiaryDay.findOne({foodDiaryDayDate:thisDate, userRef:currentUser._id})
-      .then(diaryDay=>{
-                if(diaryDay!==undefined && diaryDay!==null){
-                  if(diaryDay.foodDiaryItems!==undefined){
-                    res.locals.foodItems = diaryDay.foodDiaryItems; 
-                  }
-                  else{
-                    res.locals.foodItems = new Array(); 
-                  }
-                }   
-                next();
-              }) //.then
-              .catch(error => {
-                console.log(`IW Error: ${error.message}`);
-              });
+          //      FoodDiaryDay.findOne({foodDiaryDayDate:'2020-05-01', userRef:currentUser._id}).populate("foodDiaryItems")
+          let diaryDay = await FoodDiaryDay.findOne({foodDiaryDayDate:thisDate, userRef:currentUser._id}).exec();
+      
+            if(diaryDay!==undefined && diaryDay!==null){
+              if(diaryDay.foodDiaryItems!==undefined){
+
+                let foodItems = diaryDay.foodDiaryItems; 
+                            
+                //fill in the calories
+                for (var index = 0; index < foodItems.length; index++) {
+
+                    let nutrients = await FoodNutrients.findOne({foodName:foodItems[index].foodName}).exec();
+                    foodItems[index].calories  = nutrients.calories;
+
+                    console.log("calories for food "+nutrients.calories);
+                }
+                res.locals.foodItems = foodItems; 
+              }
+              else{
+                res.locals.foodItems = new Array(); 
+              }
+            }   
+            next();
+             
         } //if
     },
     
@@ -435,8 +443,6 @@ module.exports = {
       
     },
  
-    
-
 
     fitpawDBLookupNutrientsRDA: async (req,res,next)=>{
 

@@ -88,7 +88,7 @@ var chartDataCalories =
     charPieMacrosDay = {
         datasets: [{
             label: 'Macronutrients for Day',
-            data: [10, 20, 30],
+            data: [],
             backgroundColor: [
                         'rgba(75, 192, 192, 0.2)',
                         'rgba(54, 162, 235, 0.2)',
@@ -105,15 +105,7 @@ var chartDataCalories =
             'Protein',
             'Carbohydrates',
             'Fat'
-        ],
-        options: {
-            title: {
-                text: 'TEST',
-                display: true,
-                position: 'top',
-                fontSize: 14
-            }
-        }
+        ]
 };
     
     charPieMacrosWeek = {
@@ -147,19 +139,38 @@ var chartDataCalories =
 
     var daysLabelsArray = [];
 
-    var calorieChart, macroChart;
+    var calorieChart, macroChartDay, macroChartWeek;
 
     DrawCalorieBarGraph();
     DrawPieGraphDay();
     DrawPieGraphWeek();
 
-    function DrawPieGraphDay(){
+    async function DrawPieGraphDay(){
+
+
+        let totals = await getTodaysMarcos();
+        //populate graph data 
 
         macroChartDay = new Chart(ctxMacroPieDay, {
             type: 'pie',
             data: charPieMacrosDay
-           // options: options
+        // options: options
         });
+        
+        totals.forEach(macro =>{
+                
+                if(isNaN(macro)) //check undefined, null,etc and put 0 so at least it draws
+                {
+                    charPieMacrosDay.datasets[0].data.push(0); //based on sample chart.js code this is the location where it picks it up from in the chart control
+                }
+                else
+                {
+                    charPieMacrosDay.datasets[0].data.push(macro); //this is the location where it picks it up from
+                }
+            }); //forEach
+
+        macroChartDay = new Chart(ctxMacroPieDay);
+        
     }
 
     function DrawPieGraphWeek(){
@@ -227,6 +238,64 @@ var chartDataCalories =
             }
 
             return totalCalories;
+        }
+
+        async function getTodaysMarcos(){
+            
+            let totals = [];
+         
+            //extract string date in format yyyy-mm-dd
+            let thisDate = new Date(Date.now()).toISOString().substring(0,10); 
+            console.log(thisDate);
+            
+            //getNutrientsTotals does the DB lookup and return sum of each key nutients over start end dates 
+            //here use it a day of the week by setting the start and end dates the same
+            
+            let nutrientTotals = await getNutrientsTotals(thisDate, thisDate); 
+
+            let fats = Math.round(nutrientTotals.data.foodItemTotals[1]);
+            totals.push(fats); //0 contains calories (1=fat, etc.)
+            console.log("Total fats:"+ fats);
+
+            let carbs = Math.round(nutrientTotals.data.foodItemTotals[2]);
+            totals.push(carbs); 
+            console.log("Total carbs: "+carbs);
+
+            let protein = Math.round(nutrientTotals.data.foodItemTotals[3]);
+            totals.push(protein); 
+            console.log("Total protein: "+ protein);
+
+            return totals;
+
+        }
+
+        async function getWeeklyMarcos(){
+            
+            let totals = [];
+         
+            //extract string date in format yyyy-mm-dd
+            let thisDate = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString().substring(0,10); 
+            console.log(thisDate);
+            
+            //getNutrientsTotals does the DB lookup and return sum of each key nutients over start end dates 
+            //here use it a day of the week by setting the start and end dates the same
+            
+            let nutrientTotals = await getNutrientsTotals(thisDate, thisDate); 
+
+            let fats = Math.round(nutrientTotals.data.foodItemTotals[1]);
+            totals.push(fats); //0 contains calories (1=fat, etc.)
+            console.log("Total fats:"+ fats);
+
+            let carbs = Math.round(nutrientTotals.data.foodItemTotals[2]);
+            totals.push(carbs); 
+            console.log("Total carbs: "+carbs);
+
+            let protein = Math.round(nutrientTotals.data.foodItemTotals[3]);
+            totals.push(protein); 
+            console.log("Total protein: "+ protein);
+
+            return totals;
+
         }
 
         async function getNutrientsTotals(startDate, endDate){

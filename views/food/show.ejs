@@ -12,7 +12,8 @@
         $(function () {
             $('#datetimepicker').datetimepicker({
                 inline: true,
-                showTodayButton: true
+                showTodayButton: true,
+                maxDate: Date(), //dont allow future dates
             });
             $('#datetimepicker').on('dp.change', function(e){ 
               console.log(e.date); 
@@ -25,7 +26,7 @@
               $.get(stringEndpoint, (results ={}) =>{
                
                 //clear down table rows
-                var table = document.getElementById("myTable");
+                var table = document.getElementById("diaryTable");
                 var rowCount = CountRows(); //dont want to delete headers
                 for(i=0;i<rowCount;i++){
                       table.deleteRow(-1);
@@ -35,11 +36,7 @@
                if (!data || !data.foodItems){                
                   return;
                 }
-               
-            //      let data = Object.keys(mountains[0]);
-           //     generateTable(table, data.foodItems); // generate the table first
-           //     generateTableHead(table, data.foodItems); // then the head
-                                
+                                  
                 
                   data.foodItems.forEach(foodItem => {
                     //alert("Data: " + foodItem.foodName + "\nStatus: " + data.status);
@@ -51,30 +48,20 @@
                     var cell3 = row.insertCell(2);
                     var cell4 = row.insertCell(3);
                     var cell5 = row.insertCell(4);
+                    var cell5 = row.insertCell(4);
 
-                    cell1.innerHTML = "<a href=`/foodItems/"+foodItem._id+">"+foodItem.foodName+"</a>";   
+                    cell1.innerHTML = "<a href=`/foodItems/"+foodItem._id+">"+ foodItem.foodName+"</a>";   
                     cell2.innerHTML = foodItem.foodQuantity;
                     cell3.innerHTML = foodItem.foodUnits;
-                    cell4.innerHTML = "Edit";
-                    cell5.innerHTML = "Delete";
+                    cell4.innerHTML = foodItem.calories;
+                    cell5.innerHTML = "Edit";
+                    cell6.innerHTML = "Delete";
                   }) //forEach
                   
               }); //AJAX call
             }); //on event
         }); //function
-       /*
-        $(function () {
-            $('#datetimepicker').datetimepicker({
-                  inline: true,
-                  showTodayButton: true,
-                  onSelect: function (date) {
-                    alert(date);
-                   //   $('a.ui-state-default').removeClass('ui-state-highlight');
-                   //   $(this).addClass('ui-state-highlight');
-                  } //end onSelect
-            } //end JSON block
-        ); //end function()
-        */
+
         function generateTableHead(table, data) {
             let thead = table.createTHead();
             let row = thead.insertRow();
@@ -100,7 +87,7 @@
          function CountRows() {
             var totalRowCount = 0;
             var rowCount = 0;
-            var table = document.getElementById("myTable");
+            var table = document.getElementById("diaryTable");
             var rows = table.getElementsByTagName("tr")
             for (var i = 0; i < rows.length; i++) {
                 totalRowCount++;
@@ -110,27 +97,31 @@
             }
             return rowCount;
         }
+
+        //https://www.w3resource.com/javascript-exercises/javascript-basic-exercise-50.php#:~:text=ES6%20Version%3A&text=toUpperCase()%20%2B%20str%5Bi%5D.,word%20of%20a%20given%20string.
+        function capital_letter(str) 
+        {
+            str = str.split(" ");
+
+            for (var i = 0, x = str.length; i < x; i++) {
+                str[i] = str[i][0].toUpperCase() + str[i].substr(1);
+            }
+            return str.join(" ");
+
+        }
     </script>
 </div>
 </div>
 <div class="col-sm-6">
-<!--
-  <ul class="nav nav-tabs">
-    <li class="active"><a data-toggle="tab" href="#home">Diary</a></li>
-    <li><a data-toggle="tab" href="#menu1">Activity</a></li>
-    <li><a data-toggle="tab" href="#menu2"></a>Profile</a></li>
-    <li><a data-toggle="tab" href="#menu3">Targets</a></li>
-  </ul>
-
-  <div class="tab-content">
-    <div id="home" class="tab-pane fade in active">
-    -->  
-      <table class="table table-striped" id="myTable">
+  
+  <h2 class="h2">Pet Daily Diary</h2>
+      <table class="table table-striped" id="diaryTable">
         <thead>
           <tr>
             <th>Description</th>
             <th>Amount</th>
             <th>Units</th>
+            <th>Calories</th>
             <th>Edit</th>
             <th>Delete</th>
           </tr>
@@ -154,6 +145,8 @@
                 <%= foodItem.foodUnits %>
               </td>
               <td>
+                <%= foodItem.calories %>
+              <td>
                 <a href="<%=`foodItems/${foodItem._id}/edit`%>">
                   Edit
                 </a>
@@ -166,21 +159,6 @@
         <% } %> 
         </tbody>
       </table>
-<!--
-    </div>
-    <div id="menu1" class="tab-pane fade">
-      <h3>Menu 1</h3>
-      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    </div>
-    <div id="menu2" class="tab-pane fade">
-      <h3>Menu 2</h3>
-      <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
-    </div>
-    <div id="menu3" class="tab-pane fade">
-      <h3>Menu 3</h3>
-      <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-    </div>
-  -->
   </div>
 </div>
 

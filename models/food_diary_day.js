@@ -26,6 +26,10 @@ mealNumber:{
   type: Number,
   default: 0
 },
+calories:{
+  type: Number,
+  default: -1
+},
 foodNutrients: { type: mongoose.Schema.Types.ObjectId, ref: "FoodNutrients"},
 },
 { //timestamp each record when created & updated

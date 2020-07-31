@@ -9,6 +9,7 @@
           <th>Distance (metres)</th>
           <th>Time (min)</th>
           <th>Intensity Level</th>
+          <th>% Target</th>
         </tr>
       </thead>
       <tbody>
@@ -22,6 +23,9 @@
           </td>
           <td>
             <%= parseInt(activity.activityTrackTimeSeconds/60) %>
+          </td>
+          <td>
+            <%= (activity.activityTrackDistanceMetres/activity.activityTrackTimeSeconds).toFixed(2) %>
           </td>
           <td>
             <%= (activity.activityTrackDistanceMetres/activity.activityTrackTimeSeconds).toFixed(2) %>

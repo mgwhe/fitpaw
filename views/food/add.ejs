@@ -22,9 +22,7 @@
                         </div>
                     </div>
                     <div class="panel-body">
-
                             <div class="row">
-        
                                 <div class="col-xs-6">
                                     <label for="inputFoodName">Food Name</label>
                                     <input type="text" name="foodName" id="inputFoodName" class="form-control" placeholder="Common Foods"  autofocus requried>
@@ -282,12 +280,7 @@
         form.addEventListener( 'submit', function ( event ) {
                 event.preventDefault(); //stop the form from doing its normal post to server
                   //  getFoodNutrients();
-             /*   var foodDetails={};
-                     
-                foodDetails['foodName']= document.getElementById("inputFoodName").value; 
-                foodDetails['foodQuantity']=document.getElementById("inputFoodQuantity").value; 
-                foodDetails['foodUnits']=document.getElementById("idFoodUnits").innerHTML; 
-            */
+
                let foodDetails={
                    foodName:document.getElementById("inputFoodName").value,
                    foodQuantity:document.getElementById("inputFoodQuantity").value,
@@ -346,6 +339,7 @@
 
         foodBasket.push(foodDetails);
 
+        console.log("food added to array:"+JSON.stringify(foodBasket));
         //switch on upload basket button as items are present
         const button = document.getElementById("idLogBasketToDiary");
         button.disabled = false;
@@ -408,6 +402,7 @@
                     rowCount++;
                 }
             }
+            console.log("row count=:"+rowCount);
             return rowCount;
         }
     }

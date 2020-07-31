@@ -101,9 +101,6 @@ exports.getNutrients = function(foodName){
 
   }
 
-  exports.getNutrientsTotalsForsMeal = function(foodDate, mealNumber){
-
-  }
 
   exports.getNutrientsTotalsForsDay = function(foodDate){
 
