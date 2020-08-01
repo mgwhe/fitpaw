@@ -2,6 +2,7 @@
 
 const PetProfile = require("../models/pet_profile"),
 User = require("../models/user");
+const breed = require("../models/breed");
 
 
 exports.getPetProfile = (req, res) => {
@@ -45,6 +46,7 @@ module.exports = {
     //look up user to can extract email and store it. need to revise if needed as org planned
     User.findById(memberObjectId)
     .then(foundUser=>{
+
           let petProfileParams = {
             userRef: foundUser._id,
             petOwnerEmail: foundUser.email,
@@ -60,7 +62,7 @@ module.exports = {
              User.findByIdAndUpdate(memberObjectId, {$set:{petProfile:newPetProfile}})
                   .then()
                   { 
-                      res.locals.redirect = "../index_internal"; 
+                      res.locals.redirect = "/petprofile/view"; 
                       res.locals.petprofile_variable = newPetProfile; 
                       next();  
                   }   
@@ -75,8 +77,12 @@ module.exports = {
   },
 
   show: (req, res, next) => {
-    let petProfileId = req.params.id;
-    PetProfile.findById(petProfileId)
+
+    let currentUser = res.locals.currentUser;
+
+  //  let petProfileId = req.params.id;
+    
+  PetProfile.findOne({userRef:currentUser._id})
       .then(foundPetprofile => {
         res.locals.petprofile_variable = foundPetprofile;
         next();

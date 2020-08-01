@@ -9,7 +9,7 @@
           <th>Distance (metres)</th>
           <th>Time (min)</th>
           <th>Intensity Level</th>
-          <th>% Target</th>
+          <th>Target</th>
         </tr>
       </thead>
       <tbody>
@@ -28,7 +28,7 @@
             <%= (activity.activityTrackDistanceMetres/activity.activityTrackTimeSeconds).toFixed(2) %>
           </td>
           <td>
-            <%= (activity.activityTrackDistanceMetres/activity.activityTrackTimeSeconds).toFixed(2) %>
+            <%= activity.referenceActivity %>
           </td>
         </tr>
         <% }); %>
@@ -123,6 +123,21 @@ var chartData =
                      }
                  }); //forEach
 
+                 let distances = getRecommendedDistances();
+
+                 let recommendedDistances = {
+                        label: 'Target Daily Distance',
+                        data: [],
+                        type: 'line',
+                        order: 2
+                        };
+
+                 distances.forEach(distance =>{
+                    recommendedDistances.data.push(distance);
+                 })
+
+                chartData.data.datasets.push(recommendedDistances);
+
                  loadLabels();
 
                  myChart = new Chart(ctx,chartData);  
@@ -152,7 +167,13 @@ var chartData =
             daysLabelsArray = getDaysOfWeekLabels();
             daysLabelsArray.forEach(dayLabel =>{
             chartData.data.labels.push(dayLabel);
-    });
+             });
+        }
+
+        function getRecommendedDistances(){
+            
+            let distances = [1200, 1200, 1200, 1200,1200,1200,1200];
+            return distances; 
         }
     </script>
 </div>

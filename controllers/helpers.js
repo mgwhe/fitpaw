@@ -132,3 +132,10 @@ exports.getNutrients = function(foodName){
       let scaledDetails = details.map(detail=>detail*foodQuantity);
       return scaledDetails;
   }
+
+  exports.getReferenceActivityLevel = function(){
+    
+    let referenceActivityLevel = [1200,1200,1200,1200,1200,1200,1200];
+
+    return referenceActivityLevel;
+  }

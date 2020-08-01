@@ -307,9 +307,6 @@ module.exports = {
       console.log("req.params.endDate: "+req.params.endDate);
 
       if (currentUser) {
-        
-    //      endDate = new Date().toISOString().substring(0,10);
-    //      startDate = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString().substring(0,10); //A week ago
           
           console.log("start date: "+startDate);
           console.log("end date: "+endDate);

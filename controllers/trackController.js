@@ -3,12 +3,13 @@
 const User = require("../models/user"),
 httpStatus = require("http-status-codes"),
 ActivityTrack = require("../models/activity_track"),
+helpers = require("./helpers"),
 path = require('path');
 
 module.exports = {
 
     
-    index: (req, res, next) => {
+    index: async (req, res, next) => {
         let currentUser = res.locals.currentUser;
        
         if (currentUser) {
@@ -18,18 +19,21 @@ module.exports = {
             var end = new Date();
             start.setDate(end.getDate()-6); // a week ago
 
-            ActivityTrack.find( {"activityTrackDate": {"$gte": start, "$lte": end}})
+            let activities = await ActivityTrack.find( {"activityTrackDate": {"$gte": start, "$lte": end}})
             .where('userRef').equals(currentUser.id) //filter for this user
-            .sort({'activityTrackDate':-1})
-            .then(activities=>{
-               
-                res.locals.activities = activities;
-     
-                next();
+            .sort({'activityTrackDate':-1}).exec();
+
+            let referenceActivities = helpers.getReferenceActivityLevel();
+            let index =0; 
+            
+            activities.forEach(activity =>{
+
+                activity.referenceActivity = referenceActivities[index];
             })
-            .catch(error => {
-                console.log(`IW Error: ${error.message}`);
-            });
+               
+            res.locals.activities = activities;
+
+             next();
 
         } //if
     },
